@@ -1,0 +1,455 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 21,
+  "summary": "Mobil kullanım hedefli, anadili Türkçe olan “Merhaba Hadi Namaza” isimli İslami uygulama: Kullanıcı ilçe adını yazar, Open‑Meteo Geocoding ile koordinata çevrilip konum kaydedilir; namaz vakitleri Aladhan API’den alınır ve Diyanet’e göre saat farkı (offset) düzeltmesi uygulanarak ekranda gösterilir. Seçilen konumla hava durumu verileri de alınmaya başlanır. Uygulamada kesinlikle kimlik doğrulaması (login/Internet Identity vb.) olmayacak ve “© 2026 Built with using caffeine.ai” ibaresi tamamen kaldırılacak. Ayrıca yeni bir “Esmaül Hüsna” sekmesi eklenecek: Allah’ın 99 ismi büyük ve okunabilir renkli kartlarla listelenecek; kartta Arapça isim + Arapça okunuş, karta basınca Türkçe anlam ve ilgili dua gösterilecek (içerikler uygulamaya standart listeden eklenecek). Ek olarak “Zikirmatik” adlı ayrı bir sekme eklenecek: dijital tesbih/sayaç ile +1 artırma, sıfırlama ve hedef belirleme olacak; sayaç/hedef değerleri uygulama kapatılsa da kalıcı saklanacak.",
+  "architectural_notes": [
+    "Konum çözümleme (ilçe->enlem/boylam) için Open‑Meteo Geocoding API kullanılacak.",
+    "Namaz vakitleri Aladhan API’den alınacak ve Diyanet’e göre offset düzeltmesi uygulanacak.",
+    "Kullanıcı manuel enlem/boylam girmeyecek; yalnızca ilçe adı girecek.",
+    "Seçilen geocoding sonucu uygulamada konum olarak kaydedilecek ve bu konum üzerinden veri çekilecek.",
+    "Kimlik doğrulaması (Internet Identity dahil) kullanılmayacak; uygulama auth gerektirmeden çalışacak.",
+    "Footer/branding metni “© 2026 Built with using caffeine.ai” projeden tamamen çıkarılacak.",
+    "Navigasyon güncellenecek: sekmeler “Ana Sayfa”, “Esmaül Hüsna”, “Ayarlar” olacak; Esmaül Hüsna ekranı yaşlılar için büyük tipografi/erişilebilir kart boyutlarıyla tasarlanacak.",
+    "Esmaül Hüsna içerikleri (Arapça yazılış, okunuş, Türkçe anlam, dua) uygulama içine standart bir 99 isim veri seti olarak gömülecek; kart tıklamasıyla detay gösterilecek.",
+    "Ana Sayfa’da “Vaktin Ayeti/Hadisi/Duası/Esma’sı” içerikleri uygulamaya gömülü geniş ölçekli veri setlerinden seçilecek ve her vakit değişiminde her kategori için rastgele yenilenecek; UI 2x2 renkli kart/pencere düzeninde gösterilecek.",
+    "Zikirmatik sekmesi ayrı bir sekme olacak; sayaç ve hedef değerleri tarayıcı localStorage’da kalıcı olarak saklanacak."
+  ],
+  "known_issues": [
+    "Namaz Öğretici’de şu anda kullanılan görseller Hanefî mezhebine uygun değil ve kadın/erkek farklılıklarını yansıtmıyor.",
+    "Namaz Öğretici’de mevcut kıraat ve rükû görselleri Türkiye’de yaygın Hanefî uygulamasına uygun değil (tüm setin sıfırdan yenilenmesi isteniyor)."
+  ],
+  "isFixRequest": true,
+  "imageRequirements": "## Required Images\n- Male standing prayer posture, Turkey Hanafi (namaz-tr-hanafi-male-01-qiyam.dim_1024x1024.png)\n- Male opening takbir posture, Turkey Hanafi (namaz-tr-hanafi-male-02-iftitah-takbir.dim_1024x1024.png)\n- Male hands-folded standing posture, Turkey Hanafi (namaz-tr-hanafi-male-03-hands-folded.dim_1024x1024.png)\n- Male recitation standing posture with empty hands, Turkey Hanafi (namaz-tr-hanafi-male-04-qiraah.dim_1024x1024.png)\n- Male ruku bowing posture with hands on knees, Turkey Hanafi (namaz-tr-hanafi-male-05-ruku.dim_1024x1024.png)\n- Male standing after ruku posture, Turkey Hanafi (namaz-tr-hanafi-male-06-qawmah.dim_1024x1024.png)\n- Male first sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-male-07-sujud-1.dim_1024x1024.png)\n- Male sitting between sujud posture, Turkey Hanafi (namaz-tr-hanafi-male-08-jalsa.dim_1024x1024.png)\n- Male second sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-male-09-sujud-2.dim_1024x1024.png)\n- Male tashahhud sitting posture, Turkey Hanafi (namaz-tr-hanafi-male-10-tashahhud.dim_1024x1024.png)\n- Male salam posture, Turkey Hanafi (namaz-tr-hanafi-male-11-salam.dim_1024x1024.png)\n- Female standing prayer posture, Turkey Hanafi (namaz-tr-hanafi-female-01-qiyam.dim_1024x1024.png)\n- Female opening takbir posture, Turkey Hanafi (namaz-tr-hanafi-female-02-iftitah-takbir.dim_1024x1024.png)\n- Female hands-folded standing posture, Turkey Hanafi (namaz-tr-hanafi-female-03-hands-folded.dim_1024x1024.png)\n- Female recitation standing posture with empty hands, Turkey Hanafi (namaz-tr-hanafi-female-04-qiraah.dim_1024x1024.png)\n- Female ruku bowing posture with hands on knees, Turkey Hanafi (namaz-tr-hanafi-female-05-ruku.dim_1024x1024.png)\n- Female standing after ruku posture, Turkey Hanafi (namaz-tr-hanafi-female-06-qawmah.dim_1024x1024.png)\n- Female first sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-female-07-sujud-1.dim_1024x1024.png)\n- Female sitting between sujud posture, Turkey Hanafi (namaz-tr-hanafi-female-08-jalsa.dim_1024x1024.png)\n- Female second sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-female-09-sujud-2.dim_1024x1024.png)\n- Female tashahhud sitting posture, Turkey Hanafi (namaz-tr-hanafi-female-10-tashahhud.dim_1024x1024.png)\n- Female salam posture, Turkey Hanafi (namaz-tr-hanafi-female-11-salam.dim_1024x1024.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-a-mobile-first-react-ui-for-the-app-named-merhaba-hadi-namaza-with-a-coherent-distinctive-visual-theme-colors-typography-spacing-components-applied-consistently-across-all-screens-avoid-blue-purple-as-primary-colors",
+      "title": "Create a mobile-first React UI for the app named “Merhaba Hadi Namaza”, with a coherent, distinctive visual theme (colors, typography, spacing, components) applied consistently across all screens. Avoid blue/purple as primary colors.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-manual-district-il-e-entry-with-open-meteo-geocoding-provide-an-input-where-the-user-types-a-district-name-query-open-meteo-geocoding-api-open-meteo-com-show-a-selectable-list-of-results-and-upon-selection-store-the-chosen-location-at-minimum-display-name-latitude-longitude",
+      "title": "Implement manual district (ilçe) entry with Open‑Meteo Geocoding: provide an input where the user types a district name, query Open‑Meteo geocoding-api.open-meteo.com, show a selectable list of results, and upon selection store the chosen location (at minimum: display name + latitude/longitude).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fetch-prayer-times-for-the-saved-location-from-the-aladhan-api-and-display-them-in-the-ui-after-fetching-apply-a-diyanet-based-time-offset-correction-to-the-aladhan-times-before-presenting-them-i-e-adjust-displayed-times-by-configurable-offsets",
+      "title": "Fetch prayer times for the saved location from the Aladhan API and display them in the UI. After fetching, apply a Diyanet-based time offset correction to the Aladhan times before presenting them (i.e., adjust displayed times by configurable offsets).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-after-a-location-is-saved-start-fetching-and-displaying-weather-data-for-that-location-using-open-meteo-weather-apis-and-keep-the-weather-view-tied-to-the-currently-saved-location",
+      "title": "After a location is saved, start fetching and displaying weather data for that location using Open‑Meteo weather APIs, and keep the weather view tied to the currently saved location.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-use-react-query-for-all-external-data-fetching-geocoding-search-prayer-times-weather-with-sensible-caching-and-refetch-behavior-suitable-for-mobile-usage",
+      "title": "Use React Query for all external data fetching (geocoding search, prayer times, weather) with sensible caching and refetch behavior suitable for mobile usage.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-minimal-backend-support-only-as-needed-for-app-settings-persistence-per-internet-identity-principal-optional-store-and-retrieve-a-user-s-saved-location-and-offset-settings-when-logged-in-otherwise-fall-back-to-local-persistence-in-the-browser",
+      "title": "Add minimal backend support only as needed for app settings persistence per Internet Identity principal (optional): store and retrieve a user’s saved location and offset settings when logged in; otherwise fall back to local persistence in the browser.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-basic-navigation-sections-for-1-location-setup-search-2-prayer-times-and-3-weather-ensuring-the-primary-flow-is-enter-district-select-result-see-prayer-times-with-offsets-and-weather-for-that-saved-location",
+      "title": "Add basic navigation/sections for (1) Location setup/search, (2) Prayer times, and (3) Weather, ensuring the primary flow is: enter district → select result → see prayer times (with offsets) and weather for that saved location.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-place-generated-static-images-under-frontend-public-assets-generated-and-use-them-in-the-ui-e-g-app-icon-branding-and-a-decorative-background-illustration-consistent-with-the-chosen-theme",
+      "title": "Place generated static images under frontend/public/assets/generated and use them in the UI (e.g., app icon/branding and a decorative background/illustration consistent with the chosen theme).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-all-authentication-internet-identity-ui-and-user-flows-so-the-app-never-asks-users-to-log-in-or-shows-any-login-logout-controls",
+      "title": "Remove all authentication (Internet Identity) UI and user flows so the app never asks users to log in or shows any login/logout controls.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-settings-persistence-to-not-depend-on-authentication-always-load-save-app-settings-selected-location-and-offset-from-browser-localstorage-and-do-not-call-backend-settings-methods-that-are-tied-to-a-caller-identity",
+      "title": "Update settings persistence to not depend on authentication: always load/save app settings (selected location and offset) from browser localStorage and do not call backend settings methods that are tied to a caller identity.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-completely-remove-the-footer-attribution-text-and-link-2026-built-with-using-caffeine-ai-and-any-related-icon-link-markup-leaving-no-trace-in-the-rendered-ui",
+      "title": "Completely remove the footer attribution text and link: \"© 2026 Built with using caffeine.ai\" (and any related icon/link markup), leaving no trace in the rendered UI.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-3-tab-navigation-location-prayer-weather-with-a-2-tab-navigation-1-home-and-2-settings-the-home-tab-must-contain-the-combined-content-for-location-prayer-times-and-weather-and-the-location-prayer-weather-tabs-must-no-longer-be-visible",
+      "title": "Replace the current 3-tab navigation (Location / Prayer / Weather) with a 2-tab navigation: (1) Home and (2) Settings. The Home tab must contain the combined content for location, prayer times, and weather, and the Location/Prayer/Weather tabs must no longer be visible.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-home-tab-render-a-top-summary-row-that-shows-a-a-compact-clickable-location-button-and-b-a-compact-current-weather-summary-side-by-side-the-location-ui-must-not-take-up-a-large-area-when-a-location-is-already-selected",
+      "title": "On the Home tab, render a top summary row that shows (a) a compact, clickable Location button and (b) a compact current Weather summary side-by-side. The Location UI must not take up a large area when a location is already selected.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-location-button-on-the-home-tab-open-the-existing-location-search-selection-ui-the-current-locationsetupsection-so-the-user-can-change-the-saved-location-when-needed",
+      "title": "Make the Location button on the Home tab open the existing location search/selection UI (the current LocationSetupSection) so the user can change the saved location when needed.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-home-tab-add-a-next-prayer-countdown-section-above-the-prayer-times-list-it-must-display-the-next-prayer-name-its-time-and-a-live-countdown-time-remaining-until-that-prayer-based-on-the-adjusted-prayer-times-after-applying-the-existing-offsetminutes-correction",
+      "title": "On the Home tab, add a 'Next prayer' countdown section above the prayer times list. It must display the next prayer name, its time, and a live countdown (time remaining) until that prayer based on the adjusted prayer times (after applying the existing offsetMinutes correction).",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-settings-tab-that-includes-per-prayer-notification-lead-time-controls-for-i-msak-g-ne-le-i-kindi-ak-am-yats-each-prayer-must-be-configurable-independently-with-a-value-from-1-to-45-minutes-inclusive-and-these-values-must-persist-in-browser-localstorage-alongside-existing-settings",
+      "title": "Add a Settings tab that includes per-prayer notification lead-time controls for: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı. Each prayer must be configurable independently with a value from 1 to 45 minutes (inclusive), and these values must persist in browser localStorage alongside existing settings.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-third-tab-named-esma-l-h-sna-to-the-existing-mobile-tab-navigation-currently-home-settings-and-render-a-dedicated-esma-l-h-sna-screen-when-that-tab-is-selected-keep-the-existing-home-and-settings-tabs-unchanged-and-still-available",
+      "title": "Add a new third tab named “Esmaül Hüsna” to the existing mobile tab navigation (currently Home + Settings), and render a dedicated Esmaül Hüsna screen when that tab is selected. Keep the existing Home and Settings tabs unchanged and still available.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-esma-l-h-sna-screen-to-display-allah-s-99-names-as-a-scrollable-list-grid-of-large-colorful-cards-designed-for-elderly-readability-each-card-must-show-1-the-arabic-name-large-and-2-the-arabic-reading-transliteration-also-clearly-readable",
+      "title": "Implement the Esmaül Hüsna screen to display Allah’s 99 names as a scrollable list/grid of large, colorful cards designed for elderly readability. Each card must show (1) the Arabic name (large) and (2) the Arabic reading/transliteration (also clearly readable).",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-tapping-an-esma-l-h-sna-card-reveal-additional-details-for-that-name-1-the-turkish-meaning-and-2-a-related-dua-the-content-for-all-99-names-arabic-script-transliteration-turkish-meaning-dua-must-be-included-in-the-app-as-a-built-in-standard-list-no-user-provided-data-required",
+      "title": "On tapping an Esmaül Hüsna card, reveal additional details for that name: (1) the Turkish meaning and (2) a related dua. The content for all 99 names (Arabic script, transliteration, Turkish meaning, dua) must be included in the app as a built-in standard list (no user-provided data required).",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-2x2-grid-section-on-the-home-tab-directly-under-the-prayer-times-list-showing-four-colorful-card-panel-components-titled-verse-of-the-time-hadith-of-the-time-dua-of-the-time-and-esma-l-h-sna-of-the-time-layout-should-be-aesthetically-pleasing-and-clearly-readable-on-mobile",
+      "title": "Add a new 2x2 grid section on the Home tab directly under the Prayer Times list, showing four colorful card/panel components titled: “Verse of the Time”, “Hadith of the Time”, “Dua of the Time”, and “Esmaül Hüsna of the Time” (layout should be aesthetically pleasing and clearly readable on mobile).",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-built-in-bundled-content-datasets-for-1-verses-2-hadiths-and-3-duas-each-with-at-least-50-items-stored-in-frontend-code-no-external-api-calls",
+      "title": "Create built-in (bundled) content datasets for: (1) verses, (2) hadiths, and (3) duas, each with at least 50 items, stored in frontend code (no external API calls).",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-current-prayer-time-slot-detector-based-on-the-already-adjusted-daily-prayer-times-after-applying-the-existing-offsetminutes-correction-and-use-it-to-refresh-the-4-home-cards-whenever-the-current-slot-changes-i-e-when-the-app-crosses-into-the-next-prayer-period",
+      "title": "Implement a “current prayer time slot” detector based on the already-adjusted daily prayer times (after applying the existing offsetMinutes correction), and use it to refresh the 4 Home cards whenever the current slot changes (i.e., when the app crosses into the next prayer period).",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-at-each-prayer-slot-refresh-randomly-select-one-item-for-each-category-verse-hadith-dua-and-esma-l-h-sna-for-esma-l-h-sna-of-the-time-reuse-the-existing-built-in-99-name-esma-l-h-sna-dataset-already-present-in-the-app",
+      "title": "At each prayer-slot refresh, randomly select one item for each category (verse, hadith, dua, and esmaül hüsna). For “Esmaül Hüsna of the Time”, reuse the existing built-in 99-name Esmaül Hüsna dataset already present in the app.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-new-home-cards-handle-long-text-gracefully-on-mobile-readability-first-do-not-overflow-layout-use-sensible-truncation-and-or-an-on-tap-details-view-so-the-full-text-can-be-read",
+      "title": "Ensure the new Home cards handle long text gracefully on mobile (readability-first): do not overflow layout; use sensible truncation and/or an on-tap details view so the full text can be read.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-fourth-bottom-tab-named-zikirmatik-to-the-existing-mobile-tab-navigation-currently-home-settings-esma-l-h-sna-and-render-a-dedicated-zikirmatik-screen-when-selected",
+      "title": "Add a new fourth bottom tab named “Zikirmatik” to the existing mobile tab navigation (currently Home, Settings, Esmaül Hüsna) and render a dedicated Zikirmatik screen when selected.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-zikirmatik-tab-ui-as-a-digital-tasbih-counter-with-1-a-large-high-contrast-counter-display-2-a-1-increment-control-3-a-reset-control-and-4-a-target-goal-value-that-the-user-can-set",
+      "title": "Implement the Zikirmatik tab UI as a digital tasbih/counter with (1) a large, high-contrast counter display, (2) a +1 increment control, (3) a reset control, and (4) a target (goal) value that the user can set.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-persist-zikirmatik-state-in-browser-localstorage-so-the-counter-and-target-values-survive-page-refreshes-and-app-restarts-alongside-existing-app-settings-location-offsetminutes-notificationleadtimes",
+      "title": "Persist Zikirmatik state in browser localStorage so the counter and target values survive page refreshes and app restarts, alongside existing app settings (location, offsetMinutes, notificationLeadTimes).",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-bottom-navigation-tab-for-a-dedicated-prayer-tutorial-screen-labeled-namaz-retici-while-keeping-the-existing-tabs-home-settings-esma-l-h-sna-zikirmatik-unchanged-and-still-available",
+      "title": "Add a new bottom navigation tab for a dedicated prayer tutorial screen, labeled “Namaz Öğretici”, while keeping the existing tabs (Home, Settings, Esmaül Hüsna, Zikirmatik) unchanged and still available.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-namaz-retici-screen-as-a-horizontal-swipeable-left-right-step-by-step-experience-swiper-like-with-clear-progress-indication-and-accessible-next-previous-controls-in-addition-to-touch-trackpad-swiping",
+      "title": "Implement the “Namaz Öğretici” screen as a horizontal swipeable (left/right) step-by-step experience (swiper-like), with clear progress indication and accessible next/previous controls (in addition to touch/trackpad swiping).",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-include-built-in-prayer-tutorial-content-bundled-in-frontend-code-no-external-api-calls-covering-both-1-the-full-sequence-of-prayer-sections-positions-e-g-intention-niyyah-opening-takbir-standing-qiyam-recitation-qira-ah-bowing-ruku-prostration-sujud-sitting-jalsa-tashahhud-salam-and-2-per-daily-prayer-rak-ah-counts-fajr-dhuhr-asr-maghrib-isha-presented-clearly-for-end-users",
+      "title": "Include built-in prayer tutorial content (bundled in frontend code; no external API calls) covering both: (1) the full sequence of prayer sections/positions (e.g., intention/niyyah, opening takbir, standing/qiyam, recitation/qira’ah, bowing/ruku, prostration/sujud, sitting/jalsa, tashahhud, salam), and (2) per-daily-prayer rak‘ah counts (Fajr, Dhuhr, Asr, Maghrib, Isha) presented clearly for end users.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-and-use-a-set-of-tutorial-style-illustration-assets-for-the-prayer-steps-store-the-images-under-frontend-public-assets-generated-and-render-the-appropriate-illustration-for-each-step-in-the-swipeable-tutorial-ui",
+      "title": "Add and use a set of tutorial-style illustration assets for the prayer steps. Store the images under frontend/public/assets/generated and render the appropriate illustration for each step in the swipeable tutorial UI.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-namaz-retici-feature-to-provide-two-separate-tutorial-flows-one-for-men-and-one-for-women-the-user-must-be-able-to-switch-between-the-two-flows-within-the-namaz-retici-screen-and-each-flow-must-render-its-own-step-list-and-step-images",
+      "title": "Update the Namaz Öğretici feature to provide two separate tutorial flows: one for men and one for women. The user must be able to switch between the two flows within the Namaz Öğretici screen, and each flow must render its own step list and step images.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refactor-the-tutorial-content-in-frontend-src-features-namaz-ogretici-namaztutorialcontent-ts-to-support-gender-specific-men-vs-women-hanafi-aligned-step-content-and-image-paths-replacing-the-current-single-shared-namazsteps-list-ensure-each-step-for-each-flow-has-a-stable-id-and-includes-the-correct-imagepath-for-that-gender",
+      "title": "Refactor the tutorial content in frontend/src/features/namaz-ogretici/namazTutorialContent.ts to support gender-specific (men vs women) Hanafi-aligned step content and image paths, replacing the current single shared namazSteps list. Ensure each step for each flow has a stable id and includes the correct imagePath for that gender.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-completely-replace-the-current-namaz-retici-illustration-asset-set-with-a-new-from-scratch-hanafi-correct-set-and-ensure-men-and-women-use-different-illustrations-for-each-step-remove-all-references-to-the-old-tutorial-image-filenames-from-the-codebase-the-old-assets-must-no-longer-be-required-at-runtime-store-the-new-images-under-frontend-public-assets-generated-and-wire-them-into-the-tutorial-via-the-updated-imagepath-fields",
+      "title": "Completely replace the current Namaz Öğretici illustration asset set with a new from-scratch Hanafi-correct set, and ensure men and women use different illustrations for each step. Remove all references to the old tutorial image filenames from the codebase (the old assets must no longer be required at runtime). Store the new images under frontend/public/assets/generated and wire them into the tutorial via the updated imagePath fields.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rebuild-the-entire-namaz-retici-tutorial-step-dataset-from-scratch-to-match-the-commonly-practiced-hanafi-prayer-method-in-turkey-for-both-men-and-women-including-corrected-qira-ah-recitation-and-ruku-depictions-and-instructions-and-an-updated-step-order-where-needed",
+      "title": "Rebuild the entire “Namaz Öğretici” tutorial step dataset from scratch to match the commonly practiced Hanafi prayer method in Turkey for both men and women, including corrected Qira’ah (recitation) and Ruku’ depictions and instructions, and an updated step order where needed.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-namaz-retici-illustration-asset-set-with-a-completely-new-from-scratch-set-that-visually-matches-the-turkey-hanafi-practice-using-different-illustrations-for-men-and-women-for-each-step-and-update-the-tutorial-code-so-no-old-tutorial-image-filenames-are-required-at-runtime",
+      "title": "Replace the Namaz Öğretici illustration asset set with a completely new, from-scratch set that visually matches the Turkey Hanafi practice, using different illustrations for men and women for each step, and update the tutorial code so no old tutorial image filenames are required at runtime.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-namaz-retici-screen-to-correctly-render-the-rebuilt-step-lists-including-any-new-removed-steps-ensuring-navigation-dots-previous-next-controls-works-across-the-full-new-sequence-for-both-men-and-women-without-out-of-range-errors-when-switching-flows",
+      "title": "Update the Namaz Öğretici screen to correctly render the rebuilt step lists (including any new/removed steps), ensuring navigation (dots + previous/next controls) works across the full new sequence for both men and women without out-of-range errors when switching flows.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-completely-replace-the-existing-namaz-retici-illustration-asset-set-with-a-brand-new-from-scratch-set-for-both-men-and-women-ensuring-each-step-uses-a-gender-specific-image-and-that-no-old-tutorial-image-filenames-are-required-at-runtime",
+      "title": "Completely replace the existing Namaz Öğretici illustration asset set with a brand-new from-scratch set for BOTH men and women, ensuring each step uses a gender-specific image and that no old tutorial image filenames are required at runtime.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-namaz-retici-screen-continues-to-render-correctly-with-the-rebuilt-step-lists-for-both-genders-including-any-added-removed-steps-with-working-swipe-step-navigation-dots-and-previous-next-controls-and-without-out-of-range-errors-when-switching-flows",
+      "title": "Ensure the Namaz Öğretici screen continues to render correctly with the rebuilt step lists for both genders (including any added/removed steps), with working swipe/step navigation, dots, and previous/next controls, and without out-of-range errors when switching flows.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Uygulama adı: “Merhaba Hadi Namaza”; arayüz dili Türkçe",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "İlçe adıyla konum belirleme: Open‑Meteo Geocoding API (geocoding-api.open-meteo.com) ile arama ve sonuçlardan seçim; seçilen konumu kaydetme",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Namaz vakitlerini gösterme: Aladhan API’den vakitleri çekme",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Aladhan’dan gelen namaz vakitlerine Diyanet’e göre saat farkı düzeltmesi (offset) uygulama",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Seçilen/kaydedilen konuma göre hava durumu verilerini almaya başlama (weather entegrasyonu)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Uygulamada kimlik doğrulamasını (login/Internet Identity vb.) tamamen kaldır; hiçbir yerde isteme/kullanma",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Footer’daki “© 2026 Built with using caffeine.ai” yazısını tamamen kaldır (hiçbir kalıntı kalmasın)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Konum/Namaz/Hava Durumu içeriklerini ayrı sekmeler yerine tek bir “Ana Sayfa” sekmesinde birleştir; üstte konum butonu + yanında hava durumu, altında sıradaki vakit adı+saat+geri sayım ve ardından namaz vakitleri listesi",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "“Ayarlar” sekmesi ekle: her bir vakit (İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı) için ayrı ayrı 1–45 dakika önce bildirim ayarı yapılabilsin",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Yeni “Esmaül Hüsna” sekmesi ekle: Allah’ın 99 ismini büyük, renkli kartlar halinde göster; kartta Arapça yazılış + Arapça okunuş; karta basınca Türkçe anlam + ilgili dua göster (içerikleri uygulamaya standart listeden ekle)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Ana Sayfa’da Namaz Vakitleri altında 2x2 renkli “pencere/kart” bölümü ekle: Vaktin Ayeti, Vaktin Hadisi, Vaktin Duası, Vaktin Esmaül Hüsnası; vakit değiştikçe her kategori için rastgele içerikle otomatik yenilensin (içerikler uygulama içine gömülü geniş ölçekli bir setten gelsin).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Yeni ayrı “Zikirmatik” sekmesi ekle: dijital tesbih/sayaç (+1 artırma, sıfırlama, hedef belirleme) ve sayaç/hedef değerlerini uygulama kapansa da kalıcı olarak sakla (localStorage)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Yeni “Namaz Öğretici” sekmesi ekle: namazın tüm bölümlerini (niyet, iftitah tekbiri, kıyam, kıraat, rükû, secde, oturuş vb.) ve her vaktin kaç rekat olduğunu içeren, resimli (öğretici çizimler) adım adım anlatım; sağa-sola kaydırmalı (swiper) sunum",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Namaz Öğretici’de Hanefî mezhebine uygun olacak şekilde mevcut yanlış görselleri tamamen kaldır ve sıfırdan yeni görsel seti üret",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Namaz Öğretici’de kadın ve erkek için ayrı ayrı öğretici akışlar (separate flows) oluştur; her akış kendi görsellerini kullansın",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Namaz Öğretici’yi Türkiye’de yaygın Hanefî uygulamasına birebir uygun olacak şekilde (Diyanet/Türkiye pratiği) kadın ve erkek için tüm adımlar, sıralama, metin içerikleri ve tüm görseller dahil tamamen sıfırdan yeniden hazırlama",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Use the PDF at https://www.namazzamani.net/assets/pdf/namaz-nasil-kilinir-posteri.pdf as the authoritative reference to rebuild the entire “Namaz Öğretici” tutorial content for BOTH men and women from scratch, including step ordering and step text, aligning with commonly practiced Turkey Hanafi prayer.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Update frontend/src/features/namaz-ogretici/namazTutorialContent.ts to reflect the rebuilt step datasets for men and women, ensuring every step has a stable id and a valid imagePath pointing at the new generated assets.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Merhaba Hadi Namaza",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

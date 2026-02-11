@@ -1,0 +1,41 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-completely-replace-the-existing-namaz-retici-illustration-asset-set-with-a-brand-new-from-scratch-set-for-both-men-and-women-ensuring-each-step-uses-a-gender-specific-image-and-that-no-old-tutorial-image-filenames-are-required-at-runtime",
+      "featureTitle": "Completely replace the existing Namaz Öğretici illustration asset set with a brand-new from-scratch set for BOTH men and women, ensuring each step uses a gender-specific image and that no old tutorial image filenames are required at runtime.",
+      "files": [],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-39"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-namaz-retici-screen-continues-to-render-correctly-with-the-rebuilt-step-lists-for-both-genders-including-any-added-removed-steps-with-working-swipe-step-navigation-dots-and-previous-next-controls-and-without-out-of-range-errors-when-switching-flows",
+      "featureTitle": "Ensure the Namaz Öğretici screen continues to render correctly with the rebuilt step lists for both genders (including any added/removed steps), with working swipe/step navigation, dots, and previous/next controls, and without out-of-range errors when switching flows.",
+      "files": [
+        "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-41"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "kind": "build_request",
+  "title": "Rebuild Namaz Öğretici (Turkey Hanafi) men/women flows and illustrations using the provided PDF as the exact reference",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-38",
+      "text": "Use the PDF at https://www.namazzamani.net/assets/pdf/namaz-nasil-kilinir-posteri.pdf as the authoritative reference to rebuild the entire “Namaz Öğretici” tutorial content for BOTH men and women from scratch, including step ordering and step text, aligning with commonly practiced Turkey Hanafi prayer.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5",
+          "msg-9",
+          "msg-11",
+          "msg-13"
+        ],
+        "quotes": [
+          "https://www.namazzamani.net/assets/pdf/namaz-nasil-kilinir-posteri.pdf",
+          "hem kadın hem erkek için ikisinide yeniden sıfırdan oluştur",
+          "1- evet 2- evet",
+          "build"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The men tutorial flow steps (titles/descriptions/arabicText where applicable) are rebuilt to match the PDF’s Turkey Hanafi sequence (not just patched).",
+        "The women tutorial flow steps (titles/descriptions/arabicText where applicable) are rebuilt to match the PDF’s Turkey Hanafi sequence (not just patched).",
+        "Step order, step count, and step semantics match the PDF’s flow closely enough that the previously reported incorrect steps are no longer present."
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "text": "Completely replace the existing Namaz Öğretici illustration asset set with a brand-new from-scratch set for BOTH men and women, ensuring each step uses a gender-specific image and that no old tutorial image filenames are required at runtime.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-9",
+          "msg-11"
+        ],
+        "quotes": [
+          "İftitah tekbiri görseli yanlış ayakta olması gerek,  kıraat görseli yanlış elde kuran olmaması gerek yanlış görsel, ruku görselide yanlış görsel eğilerek olması gerek eller dizde  aynı şekilde kadın görselleri de yanlış onlarıda düzelt görseller Türkiyedeki Hanefi mezhebine uygun namaz kılma görselleri olsun",
+          "hem kadın hem erkek için ikisinide yeniden sıfırdan oluştur",
+          "1- evet 2- evet"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All tutorial step illustrations are newly generated and stored under frontend/public/assets/generated.",
+        "Men and women flows do not reuse the same illustration files for the same step; each step has a gender-specific image.",
+        "All references in code point only to the new image filenames; removing any previously used tutorial images would not break the tutorial at runtime.",
+        "The “İftitah Tekbiri”, “Kıraat”, and “Rükû” step illustrations reflect the correct Turkey Hanafi posture as per the PDF (standing for iftitah; no Quran held during qira’ah; ruku with hands on knees), for both men and women."
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "text": "Update frontend/src/features/namaz-ogretici/namazTutorialContent.ts to reflect the rebuilt step datasets for men and women, ensuring every step has a stable id and a valid imagePath pointing at the new generated assets.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-11"
+        ],
+        "quotes": [
+          "1- evet 2- evet"
+        ]
+      },
+      "acceptanceCriteria": [
+        "menNamazSteps and womenNamazSteps are updated to the rebuilt, PDF-aligned step lists.",
+        "Every step object includes: id, title, description, imagePath (and optional arabicText as needed).",
+        "All imagePath values resolve to files that exist under frontend/public/assets/generated.",
+        "Step ids remain stable and unique within each flow."
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Ensure the Namaz Öğretici screen continues to render correctly with the rebuilt step lists for both genders (including any added/removed steps), with working swipe/step navigation, dots, and previous/next controls, and without out-of-range errors when switching flows.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-13"
+        ],
+        "quotes": [
+          "build"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can switch between men and women flows and always land on a valid step (no blank step, no console errors).",
+        "The step indicator (current step / total steps) reflects the new step counts.",
+        "Previous/Next buttons and dot navigation work across the entire rebuilt sequence for both flows."
+      ]
+    }
+  ],
+  "constraints": [
+    "Keep all backend logic in a single Motoko actor (backend/main.mo); do not introduce additional backend services.",
+    "Do not modify files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
+    "Store tutorial illustrations as static files under frontend/public/assets/generated; do not route images through the backend.",
+    "Use English for any user-facing text in this build request document (this JSON)."
+  ],
+  "nonGoals": [
+    "Adding new tabs or changing the overall app navigation beyond what is required to keep Namaz Öğretici working with the rebuilt content.",
+    "Introducing external APIs for tutorial content (all tutorial content remains bundled in frontend code).",
+    "Changing authentication behavior (the app remains without login/Internet Identity UI).",
+    "Backend persistence changes for tutorial content or images."
+  ],
+  "imageRequirements": {
+    "required": [
+      "Male standing prayer posture, Turkey Hanafi (namaz-tr-hanafi-male-01-qiyam.dim_1024x1024.png)",
+      "Male opening takbir posture, Turkey Hanafi (namaz-tr-hanafi-male-02-iftitah-takbir.dim_1024x1024.png)",
+      "Male hands-folded standing posture, Turkey Hanafi (namaz-tr-hanafi-male-03-hands-folded.dim_1024x1024.png)",
+      "Male recitation standing posture with empty hands, Turkey Hanafi (namaz-tr-hanafi-male-04-qiraah.dim_1024x1024.png)",
+      "Male ruku bowing posture with hands on knees, Turkey Hanafi (namaz-tr-hanafi-male-05-ruku.dim_1024x1024.png)",
+      "Male standing after ruku posture, Turkey Hanafi (namaz-tr-hanafi-male-06-qawmah.dim_1024x1024.png)",
+      "Male first sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-male-07-sujud-1.dim_1024x1024.png)",
+      "Male sitting between sujud posture, Turkey Hanafi (namaz-tr-hanafi-male-08-jalsa.dim_1024x1024.png)",
+      "Male second sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-male-09-sujud-2.dim_1024x1024.png)",
+      "Male tashahhud sitting posture, Turkey Hanafi (namaz-tr-hanafi-male-10-tashahhud.dim_1024x1024.png)",
+      "Male salam posture, Turkey Hanafi (namaz-tr-hanafi-male-11-salam.dim_1024x1024.png)",
+      "Female standing prayer posture, Turkey Hanafi (namaz-tr-hanafi-female-01-qiyam.dim_1024x1024.png)",
+      "Female opening takbir posture, Turkey Hanafi (namaz-tr-hanafi-female-02-iftitah-takbir.dim_1024x1024.png)",
+      "Female hands-folded standing posture, Turkey Hanafi (namaz-tr-hanafi-female-03-hands-folded.dim_1024x1024.png)",
+      "Female recitation standing posture with empty hands, Turkey Hanafi (namaz-tr-hanafi-female-04-qiraah.dim_1024x1024.png)",
+      "Female ruku bowing posture with hands on knees, Turkey Hanafi (namaz-tr-hanafi-female-05-ruku.dim_1024x1024.png)",
+      "Female standing after ruku posture, Turkey Hanafi (namaz-tr-hanafi-female-06-qawmah.dim_1024x1024.png)",
+      "Female first sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-female-07-sujud-1.dim_1024x1024.png)",
+      "Female sitting between sujud posture, Turkey Hanafi (namaz-tr-hanafi-female-08-jalsa.dim_1024x1024.png)",
+      "Female second sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-female-09-sujud-2.dim_1024x1024.png)",
+      "Female tashahhud sitting posture, Turkey Hanafi (namaz-tr-hanafi-female-10-tashahhud.dim_1024x1024.png)",
+      "Female salam posture, Turkey Hanafi (namaz-tr-hanafi-female-11-salam.dim_1024x1024.png)"
+    ],
+    "edits": []
+  }
+}

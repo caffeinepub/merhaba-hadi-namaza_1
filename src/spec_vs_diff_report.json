@@ -1,0 +1,64 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-11T23:27:08.722Z",
+  "summary": "The diff primarily updates the Namaz Öğretici UI logic in NamazOgreticiTab.tsx to defensively handle step bounds when switching gender flows and to add swipe navigation. However, the core requested rebuild—new PDF-aligned step datasets and the replacement illustration asset set under frontend/public/assets/generated—is not evidenced in the provided diff summary.",
+  "missing_requirements": [
+    {
+      "id": "REQ-38",
+      "requirement": "Rebuild the entire “Namaz Öğretici” tutorial content for BOTH men and women from scratch to match the authoritative PDF (Turkey Hanafi), including step ordering and step text.",
+      "reason": "No changes are shown to the tutorial content datasets themselves (titles/descriptions/arabicText/order/count) that would demonstrate a from-scratch PDF-aligned rebuild for men and women.",
+      "evidence": [
+        "File diff summary shows only 3 modified files; no diff shown for frontend/src/features/namaz-ogretici/namazTutorialContent.ts"
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "requirement": "Completely replace the existing Namaz Öğretici illustration asset set with a brand-new set for BOTH men and women, stored under frontend/public/assets/generated, with gender-specific images and only new filenames referenced in code.",
+      "reason": "No new static image assets are shown as added under frontend/public/assets/generated, and no code changes referencing the new required image filenames are evidenced.",
+      "evidence": [
+        "ADDED FILES: none (no assets added)",
+        "No evidence of changes to imagePath references (namazTutorialContent.ts not shown as modified)"
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "requirement": "Update frontend/src/features/namaz-ogretici/namazTutorialContent.ts to include rebuilt menNamazSteps and womenNamazSteps with stable ids and valid imagePath values pointing to the new generated assets.",
+      "reason": "The diff summary does not include any modification to frontend/src/features/namaz-ogretici/namazTutorialContent.ts, so the rebuilt step lists and new imagePath values are not evidenced.",
+      "evidence": [
+        "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx imports menNamazSteps/womenNamazSteps from './namazTutorialContent' but namazTutorialContent.ts is not listed as modified in the diff summary"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "requirement": "Ensure the Namaz Öğretici screen renders correctly with rebuilt step lists for both genders, with working swipe/step navigation, dots, previous/next controls, and no out-of-range errors when switching flows.",
+      "reason": "Some out-of-range protection and swipe handling are implemented, but the diff is truncated and does not provide evidence that dot navigation and the step indicator (current/total) fully reflect the new step counts across both flows.",
+      "evidence": [
+        "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx (truncated) shows clamping/reset logic and swipe handlers, but does not show dots/indicator implementation due to truncation"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Added/expanded a “Rakat Counts” (Günlük Namaz Rekatları) section UI within NamazOgreticiTab.",
+      "reason": "The BuildRequest focuses on rebuilding Namaz Öğretici tutorial flows and illustrations; it does not request adding or changing additional UI sections like daily rakat counts (beyond what’s required to keep Namaz Öğretici working).",
+      "evidence": [
+        "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx shows a new 'Rakat Counts Section' rendering prayerRakatCounts with a Card/Badge layout"
+      ]
+    },
+    {
+      "description": "Modified metadata/state summary files (frontend-file-summaries.txt and project_state.json).",
+      "reason": "The BuildRequest requirements are specific to Namaz Öğretici content, assets, and rendering behavior; these broader project summary/state file edits are not requested features.",
+      "evidence": [
+        "frontend-file-summaries.txt (modified)",
+        "project_state.json (modified)"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
+    "project_state.json"
+  ]
+}

@@ -1,0 +1,333 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Rebuild Namaz Öğretici men/women flows and illustrations (Turkey Hanafi) aligned to authoritative PDF",
+  "requirements": [
+    {
+      "id": "REQ-38",
+      "summary": "Rebuild the complete Namaz Öğretici tutorial step content for men and women from scratch to match the authoritative PDF’s Turkey Hanafi flow (order, step set, and semantics).",
+      "acceptanceCriteria": [
+        "The men tutorial flow steps (titles/descriptions/arabicText where applicable) are rebuilt to match the PDF’s Turkey Hanafi sequence (not just patched).",
+        "The women tutorial flow steps (titles/descriptions/arabicText where applicable) are rebuilt to match the PDF’s Turkey Hanafi sequence (not just patched).",
+        "Step order, step count, and step semantics match the PDF’s flow closely enough that the previously reported incorrect steps are no longer present."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
+          "operation": "modify",
+          "description": "Rebuild both menNamazSteps and womenNamazSteps datasets based on the PDF (https://www.namazzamani.net/assets/pdf/namaz-nasil-kilinir-posteri.pdf) as the authoritative reference: rewrite step ordering and step text from scratch for Turkey Hanafi practice, ensuring the sequence and semantics closely match the PDF (not incremental edits)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "summary": "Replace the Namaz Öğretici illustration set with a new gender-specific image per step, stored as static generated assets, and remove reliance on any old tutorial image filenames.",
+      "acceptanceCriteria": [
+        "All tutorial step illustrations are newly generated and stored under frontend/public/assets/generated.",
+        "Men and women flows do not reuse the same illustration files for the same step; each step has a gender-specific image.",
+        "All references in code point only to the new image filenames; removing any previously used tutorial images would not break the tutorial at runtime.",
+        "The “İftitah Tekbiri”, “Kıraat”, and “Rükû” step illustrations reflect the correct Turkey Hanafi posture as per the PDF (standing for iftitah; no Quran held during qira’ah; ruku with hands on knees), for both men and women."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-01-qiyam.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-02-iftitah-takbir.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-03-hands-folded.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-04-qiraah.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-05-ruku.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-06-qawmah.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-07-sujud-1.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-08-jalsa.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-09-sujud-2.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-10-tashahhud.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-male-11-salam.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-01-qiyam.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-02-iftitah-takbir.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-03-hands-folded.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-04-qiraah.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-05-ruku.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-06-qawmah.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-07-sujud-1.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-08-jalsa.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-09-sujud-2.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-10-tashahhud.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-tr-hanafi-female-11-salam.dim_1024x1024.png",
+          "operation": "create",
+          "description": "Add/replace the newly generated static tutorial illustration asset for this step under frontend/public/assets/generated (required by imageRequirements)."
+        },
+        {
+          "path": "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
+          "operation": "modify",
+          "description": "Update all tutorial step imagePath references so men and women each use gender-specific new assets only (the namaz-tr-hanafi-*.dim_1024x1024.png set), ensuring no old tutorial image filenames are required at runtime."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-standing.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-takbir.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-recitation.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-ruku.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-stand-after-ruku.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-sujud-1.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-jalsa.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-sujud-2.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-tashahhud.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-step-salam.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove previously used tutorial image asset so the runtime cannot accidentally rely on old filenames; ensure code references only the new namaz-tr-hanafi-* assets before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-standing.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-takbir.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-recitation.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-ruku.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-stand-after-ruku.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-sujud-1.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-jalsa.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-sujud-2.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-tashahhud.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-male-step-salam.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older male tutorial image asset in favor of the new namaz-tr-hanafi-male-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-standing.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-takbir.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-recitation.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-ruku.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-stand-after-ruku.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-sujud-1.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-jalsa.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-sujud-2.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-tashahhud.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        },
+        {
+          "path": "frontend/public/assets/generated/namaz-female-step-salam.dim_1024x1024.png",
+          "operation": "delete",
+          "description": "Remove older female tutorial image asset in favor of the new namaz-tr-hanafi-female-* set; ensure no remaining code references this filename before deleting."
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Update namazTutorialContent.ts to contain the rebuilt men/women step datasets with stable ids and valid imagePath values pointing to the new generated assets.",
+      "acceptanceCriteria": [
+        "menNamazSteps and womenNamazSteps are updated to the rebuilt, PDF-aligned step lists.",
+        "Every step object includes: id, title, description, imagePath (and optional arabicText as needed).",
+        "All imagePath values resolve to files that exist under frontend/public/assets/generated.",
+        "Step ids remain stable and unique within each flow."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
+          "operation": "modify",
+          "description": "Ensure each step object in menNamazSteps and womenNamazSteps includes id/title/description/imagePath (and arabicText where needed), with stable unique ids per flow and imagePath values that point to existing files under frontend/public/assets/generated (the namaz-tr-hanafi-*.dim_1024x1024.png assets)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "summary": "Harden and extend the Namaz Öğretici screen navigation so it remains correct with the rebuilt step lists (including changed step counts), supporting swipe + controls without out-of-range errors when switching flows.",
+      "acceptanceCriteria": [
+        "Users can switch between men and women flows and always land on a valid step (no blank step, no console errors).",
+        "The step indicator (current step / total steps) reflects the new step counts.",
+        "Previous/Next buttons and dot navigation work across the entire rebuilt sequence for both flows."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
+          "operation": "modify",
+          "description": "Update the tutorial screen to remain robust for changed step counts and flow switching: clamp current step on step-list changes, ensure dot/prev/next navigation always targets valid indices, and add swipe gesture navigation (touch/pointer) for stepping forward/backward without out-of-range errors."
+        }
+      ]
+    }
+  ]
+}
