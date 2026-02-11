@@ -2,25 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-completely-replace-the-existing-namaz-retici-illustration-asset-set-with-a-brand-new-from-scratch-set-for-both-men-and-women-ensuring-each-step-uses-a-gender-specific-image-and-that-no-old-tutorial-image-filenames-are-required-at-runtime",
-      "featureTitle": "Completely replace the existing Namaz Öğretici illustration asset set with a brand-new from-scratch set for BOTH men and women, ensuring each step uses a gender-specific image and that no old tutorial image filenames are required at runtime.",
-      "files": [],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-39"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-namaz-retici-screen-continues-to-render-correctly-with-the-rebuilt-step-lists-for-both-genders-including-any-added-removed-steps-with-working-swipe-step-navigation-dots-and-previous-next-controls-and-without-out-of-range-errors-when-switching-flows",
-      "featureTitle": "Ensure the Namaz Öğretici screen continues to render correctly with the rebuilt step lists for both genders (including any added/removed steps), with working swipe/step navigation, dots, and previous/next controls, and without out-of-range errors when switching flows.",
+      "featureId": "feature-update-the-namaz-retici-tab-to-remove-the-step-by-step-swipe-tutorial-ui-entirely-no-swipe-gestures-no-step-indicator-dots-no-previous-next-controls-and-no-per-step-paging-instead-show-a-single-scrollable-page-of-text-content-for-the-selected-gender-flow-men-women",
+      "featureTitle": "Update the Namaz Öğretici tab to remove the step-by-step/swipe tutorial UI entirely (no swipe gestures, no step indicator dots, no previous/next controls, and no per-step paging). Instead, show a single scrollable page of text content for the selected gender flow (Men/Women).",
       "files": [
         "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx"
       ],
@@ -33,7 +16,47 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-41"
+        "REQ-42"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-all-tutorial-images-from-the-namaz-retici-experience-do-not-render-any-img-for-steps-and-remove-any-runtime-dependency-on-tutorial-image-asset-paths",
+      "featureTitle": "Remove all tutorial images from the Namaz Öğretici experience: do not render any <img> for steps and remove any runtime dependency on tutorial image asset paths.",
+      "files": [
+        "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
+        "frontend/src/features/namaz-ogretici/namazTutorialContent.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-43"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-refactor-the-namaz-retici-built-in-content-model-in-frontend-src-features-namaz-ogretici-namaztutorialcontent-ts-to-support-the-text-only-tutorial-remove-the-need-for-per-step-imagepath-fields-and-ensure-both-mennamazsteps-and-womennamazsteps-remain-complete-ordered-and-stable-via-their-existing-step-ids",
+      "featureTitle": "Refactor the Namaz Öğretici built-in content model in frontend/src/features/namaz-ogretici/namazTutorialContent.ts to support the text-only tutorial: remove the need for per-step imagePath fields and ensure both menNamazSteps and womenNamazSteps remain complete, ordered, and stable via their existing step ids.",
+      "files": [
+        "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
+        "frontend/src/features/namaz-ogretici/namazTutorialContent.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-44"
       ],
       "confidence": "high"
     }

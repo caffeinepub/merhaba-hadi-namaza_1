@@ -1,12 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Rebuild the “Namaz Öğretici” tutorial for Turkey Hanafi practice from scratch for both men and women using the provided PDF as the authoritative reference, including fully replaced, gender-specific step illustrations.
+**Goal:** Convert the Namaz Öğretici tab into a text-only, single-page tutorial that shows all steps in one scrollable view for the selected gender (Men/Women), removing the swipe/step UI and all tutorial images.
 
 **Planned changes:**
-- Recreate the full men’s and women’s Namaz Öğretici step flows (step count, order, titles/descriptions, and any arabicText where applicable) to match the PDF’s Turkey Hanafi sequence.
-- Replace all existing tutorial illustrations with a new from-scratch, gender-specific image set stored under `frontend/public/assets/generated`, and update code to reference only the new filenames.
-- Update `frontend/src/features/namaz-ogretici/namazTutorialContent.ts` with new `menNamazSteps` and `womenNamazSteps`, ensuring each step has a stable `id` and a valid `imagePath`.
-- Ensure the Namaz Öğretici UI continues to work with the rebuilt step lists (switching men/women flows, swipe navigation, dots, previous/next controls) without out-of-range or blank-step errors.
+- Remove the step-by-step/swipe tutorial UI from Namaz Öğretici (no swipe gestures, no current-step pagination state, no step indicator dots, and no previous/next controls).
+- Render a single long, scrollable page that lists all tutorial steps in order for the selected gender, and update content immediately when switching Men/Women.
+- Refactor `frontend/src/features/namaz-ogretici/namazTutorialContent.ts` to remove per-step `imagePath` usage/requirement while keeping stable step ids and the text fields needed (title, description, optional arabicText).
+- Remove runtime references to tutorial step image assets (`/assets/generated/namaz-*.png`) from the Namaz Öğretici screen.
 
-**User-visible outcome:** Users can choose men or women flows and follow a corrected Turkey Hanafi Namaz tutorial that matches the PDF, with correct step ordering/text and brand-new gender-specific illustrations for every step.
+**User-visible outcome:** In Namaz Öğretici, users can choose Men or Women and read the full ordered tutorial as text on a single scrollable page, with no images and no swipe/paging controls.

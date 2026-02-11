@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
-  "summary": "Mobil kullanım hedefli, anadili Türkçe olan “Merhaba Hadi Namaza” isimli İslami uygulama: Kullanıcı ilçe adını yazar, Open‑Meteo Geocoding ile koordinata çevrilip konum kaydedilir; namaz vakitleri Aladhan API’den alınır ve Diyanet’e göre saat farkı (offset) düzeltmesi uygulanarak ekranda gösterilir. Seçilen konumla hava durumu verileri de alınmaya başlanır. Uygulamada kesinlikle kimlik doğrulaması (login/Internet Identity vb.) olmayacak ve “© 2026 Built with using caffeine.ai” ibaresi tamamen kaldırılacak. Ayrıca yeni bir “Esmaül Hüsna” sekmesi eklenecek: Allah’ın 99 ismi büyük ve okunabilir renkli kartlarla listelenecek; kartta Arapça isim + Arapça okunuş, karta basınca Türkçe anlam ve ilgili dua gösterilecek (içerikler uygulamaya standart listeden eklenecek). Ek olarak “Zikirmatik” adlı ayrı bir sekme eklenecek: dijital tesbih/sayaç ile +1 artırma, sıfırlama ve hedef belirleme olacak; sayaç/hedef değerleri uygulama kapatılsa da kalıcı saklanacak.",
+  "projectStateVersion": 23,
+  "summary": "Mobil kullanım hedefli, anadili Türkçe olan “Merhaba Hadi Namaza” isimli İslami uygulama: Kullanıcı ilçe adını yazar, Open‑Meteo Geocoding ile koordinata çevrilip konum kaydedilir; namaz vakitleri Aladhan API’den alınır ve Diyanet’e göre saat farkı (offset) düzeltmesi uygulanarak ekranda gösterilir. Seçilen konumla hava durumu verileri de alınır. Uygulamada kesinlikle kimlik doğrulaması (login/Internet Identity vb.) olmayacak ve “© 2026 Built with using caffeine.ai” ibaresi tamamen kaldırılacak. Ayrıca “Esmaül Hüsna” sekmesi eklenecek: Allah’ın 99 ismi büyük ve okunabilir renkli kartlarla listelenecek; kartta Arapça isim + Arapça okunuş, karta basınca Türkçe anlam ve ilgili dua gösterilecek (içerikler uygulamaya standart listeden eklenecek). Ek olarak “Zikirmatik” adlı ayrı bir sekme eklenecek: dijital tesbih/sayaç ile +1 artırma, sıfırlama ve hedef belirleme olacak; sayaç/hedef değerleri uygulama kapatılsa da kalıcı saklanacak. “Namaz Öğretici” sekmesi görselsiz olacak: adım adım swiper yapı kaldırılacak; kadın/erkek seçimiyle tek sayfada metinsel anlatım gösterilecek.",
   "architectural_notes": [
     "Konum çözümleme (ilçe->enlem/boylam) için Open‑Meteo Geocoding API kullanılacak.",
     "Namaz vakitleri Aladhan API’den alınacak ve Diyanet’e göre offset düzeltmesi uygulanacak.",
@@ -14,12 +14,8 @@
     "Ana Sayfa’da “Vaktin Ayeti/Hadisi/Duası/Esma’sı” içerikleri uygulamaya gömülü geniş ölçekli veri setlerinden seçilecek ve her vakit değişiminde her kategori için rastgele yenilenecek; UI 2x2 renkli kart/pencere düzeninde gösterilecek.",
     "Zikirmatik sekmesi ayrı bir sekme olacak; sayaç ve hedef değerleri tarayıcı localStorage’da kalıcı olarak saklanacak."
   ],
-  "known_issues": [
-    "Namaz Öğretici’de şu anda kullanılan görseller Hanefî mezhebine uygun değil ve kadın/erkek farklılıklarını yansıtmıyor.",
-    "Namaz Öğretici’de mevcut kıraat ve rükû görselleri Türkiye’de yaygın Hanefî uygulamasına uygun değil (tüm setin sıfırdan yenilenmesi isteniyor)."
-  ],
-  "isFixRequest": true,
-  "imageRequirements": "## Required Images\n- Male standing prayer posture, Turkey Hanafi (namaz-tr-hanafi-male-01-qiyam.dim_1024x1024.png)\n- Male opening takbir posture, Turkey Hanafi (namaz-tr-hanafi-male-02-iftitah-takbir.dim_1024x1024.png)\n- Male hands-folded standing posture, Turkey Hanafi (namaz-tr-hanafi-male-03-hands-folded.dim_1024x1024.png)\n- Male recitation standing posture with empty hands, Turkey Hanafi (namaz-tr-hanafi-male-04-qiraah.dim_1024x1024.png)\n- Male ruku bowing posture with hands on knees, Turkey Hanafi (namaz-tr-hanafi-male-05-ruku.dim_1024x1024.png)\n- Male standing after ruku posture, Turkey Hanafi (namaz-tr-hanafi-male-06-qawmah.dim_1024x1024.png)\n- Male first sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-male-07-sujud-1.dim_1024x1024.png)\n- Male sitting between sujud posture, Turkey Hanafi (namaz-tr-hanafi-male-08-jalsa.dim_1024x1024.png)\n- Male second sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-male-09-sujud-2.dim_1024x1024.png)\n- Male tashahhud sitting posture, Turkey Hanafi (namaz-tr-hanafi-male-10-tashahhud.dim_1024x1024.png)\n- Male salam posture, Turkey Hanafi (namaz-tr-hanafi-male-11-salam.dim_1024x1024.png)\n- Female standing prayer posture, Turkey Hanafi (namaz-tr-hanafi-female-01-qiyam.dim_1024x1024.png)\n- Female opening takbir posture, Turkey Hanafi (namaz-tr-hanafi-female-02-iftitah-takbir.dim_1024x1024.png)\n- Female hands-folded standing posture, Turkey Hanafi (namaz-tr-hanafi-female-03-hands-folded.dim_1024x1024.png)\n- Female recitation standing posture with empty hands, Turkey Hanafi (namaz-tr-hanafi-female-04-qiraah.dim_1024x1024.png)\n- Female ruku bowing posture with hands on knees, Turkey Hanafi (namaz-tr-hanafi-female-05-ruku.dim_1024x1024.png)\n- Female standing after ruku posture, Turkey Hanafi (namaz-tr-hanafi-female-06-qawmah.dim_1024x1024.png)\n- Female first sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-female-07-sujud-1.dim_1024x1024.png)\n- Female sitting between sujud posture, Turkey Hanafi (namaz-tr-hanafi-female-08-jalsa.dim_1024x1024.png)\n- Female second sujud prostration posture, Turkey Hanafi (namaz-tr-hanafi-female-09-sujud-2.dim_1024x1024.png)\n- Female tashahhud sitting posture, Turkey Hanafi (namaz-tr-hanafi-female-10-tashahhud.dim_1024x1024.png)\n- Female salam posture, Turkey Hanafi (namaz-tr-hanafi-female-11-salam.dim_1024x1024.png)",
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-create-a-mobile-first-react-ui-for-the-app-named-merhaba-hadi-namaza-with-a-coherent-distinctive-visual-theme-colors-typography-spacing-components-applied-consistently-across-all-screens-avoid-blue-purple-as-primary-colors",
@@ -332,6 +328,30 @@
         "REQ-41"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-namaz-retici-tab-to-remove-the-step-by-step-swipe-tutorial-ui-entirely-no-swipe-gestures-no-step-indicator-dots-no-previous-next-controls-and-no-per-step-paging-instead-show-a-single-scrollable-page-of-text-content-for-the-selected-gender-flow-men-women",
+      "title": "Update the Namaz Öğretici tab to remove the step-by-step/swipe tutorial UI entirely (no swipe gestures, no step indicator dots, no previous/next controls, and no per-step paging). Instead, show a single scrollable page of text content for the selected gender flow (Men/Women).",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-all-tutorial-images-from-the-namaz-retici-experience-do-not-render-any-img-for-steps-and-remove-any-runtime-dependency-on-tutorial-image-asset-paths",
+      "title": "Remove all tutorial images from the Namaz Öğretici experience: do not render any <img> for steps and remove any runtime dependency on tutorial image asset paths.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refactor-the-namaz-retici-built-in-content-model-in-frontend-src-features-namaz-ogretici-namaztutorialcontent-ts-to-support-the-text-only-tutorial-remove-the-need-for-per-step-imagepath-fields-and-ensure-both-mennamazsteps-and-womennamazsteps-remain-complete-ordered-and-stable-via-their-existing-step-ids",
+      "title": "Refactor the Namaz Öğretici built-in content model in frontend/src/features/namaz-ogretici/namazTutorialContent.ts to support the text-only tutorial: remove the need for per-step imagePath fields and ensure both menNamazSteps and womenNamazSteps remain complete, ordered, and stable via their existing step ids.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -408,43 +428,9 @@
       "status": "pending"
     },
     {
-      "id": "AR-13",
-      "summary": "Yeni “Namaz Öğretici” sekmesi ekle: namazın tüm bölümlerini (niyet, iftitah tekbiri, kıyam, kıraat, rükû, secde, oturuş vb.) ve her vaktin kaç rekat olduğunu içeren, resimli (öğretici çizimler) adım adım anlatım; sağa-sola kaydırmalı (swiper) sunum",
+      "id": "AR-20",
+      "summary": "Namaz Öğretici’yi görselsiz yap: tüm görselleri kaldır; adım-adım/swiper (dot/ileri-geri dahil) yapısını kaldır; Kadın/Erkek seçimi (toggle) ile her biri için tek uzun sayfada metin olarak anlatımı göster",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-14",
-      "summary": "Namaz Öğretici’de Hanefî mezhebine uygun olacak şekilde mevcut yanlış görselleri tamamen kaldır ve sıfırdan yeni görsel seti üret",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-15",
-      "summary": "Namaz Öğretici’de kadın ve erkek için ayrı ayrı öğretici akışlar (separate flows) oluştur; her akış kendi görsellerini kullansın",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-16",
-      "summary": "Namaz Öğretici’yi Türkiye’de yaygın Hanefî uygulamasına birebir uygun olacak şekilde (Diyanet/Türkiye pratiği) kadın ve erkek için tüm adımlar, sıralama, metin içerikleri ve tüm görseller dahil tamamen sıfırdan yeniden hazırlama",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-17",
-      "summary": "Use the PDF at https://www.namazzamani.net/assets/pdf/namaz-nasil-kilinir-posteri.pdf as the authoritative reference to rebuild the entire “Namaz Öğretici” tutorial content for BOTH men and women from scratch, including step ordering and step text, aligning with commonly practiced Turkey Hanafi prayer.",
-      "reqIds": [
-        "REQ-38"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-19",
-      "summary": "Update frontend/src/features/namaz-ogretici/namazTutorialContent.ts to reflect the rebuilt step datasets for men and women, ensuring every step has a stable id and a valid imagePath pointing at the new generated assets.",
-      "reqIds": [
-        "REQ-40"
-      ],
       "status": "pending"
     }
   ],
