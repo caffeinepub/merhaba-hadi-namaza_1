@@ -7,35 +7,18 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface http_request_result {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface AppSettings {
-    offset: string;
-    location: string;
-}
-export interface TransformationOutput {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface TransformationInput {
-    context: Uint8Array;
-    response: http_request_result;
-}
-export interface SermonData {
-    title?: string;
-    content: string;
-    date?: string;
+export type Time = bigint;
+export interface AppRelease {
+    version: string;
+    updatedAt: Time;
+    storeUrl: string;
 }
 export interface UserProfile {
     name: string;
 }
-export interface http_header {
-    value: string;
-    name: string;
+export interface AppSettings {
+    offset: string;
+    location: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -48,12 +31,10 @@ export interface backendInterface {
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getLatestCachedSermon(): Promise<SermonData>;
-    getLatestSermonByUrl(url: string): Promise<SermonData>;
+    getLatestAppRelease(): Promise<AppRelease | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
-    refreshAndGetLatestSermon(): Promise<SermonData>;
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateLatestAppRelease(release: AppRelease): Promise<void>;
 }

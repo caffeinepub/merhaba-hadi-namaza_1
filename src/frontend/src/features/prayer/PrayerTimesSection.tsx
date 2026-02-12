@@ -7,7 +7,8 @@ import { SelectLocationPrompt } from '../../components/SelectLocationPrompt';
 import { usePrayerTimes } from './usePrayerTimes';
 import { useAppSettings } from '../settings/useAppSettings';
 import { applyOffsetToPrayerTimes } from './timeOffset';
-import { Clock, Settings, Sunrise, Sun, Sunset, Moon } from 'lucide-react';
+import { computeKerahatWindows, mergeTimesWithKerahat } from './kerahatTimes';
+import { Clock, Settings, Sunrise, Sun, Sunset, Moon, AlertCircle } from 'lucide-react';
 
 interface PrayerTimesDisplayProps {
   onNavigateToLocation: () => void;
@@ -47,6 +48,10 @@ export function PrayerTimesSection({ onNavigateToLocation }: PrayerTimesDisplayP
       ]
     : [];
 
+  // Compute kerahat windows and merge with prayer times
+  const kerahatWindows = adjustedTimes ? computeKerahatWindows(adjustedTimes) : [];
+  const mergedTimesList = adjustedTimes ? mergeTimesWithKerahat(prayerList, kerahatWindows) : [];
+
   return (
     <div className="space-y-4">
       <Card>
@@ -68,20 +73,35 @@ export function PrayerTimesSection({ onNavigateToLocation }: PrayerTimesDisplayP
 
           {adjustedTimes && (
             <div className="space-y-3">
-              {prayerList.map((prayer) => {
-                const Icon = prayer.icon;
-                return (
-                  <div
-                    key={prayer.name}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className="h-5 w-5 text-muted-foreground" />
-                      <span className="font-medium">{prayer.name}</span>
+              {mergedTimesList.map((item, index) => {
+                if (item.isKerahat) {
+                  return (
+                    <div
+                      key={`kerahat-${index}`}
+                      className="flex items-center justify-between p-3 rounded-lg bg-destructive/10 border border-destructive/20"
+                    >
+                      <div className="flex items-center gap-3">
+                        <AlertCircle className="h-5 w-5 text-destructive" />
+                        <span className="font-medium text-destructive">{item.name}</span>
+                      </div>
+                      <span className="text-sm font-semibold tabular-nums text-destructive">{item.timeRange}</span>
                     </div>
-                    <span className="text-lg font-semibold tabular-nums">{prayer.time}</span>
-                  </div>
-                );
+                  );
+                } else {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.name}
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className="h-5 w-5 text-muted-foreground" />
+                        <span className="font-medium">{item.name}</span>
+                      </div>
+                      <span className="text-lg font-semibold tabular-nums">{item.time}</span>
+                    </div>
+                  );
+                }
               })}
             </div>
           )}

@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-rebuild-clean-up-the-existing-cuma-hutbesi-tab-implementation-so-it-reliably-shows-only-the-latest-sermon-text-with-clear-loading-error-empty-states-and-supports-a-user-initiated-refresh-action-that-calls-the-backend-refresh-method",
-      "featureTitle": "Rebuild/clean up the existing Cuma Hutbesi tab implementation so it reliably shows only the latest sermon text with clear loading/error/empty states, and supports a user-initiated refresh action that calls the backend refresh method.",
+      "featureId": "feature-add-a-dedicated-ramadan-30-days-tracking-section-to-the-existing-fasting-tracker-tab-that-lets-the-user-mark-unmark-each-of-30-days-as-completed-shows-progress-e-g-x-30-and-provides-a-one-tap-reset-clear-action-for-the-ramadan-checklist",
+      "featureTitle": "Add a dedicated \"Ramadan (30 days)\" tracking section to the existing Fasting Tracker tab that lets the user mark/unmark each of 30 days as completed, shows progress (e.g., X/30), and provides a one-tap reset/clear action for the Ramadan checklist.",
       "files": [
-        "frontend/src/features/sermon/CumaHutbesiTab.tsx"
+        "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
+        "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -17,16 +18,17 @@
         "http-outcalls@3.0.0"
       ],
       "testIds": [
-        "REQ-4"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-adjust-the-sermon-react-query-behavior-to-keep-previously-loaded-sermon-content-visible-while-a-background-refresh-is-occurring-avoiding-long-blocking-spinners-and-unnecessary-refetch-loops-on-mobile",
-      "featureTitle": "Adjust the sermon React Query behavior to keep previously loaded sermon content visible while a background refresh is occurring, avoiding long blocking spinners and unnecessary refetch loops on mobile.",
+      "featureId": "feature-persist-the-ramadan-30-day-checklist-state-in-local-settings-so-it-remains-after-reload-and-implement-a-forward-compatible-localstorage-migration-for-the-new-settings-fields",
+      "featureTitle": "Persist the Ramadan 30-day checklist state in local settings so it remains after reload, and implement a forward-compatible localStorage migration for the new settings fields.",
       "files": [
-        "frontend/src/features/sermon/CumaHutbesiTab.tsx",
-        "frontend/src/features/sermon/useLatestSermon.ts"
+        "frontend/src/features/settings/appSettingsModel.ts",
+        "frontend/src/features/settings/localSettingsStorage.ts",
+        "frontend/src/features/settings/useAppSettings.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,7 +40,28 @@
         "http-outcalls@3.0.0"
       ],
       "testIds": [
-        "REQ-5"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-ramadan-checklist-ui-is-mobile-friendly-and-consistent-with-the-app-s-existing-warm-theme-cards-badges-separators-including-a-compact-layout-e-g-responsive-grid-or-list-suitable-for-30-items",
+      "featureTitle": "Ensure the Ramadan checklist UI is mobile-friendly and consistent with the app’s existing warm theme (cards, badges, separators), including a compact layout (e.g., responsive grid or list) suitable for 30 items.",
+      "files": [
+        "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
+        "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

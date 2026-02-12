@@ -15,10 +15,17 @@ export interface LocalSettings {
   notificationLeadTimes: NotificationLeadTimes;
   zikirmatikCount?: number;
   zikirmatikTarget?: number;
+  hatimLastReadPage?: number;
+  adhkarMorningCompleted?: Record<string, boolean>;
+  adhkarEveningCompleted?: Record<string, boolean>;
+  fastingVoluntaryDates?: string[];
+  fastingMakeUpDates?: string[];
+  fastingMakeUpTargetCount?: number;
+  ramadanCompletedDays?: boolean[];
 }
 
 const STORAGE_KEY = 'merhaba-hadi-namaza-settings';
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 7;
 
 interface StoredData {
   version: number;
@@ -43,7 +50,14 @@ export function loadLocalSettings(): LocalSettings {
         offsetMinutes: 0,
         notificationLeadTimes: DEFAULT_NOTIFICATION_LEAD_TIMES,
         zikirmatikCount: 0,
-        zikirmatikTarget: 33
+        zikirmatikTarget: 33,
+        hatimLastReadPage: 1,
+        adhkarMorningCompleted: {},
+        adhkarEveningCompleted: {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
       };
     }
 
@@ -56,7 +70,14 @@ export function loadLocalSettings(): LocalSettings {
         offsetMinutes: data.settings.offsetMinutes || 0,
         notificationLeadTimes: DEFAULT_NOTIFICATION_LEAD_TIMES,
         zikirmatikCount: 0,
-        zikirmatikTarget: 33
+        zikirmatikTarget: 33,
+        hatimLastReadPage: 1,
+        adhkarMorningCompleted: {},
+        adhkarEveningCompleted: {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
       };
     }
 
@@ -70,7 +91,98 @@ export function loadLocalSettings(): LocalSettings {
           ...(data.settings.notificationLeadTimes || {})
         },
         zikirmatikCount: 0,
-        zikirmatikTarget: 33
+        zikirmatikTarget: 33,
+        hatimLastReadPage: 1,
+        adhkarMorningCompleted: {},
+        adhkarEveningCompleted: {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
+      };
+    }
+
+    // Handle migration from version 3 to version 4
+    if (data.version === 3) {
+      return {
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: 1,
+        adhkarMorningCompleted: {},
+        adhkarEveningCompleted: {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
+      };
+    }
+
+    // Handle migration from version 4 to version 5
+    if (data.version === 4) {
+      return {
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+        adhkarMorningCompleted: {},
+        adhkarEveningCompleted: {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
+      };
+    }
+
+    // Handle migration from version 5 to version 6
+    if (data.version === 5) {
+      return {
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+        adhkarMorningCompleted: data.settings.adhkarMorningCompleted ?? {},
+        adhkarEveningCompleted: data.settings.adhkarEveningCompleted ?? {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
+      };
+    }
+
+    // Handle migration from version 6 to version 7
+    if (data.version === 6) {
+      return {
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+        adhkarMorningCompleted: data.settings.adhkarMorningCompleted ?? {},
+        adhkarEveningCompleted: data.settings.adhkarEveningCompleted ?? {},
+        fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
+        fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
+        fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
+        ramadanCompletedDays: Array(30).fill(false)
       };
     }
 
@@ -80,7 +192,14 @@ export function loadLocalSettings(): LocalSettings {
         offsetMinutes: 0,
         notificationLeadTimes: DEFAULT_NOTIFICATION_LEAD_TIMES,
         zikirmatikCount: 0,
-        zikirmatikTarget: 33
+        zikirmatikTarget: 33,
+        hatimLastReadPage: 1,
+        adhkarMorningCompleted: {},
+        adhkarEveningCompleted: {},
+        fastingVoluntaryDates: [],
+        fastingMakeUpDates: [],
+        fastingMakeUpTargetCount: 0,
+        ramadanCompletedDays: Array(30).fill(false)
       };
     }
 
@@ -94,16 +213,30 @@ export function loadLocalSettings(): LocalSettings {
       ...data.settings,
       notificationLeadTimes,
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
-      zikirmatikTarget: data.settings.zikirmatikTarget ?? 33
+      zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+      hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+      adhkarMorningCompleted: data.settings.adhkarMorningCompleted ?? {},
+      adhkarEveningCompleted: data.settings.adhkarEveningCompleted ?? {},
+      fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
+      fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
+      fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
+      ramadanCompletedDays: data.settings.ramadanCompletedDays ?? Array(30).fill(false)
     };
   } catch (error) {
-    console.error('Failed to load local settings:', error);
+    console.error('Error loading settings:', error);
     return {
       location: null,
       offsetMinutes: 0,
       notificationLeadTimes: DEFAULT_NOTIFICATION_LEAD_TIMES,
       zikirmatikCount: 0,
-      zikirmatikTarget: 33
+      zikirmatikTarget: 33,
+      hatimLastReadPage: 1,
+      adhkarMorningCompleted: {},
+      adhkarEveningCompleted: {},
+      fastingVoluntaryDates: [],
+      fastingMakeUpDates: [],
+      fastingMakeUpTargetCount: 0,
+      ramadanCompletedDays: Array(30).fill(false)
     };
   }
 }
@@ -116,6 +249,6 @@ export function saveLocalSettings(settings: LocalSettings): void {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
-    console.error('Failed to save local settings:', error);
+    console.error('Error saving settings:', error);
   }
 }

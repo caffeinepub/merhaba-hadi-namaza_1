@@ -18,28 +18,11 @@ export const AppSettings = IDL.Record({
   'location' : IDL.Text,
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
-export const SermonData = IDL.Record({
-  'title' : IDL.Opt(IDL.Text),
-  'content' : IDL.Text,
-  'date' : IDL.Opt(IDL.Text),
-});
-export const http_header = IDL.Record({
-  'value' : IDL.Text,
-  'name' : IDL.Text,
-});
-export const http_request_result = IDL.Record({
-  'status' : IDL.Nat,
-  'body' : IDL.Vec(IDL.Nat8),
-  'headers' : IDL.Vec(http_header),
-});
-export const TransformationInput = IDL.Record({
-  'context' : IDL.Vec(IDL.Nat8),
-  'response' : http_request_result,
-});
-export const TransformationOutput = IDL.Record({
-  'status' : IDL.Nat,
-  'body' : IDL.Vec(IDL.Nat8),
-  'headers' : IDL.Vec(http_header),
+export const Time = IDL.Int;
+export const AppRelease = IDL.Record({
+  'version' : IDL.Text,
+  'updatedAt' : Time,
+  'storeUrl' : IDL.Text,
 });
 
 export const idlService = IDL.Service({
@@ -53,22 +36,16 @@ export const idlService = IDL.Service({
   'getCallerAppSettings' : IDL.Func([], [IDL.Opt(AppSettings)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getLatestCachedSermon' : IDL.Func([], [SermonData], ['query']),
-  'getLatestSermonByUrl' : IDL.Func([IDL.Text], [SermonData], []),
+  'getLatestAppRelease' : IDL.Func([], [IDL.Opt(AppRelease)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-  'refreshAndGetLatestSermon' : IDL.Func([], [SermonData], []),
   'saveCallerAppSettings' : IDL.Func([AppSettings], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'transform' : IDL.Func(
-      [TransformationInput],
-      [TransformationOutput],
-      ['query'],
-    ),
+  'updateLatestAppRelease' : IDL.Func([AppRelease], [], []),
 });
 
 export const idlInitArgs = [];
@@ -84,25 +61,11 @@ export const idlFactory = ({ IDL }) => {
     'location' : IDL.Text,
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
-  const SermonData = IDL.Record({
-    'title' : IDL.Opt(IDL.Text),
-    'content' : IDL.Text,
-    'date' : IDL.Opt(IDL.Text),
-  });
-  const http_header = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
-  const http_request_result = IDL.Record({
-    'status' : IDL.Nat,
-    'body' : IDL.Vec(IDL.Nat8),
-    'headers' : IDL.Vec(http_header),
-  });
-  const TransformationInput = IDL.Record({
-    'context' : IDL.Vec(IDL.Nat8),
-    'response' : http_request_result,
-  });
-  const TransformationOutput = IDL.Record({
-    'status' : IDL.Nat,
-    'body' : IDL.Vec(IDL.Nat8),
-    'headers' : IDL.Vec(http_header),
+  const Time = IDL.Int;
+  const AppRelease = IDL.Record({
+    'version' : IDL.Text,
+    'updatedAt' : Time,
+    'storeUrl' : IDL.Text,
   });
   
   return IDL.Service({
@@ -116,22 +79,16 @@ export const idlFactory = ({ IDL }) => {
     'getCallerAppSettings' : IDL.Func([], [IDL.Opt(AppSettings)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getLatestCachedSermon' : IDL.Func([], [SermonData], ['query']),
-    'getLatestSermonByUrl' : IDL.Func([IDL.Text], [SermonData], []),
+    'getLatestAppRelease' : IDL.Func([], [IDL.Opt(AppRelease)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-    'refreshAndGetLatestSermon' : IDL.Func([], [SermonData], []),
     'saveCallerAppSettings' : IDL.Func([AppSettings], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'transform' : IDL.Func(
-        [TransformationInput],
-        [TransformationOutput],
-        ['query'],
-      ),
+    'updateLatestAppRelease' : IDL.Func([AppRelease], [], []),
   });
 };
 

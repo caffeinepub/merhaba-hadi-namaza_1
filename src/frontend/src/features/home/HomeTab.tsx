@@ -9,13 +9,13 @@ import { useAppSettings } from '../settings/useAppSettings';
 import { usePrayerTimes } from '../prayer/usePrayerTimes';
 import { useWeather } from '../weather/useWeather';
 import { applyOffsetToPrayerTimes } from '../prayer/timeOffset';
-import { getWeatherDescription } from '../weather/openMeteoWeatherApi';
-import { MapPin, Cloud, Sunrise, Sun, Sunset, Moon } from 'lucide-react';
+import { computeKerahatWindows, mergeTimesWithKerahat } from '../prayer/kerahatTimes';
+import { MapPin, Sunrise, Sun, Sunset, Moon, Cloud, AlertCircle } from 'lucide-react';
 
 export function HomeTab() {
   const { settings } = useAppSettings();
   const { data: prayerTimes, isLoading: prayerLoading, error: prayerError } = usePrayerTimes(settings.location);
-  const { data: weather, isLoading: weatherLoading } = useWeather(settings.location);
+  const { data: weather } = useWeather(settings.location);
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
 
   const adjustedTimes = prayerTimes
@@ -32,6 +32,10 @@ export function HomeTab() {
         { name: 'Yatsı', time: adjustedTimes.isha, icon: Moon }
       ]
     : [];
+
+  // Compute kerahat windows and merge with prayer times
+  const kerahatWindows = adjustedTimes ? computeKerahatWindows(adjustedTimes) : [];
+  const mergedTimesList = adjustedTimes ? mergeTimesWithKerahat(prayerList, kerahatWindows) : [];
 
   // If no location is set, show location setup
   if (!settings.location) {
@@ -51,7 +55,7 @@ export function HomeTab() {
 
   return (
     <div className="space-y-4">
-      {/* Top summary row: Location button + Weather */}
+      {/* Top summary row: Location button only (weather moved to header) */}
       <div className="flex flex-wrap items-center gap-3">
         <Dialog open={locationDialogOpen} onOpenChange={setLocationDialogOpen}>
           <DialogTrigger asChild>
@@ -67,17 +71,6 @@ export function HomeTab() {
             <LocationSetupSection />
           </DialogContent>
         </Dialog>
-
-        {/* Weather summary */}
-        <div className="flex items-center gap-2 text-sm">
-          <Cloud className="h-4 w-4 text-muted-foreground" />
-          {weatherLoading && <span className="text-muted-foreground">Yükleniyor...</span>}
-          {weather && (
-            <span className="font-medium">
-              {Math.round(weather.temperature)}°C · {getWeatherDescription(weather.weatherCode)}
-            </span>
-          )}
-        </div>
       </div>
 
       {/* Next prayer countdown */}
@@ -87,7 +80,7 @@ export function HomeTab() {
         error={prayerError}
       />
 
-      {/* Prayer times list */}
+      {/* Prayer times list with kerahat windows */}
       <Card>
         <CardContent className="pt-6 space-y-3">
           {prayerLoading && (
@@ -98,20 +91,35 @@ export function HomeTab() {
             <p className="text-sm text-destructive text-center">Namaz vakitleri alınamadı</p>
           )}
 
-          {prayerList.map((prayer) => {
-            const Icon = prayer.icon;
-            return (
-              <div
-                key={prayer.name}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
-              >
-                <div className="flex items-center gap-3">
-                  <Icon className="h-5 w-5 text-muted-foreground" />
-                  <span className="font-medium">{prayer.name}</span>
+          {mergedTimesList.map((item, index) => {
+            if (item.isKerahat) {
+              return (
+                <div
+                  key={`kerahat-${index}`}
+                  className="flex items-center justify-between p-3 rounded-lg bg-destructive/10 border border-destructive/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 text-destructive" />
+                    <span className="font-medium text-destructive">{item.name}</span>
+                  </div>
+                  <span className="text-sm font-semibold tabular-nums text-destructive">{item.timeRange}</span>
                 </div>
-                <span className="text-lg font-semibold tabular-nums">{prayer.time}</span>
-              </div>
-            );
+              );
+            } else {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.name}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className="h-5 w-5 text-muted-foreground" />
+                    <span className="font-medium">{item.name}</span>
+                  </div>
+                  <span className="text-lg font-semibold tabular-nums">{item.time}</span>
+                </div>
+              );
+            }
           })}
         </CardContent>
       </Card>
@@ -130,7 +138,7 @@ export function HomeTab() {
             <div className="text-center py-2">
               <p className="text-4xl font-bold">{Math.round(weather.temperature)}°C</p>
               <p className="text-base text-muted-foreground mt-1">
-                {getWeatherDescription(weather.weatherCode)}
+                {weather.weatherCode === 0 ? 'Açık' : weather.weatherCode <= 3 ? 'Parçalı Bulutlu' : weather.weatherCode <= 48 ? 'Sisli' : weather.weatherCode <= 67 ? 'Yağmurlu' : weather.weatherCode <= 77 ? 'Karlı' : weather.weatherCode <= 82 ? 'Sağanak Yağışlı' : weather.weatherCode <= 86 ? 'Kar Yağışlı' : 'Fırtınalı'}
               </p>
             </div>
 

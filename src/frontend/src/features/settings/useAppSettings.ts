@@ -14,7 +14,14 @@ const DEFAULT_SETTINGS: AppSettingsModel = {
     isha: 15
   },
   zikirmatikCount: 0,
-  zikirmatikTarget: 33
+  zikirmatikTarget: 33,
+  hatimLastReadPage: 1,
+  adhkarMorningCompleted: {},
+  adhkarEveningCompleted: {},
+  fastingVoluntaryDates: [],
+  fastingMakeUpDates: [],
+  fastingMakeUpTargetCount: 0,
+  ramadanCompletedDays: Array(30).fill(false)
 };
 
 export function useAppSettings() {

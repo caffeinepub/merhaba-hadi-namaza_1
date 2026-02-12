@@ -89,35 +89,18 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface http_request_result {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface AppSettings {
-    offset: string;
-    location: string;
-}
-export interface TransformationOutput {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface TransformationInput {
-    context: Uint8Array;
-    response: http_request_result;
-}
-export interface SermonData {
-    title?: string;
-    content: string;
-    date?: string;
+export type Time = bigint;
+export interface AppRelease {
+    version: string;
+    updatedAt: Time;
+    storeUrl: string;
 }
 export interface UserProfile {
     name: string;
 }
-export interface http_header {
-    value: string;
-    name: string;
+export interface AppSettings {
+    offset: string;
+    location: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -131,16 +114,14 @@ export interface backendInterface {
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getLatestCachedSermon(): Promise<SermonData>;
-    getLatestSermonByUrl(url: string): Promise<SermonData>;
+    getLatestAppRelease(): Promise<AppRelease | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
-    refreshAndGetLatestSermon(): Promise<SermonData>;
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateLatestAppRelease(release: AppRelease): Promise<void>;
 }
-import type { AppSettings as _AppSettings, SermonData as _SermonData, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { AppRelease as _AppRelease, AppSettings as _AppSettings, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -227,32 +208,18 @@ export class Backend implements backendInterface {
             return from_candid_UserRole_n5(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getLatestCachedSermon(): Promise<SermonData> {
+    async getLatestAppRelease(): Promise<AppRelease | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getLatestCachedSermon();
-                return from_candid_SermonData_n7(this._uploadFile, this._downloadFile, result);
+                const result = await this.actor.getLatestAppRelease();
+                return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getLatestCachedSermon();
-            return from_candid_SermonData_n7(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getLatestSermonByUrl(arg0: string): Promise<SermonData> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getLatestSermonByUrl(arg0);
-                return from_candid_SermonData_n7(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getLatestSermonByUrl(arg0);
-            return from_candid_SermonData_n7(this._uploadFile, this._downloadFile, result);
+            const result = await this.actor.getLatestAppRelease();
+            return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
@@ -283,20 +250,6 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async refreshAndGetLatestSermon(): Promise<SermonData> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.refreshAndGetLatestSermon();
-                return from_candid_SermonData_n7(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.refreshAndGetLatestSermon();
-            return from_candid_SermonData_n7(this._uploadFile, this._downloadFile, result);
-        }
-    }
     async saveCallerAppSettings(arg0: AppSettings): Promise<void> {
         if (this.processError) {
             try {
@@ -325,23 +278,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async transform(arg0: TransformationInput): Promise<TransformationOutput> {
+    async updateLatestAppRelease(arg0: AppRelease): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.transform(arg0);
+                const result = await this.actor.updateLatestAppRelease(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.transform(arg0);
+            const result = await this.actor.updateLatestAppRelease(arg0);
             return result;
         }
     }
-}
-function from_candid_SermonData_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SermonData): SermonData {
-    return from_candid_record_n8(_uploadFile, _downloadFile, value);
 }
 function from_candid_UserRole_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
     return from_candid_variant_n6(_uploadFile, _downloadFile, value);
@@ -352,23 +302,8 @@ function from_candid_opt_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
 function from_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_AppRelease]): AppRelease | null {
     return value.length === 0 ? null : value[0];
-}
-function from_candid_record_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    title: [] | [string];
-    content: string;
-    date: [] | [string];
-}): {
-    title?: string;
-    content: string;
-    date?: string;
-} {
-    return {
-        title: record_opt_to_undefined(from_candid_opt_n9(_uploadFile, _downloadFile, value.title)),
-        content: value.content,
-        date: record_opt_to_undefined(from_candid_opt_n9(_uploadFile, _downloadFile, value.date))
-    };
 }
 function from_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;

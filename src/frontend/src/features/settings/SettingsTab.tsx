@@ -4,6 +4,7 @@ import { Label } from '../../components/ui/label';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { useAppSettings } from './useAppSettings';
+import { AdminAppReleaseAdvancedSection } from './AdminAppReleaseAdvancedSection';
 import { Bell, Clock } from 'lucide-react';
 
 export function SettingsTab() {
@@ -121,6 +122,8 @@ export function SettingsTab() {
           </Button>
         </CardContent>
       </Card>
+
+      <AdminAppReleaseAdvancedSection />
     </div>
   );
 }

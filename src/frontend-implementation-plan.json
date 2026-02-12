@@ -1,42 +1,73 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Rebuild Cuma Hutbesi tab UI states and React Query refresh behavior for stable latest-sermon display",
+  "title": "Add Ramadan 30-day checklist to Fasting Tracker with local persistence",
   "requirements": [
     {
-      "id": "REQ-4",
-      "summary": "Rebuild/clean up the Cuma Hutbesi tab to show only the latest sermon with robust loading/error/empty states and a manual refresh action.",
+      "id": "REQ-1",
+      "summary": "Add a Ramadan (30 days) checklist section inside the existing Fasting Tracker tab with per-day toggles, progress, and a one-tap reset action.",
       "acceptanceCriteria": [
-        "The Cuma Hutbesi tab renders: (1) a loading skeleton on first load, (2) a readable error state with a retry button on failure, (3) an empty state with a load button if no data is available, and (4) the latest sermon title/date/content when available.",
-        "Only the latest sermon is displayed; there is no archive/list of prior sermons.",
-        "All user-facing text added/changed for this rebuild is in English."
+        "The Fasting Tracker tab includes a Ramadan checklist UI with exactly 30 individually toggleable day items (Day 1 … Day 30).",
+        "Toggling a day immediately updates the displayed progress count.",
+        "A reset/clear control is available to unmark all 30 days in one action (with a confirmation step or clearly safe UX).",
+        "The Ramadan section does not interfere with existing 'voluntary' and 'make-up' fasting tracking features."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/sermon/CumaHutbesiTab.tsx",
+          "path": "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx",
+          "operation": "create",
+          "description": "Create a dedicated Ramadan (30 days) checklist section component that renders 30 toggleable day items, shows X/30 progress, and offers a reset action with a safe confirmation UX. Use existing warm-theme UI building blocks already used in the Fasting Tracker tab (e.g., Card/Badge/Button/Separator). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
           "operation": "modify",
-          "description": "Clean up the tab rendering logic so it has explicit initial-loading skeleton, error-with-retry, empty-with-load, and content states; ensure the content view shows only the latest sermon (title/date/plain text) and that any updated/added user-facing copy is English (e.g., use an English fallback title instead of 'Cuma Hutbesi'). Continue composing existing shadcn-ui components (Button, Card, Skeleton) for consistent visuals; verify the component's usage instructions before implementing."
+          "description": "Wire the new RamadanChecklistSection into the existing Fasting Tracker tab without changing the current voluntary and make-up tracking behavior. Connect toggles/reset to the local settings state via useAppSettings so progress updates immediately. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-5",
-      "summary": "Adjust React Query behavior so prior sermon content stays visible during refresh and prevent unnecessary refetch loops on mobile.",
+      "id": "REQ-2",
+      "summary": "Persist Ramadan checklist state in local settings and add forward-compatible localStorage migration for the new fields.",
       "acceptanceCriteria": [
-        "When the user taps Refresh, the previous sermon content remains visible while the refresh is in progress (with a subtle ‘refreshing’ indicator), unless there is no prior sermon data.",
-        "The query does not repeatedly refetch on mount/focus/reconnect beyond the configured behavior, and the tab does not get stuck in long loading states on subsequent opens.",
-        "Manual refresh updates the cached query data so the UI updates immediately after refresh completes."
+        "Ramadan checklist completion state persists across page refreshes and app restarts.",
+        "No runtime errors occur for existing users with older localStorage data; settings load successfully and new Ramadan fields default to an empty/unmarked state.",
+        "Local settings versioning is incremented and older versions migrate without data loss for existing settings fields (location, offsets, adhkar, fasting dates, etc.)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/sermon/useLatestSermon.ts",
+          "path": "frontend/src/features/settings/appSettingsModel.ts",
           "operation": "modify",
-          "description": "Refactor the hook to use a dedicated React Query mutation (or equivalent) for manual refresh that updates the ['latestSermon'] cached data on success and exposes a stable 'isRefreshing' state for the UI. Tune cache timings (staleTime/gcTime) and keep refetchOnMount/focus/reconnect disabled to avoid refetch loops and long spinners on repeated tab opens."
+          "description": "Extend the AppSettingsModel to include Ramadan 30-day checklist state (a stable representation that supports exactly 30 day toggles and future extension)."
         },
         {
-          "path": "frontend/src/features/sermon/CumaHutbesiTab.tsx",
+          "path": "frontend/src/features/settings/useAppSettings.ts",
           "operation": "modify",
-          "description": "Update the tab to rely on the hook’s refresh/mutation state so that existing sermon content stays rendered while refresh is in flight, and show a subtle inline 'Refreshing…' indicator (English) rather than replacing content with a blocking loading state. Continue composing existing shadcn-ui components for UI elements; verify the component's usage instructions before implementing."
+          "description": "Update DEFAULT_SETTINGS to include the new Ramadan checklist defaults (all 30 days unmarked) so the UI has safe initial values even before localStorage is populated."
+        },
+        {
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
+          "operation": "modify",
+          "description": "Add the new Ramadan checklist fields to LocalSettings, increment STORAGE_VERSION, and implement a migration path from the current version to the new version that preserves all existing stored fields and safely defaults Ramadan days to unmarked when missing. Also ensure the post-load defaulting logic fills the Ramadan field when absent to prevent runtime errors."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Make the Ramadan checklist mobile-friendly and visually consistent with the app’s existing warm theme and Fasting Tracker styling.",
+      "acceptanceCriteria": [
+        "On small screens, the 30-day UI remains readable and usable without horizontal scrolling.",
+        "Visual styling matches existing components used in the Fasting Tracker tab (Card/Badge/Button/etc.)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx",
+          "operation": "modify",
+          "description": "Implement a compact responsive layout for 30 items (e.g., a grid/list that reflows on small screens and avoids horizontal scrolling) and match existing warm theme patterns (cards, badges, separators, button variants) used elsewhere in the Fasting Tracker. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
+          "operation": "modify",
+          "description": "Position the Ramadan section within the existing tab flow using the same spacing and card structure as other sections, ensuring the overall page remains mobile-friendly and consistent. Verify the component's usage instructions before implementing."
         }
       ]
     }

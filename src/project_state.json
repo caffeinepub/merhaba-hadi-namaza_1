@@ -1,30 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Uygulamada mevcut \"Cuma Hutbesi\" sekmesi yeniden oluşturulacak; Diyanet'in hutbe sayfasından her hafta otomatik olarak en son yayınlanan hutbe (DOC) çekilip düz metne çevrilerek yalnızca en güncel hutbe metin olarak gösterilecek. Güncelleme her Cuma 10:00'da çalışacak.",
-  "architectural_notes": [
-    "Kaynak: https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e sayfasından en son hutbe otomatik alınacak.",
-    "Hutbe içeriği DOC -> düz metin dönüşümü ile uygulamada metin olarak gösterilecek.",
-    "Otomatik güncelleme her Cuma 10:00'da çalışacak."
-  ],
-  "known_issues": [
-    "Cuma Hutbesi sekmesinde mevcut hatalı kod nedeniyle içerik yüklenemiyor/HTML hata çıktısı görünüyor."
-  ],
-  "isFixRequest": true,
+  "summary": "Ramazan ayı için 30 günün tek tek işaretlenebildiği bir oruç takip sistemi geliştirme projesi",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-rebuild-clean-up-the-existing-cuma-hutbesi-tab-implementation-so-it-reliably-shows-only-the-latest-sermon-text-with-clear-loading-error-empty-states-and-supports-a-user-initiated-refresh-action-that-calls-the-backend-refresh-method",
-      "title": "Rebuild/clean up the existing Cuma Hutbesi tab implementation so it reliably shows only the latest sermon text with clear loading/error/empty states, and supports a user-initiated refresh action that calls the backend refresh method.",
+      "id": "feature-add-a-dedicated-ramadan-30-days-tracking-section-to-the-existing-fasting-tracker-tab-that-lets-the-user-mark-unmark-each-of-30-days-as-completed-shows-progress-e-g-x-30-and-provides-a-one-tap-reset-clear-action-for-the-ramadan-checklist",
+      "title": "Add a dedicated \"Ramadan (30 days)\" tracking section to the existing Fasting Tracker tab that lets the user mark/unmark each of 30 days as completed, shows progress (e.g., X/30), and provides a one-tap reset/clear action for the Ramadan checklist.",
       "reqIds": [
-        "REQ-4"
+        "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-adjust-the-sermon-react-query-behavior-to-keep-previously-loaded-sermon-content-visible-while-a-background-refresh-is-occurring-avoiding-long-blocking-spinners-and-unnecessary-refetch-loops-on-mobile",
-      "title": "Adjust the sermon React Query behavior to keep previously loaded sermon content visible while a background refresh is occurring, avoiding long blocking spinners and unnecessary refetch loops on mobile.",
+      "id": "feature-persist-the-ramadan-30-day-checklist-state-in-local-settings-so-it-remains-after-reload-and-implement-a-forward-compatible-localstorage-migration-for-the-new-settings-fields",
+      "title": "Persist the Ramadan 30-day checklist state in local settings so it remains after reload, and implement a forward-compatible localStorage migration for the new settings fields.",
       "reqIds": [
-        "REQ-5"
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-ramadan-checklist-ui-is-mobile-friendly-and-consistent-with-the-app-s-existing-warm-theme-cards-badges-separators-including-a-compact-layout-e-g-responsive-grid-or-list-suitable-for-30-items",
+      "title": "Ensure the Ramadan checklist UI is mobile-friendly and consistent with the app’s existing warm theme (cards, badges, separators), including a compact layout (e.g., responsive grid or list) suitable for 30 items.",
+      "reqIds": [
+        "REQ-3"
       ],
       "version": 1
     }
@@ -32,54 +34,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Cuma Hutbesi sekmesini hatalı koddan arındırıp yeniden oluşturma",
+      "summary": "Ramazan ayında 30 günün tek tek işaretlenebildiği oruç takip sistemi oluştur",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Diyanet hutbe sayfasından (Türkçe) en son hutbeyi otomatik tespit edip çekme",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "En son hutbe DOC dosyasını düz metne çevirip yalnızca metin olarak gösterme",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Hutbe içeriğini her Cuma 10:00'da otomatik güncelleme (zamanlanmış çekme)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Fix the backend sermon fetching/parsing so the app returns a structured latest sermon (title/date/plain text content) instead of returning the listing HTML, by correctly identifying the latest sermon detail URL from the Diyanet Turkish listing page and then extracting the sermon text from the detail page response.",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Implement weekly Friday 10:00 refresh behavior for the latest sermon cache: ensure the backend refreshes the cached sermon when the first request after Friday 10:00 (Turkey time) occurs, while still supporting a manual refresh endpoint from the UI.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Update the backend parsing pipeline to handle the Diyanet sermon source where a downloadable document (DOC/DOCX) may exist, but the app must display the sermon as plain text: extract plain text from the sermon detail page content (and only attempt document parsing if it is feasible within the canister constraints).",
-      "reqIds": [
-        "REQ-3"
-      ],
       "status": "pending"
     }
   ],
-  "projectName": "Rebuild Cuma Hutbesi tab to reliably fetch and show the latest Diyanet sermon text with weekly refresh logic",
+  "projectName": "Add a 30-day Ramadan fasting checklist to the Fasting Tracker",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

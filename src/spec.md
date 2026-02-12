@@ -1,14 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Rebuild the Cuma Hutbesi tab and its backend support so it reliably fetches, caches, and displays only the latest Diyanet Friday sermon as plain text, with a weekly refresh window.
+**Goal:** Add a dedicated 30-day Ramadan fasting checklist inside the existing Fasting Tracker.
 
 **Planned changes:**
-- Fix backend fetching/parsing to identify the latest sermon by parsing the Diyanet Turkish listing page, following the newest sermon detail URL, and returning structured data (title, date, plain-text content).
-- Add cache metadata and refresh logic so the first request after Friday 10:00 (Turkey time) refreshes the cached sermon; keep the existing manual refresh behavior to force updates anytime.
-- Ensure backend always returns plain text (no raw HTML), extracting from the detail page HTML; only attempt DOC/DOCX parsing if feasible within canister constraints and without external conversion services.
-- Rebuild/clean up the Cuma Hutbesi tab UI to show only the latest sermon with clear loading/error/empty states and a user-initiated refresh action wired to the backend.
-- Adjust React Query behavior so previously loaded sermon content stays visible during background refresh, avoiding repeated refetch loops and long blocking spinners on mobile; ensure refreshed data updates the UI immediately.
-- Ensure all new/changed user-facing text in the Cuma Hutbesi tab is in English.
+- Add a “Ramadan (30 days)” section in the Fasting Tracker tab with 30 individually toggleable items (Day 1–Day 30) and a live progress indicator (X/30).
+- Add a one-tap reset/clear action to unmark all Ramadan days with a confirmation or clearly safe UX.
+- Persist the Ramadan checklist state in local settings, including a forward-compatible localStorage migration/version bump so existing users’ settings continue to load safely.
+- Ensure the Ramadan checklist layout is mobile-friendly (no horizontal scrolling) and matches the app’s existing warm theme/components.
 
-**User-visible outcome:** Users can open the Cuma Hutbesi tab and reliably read the latest Diyanet sermon (title/date/plain text). The tab shows clear loading/error/empty states and supports refresh without hiding previously loaded content; the sermon updates automatically after Friday 10:00 (TR time) on the next request.
+**User-visible outcome:** Users can track Ramadan fasting across 30 days by checking off each day, see progress at a glance, reset the list when needed, and have their checklist persist across reloads without affecting existing fasting tracking.

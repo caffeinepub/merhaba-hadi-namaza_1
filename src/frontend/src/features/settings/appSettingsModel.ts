@@ -7,4 +7,11 @@ export interface AppSettingsModel {
   notificationLeadTimes: NotificationLeadTimes;
   zikirmatikCount?: number;
   zikirmatikTarget?: number;
+  hatimLastReadPage?: number;
+  adhkarMorningCompleted?: Record<string, boolean>;
+  adhkarEveningCompleted?: Record<string, boolean>;
+  fastingVoluntaryDates?: string[];
+  fastingMakeUpDates?: string[];
+  fastingMakeUpTargetCount?: number;
+  ramadanCompletedDays?: boolean[];
 }
