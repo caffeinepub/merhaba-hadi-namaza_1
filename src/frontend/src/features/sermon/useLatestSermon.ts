@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { useActor } from '../../hooks/useActor';
 import type { SermonData } from '../../backend';
 
@@ -21,20 +21,19 @@ export function useLatestSermon() {
     refetchOnReconnect: false,
   });
 
-  const refresh = async () => {
-    if (!actor) return;
-    
-    try {
-      const freshSermon = await actor.refreshAndGetLatestSermon();
+  const refreshMutation = useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.refreshAndGetLatestSermon();
+    },
+    onSuccess: (freshSermon) => {
       queryClient.setQueryData(['latestSermon'], freshSermon);
-    } catch (error) {
-      console.error('Failed to refresh sermon:', error);
-      throw error;
-    }
-  };
+    },
+  });
 
   return {
     ...query,
-    refresh,
+    refresh: refreshMutation.mutateAsync,
+    isRefreshing: refreshMutation.isPending,
   };
 }

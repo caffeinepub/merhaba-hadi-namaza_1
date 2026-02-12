@@ -1,30 +1,19 @@
-import Map "mo:core/Map";
-import Principal "mo:core/Principal";
-
 module {
+  type OldSermonData = {
+    title : ?Text;
+    date : ?Text;
+    content : Text;
+  };
+
   type OldActor = {
-    appSettings : Map.Map<Principal, {
-      location : Text;
-      offset : Text;
-    }>;
+    latestSermonCache : ?OldSermonData;
+    // Other defaults can be added here
   };
 
-  type NewActor = {
-    appSettings : Map.Map<Principal, {
-      location : Text;
-      offset : Text;
-    }>;
-    latestSermonCache : ?{
-      title : ?Text;
-      date : ?Text;
-      content : Text;
-    };
-  };
+  // New actor type omitting the stable variable
+  type NewActor = {};
 
-  public func run(old : OldActor) : NewActor {
-    {
-      old with
-      latestSermonCache = null;
-    };
+  public func run(_oldState : OldActor) : NewActor {
+    {};
   };
 };

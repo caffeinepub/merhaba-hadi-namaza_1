@@ -25,6 +25,7 @@ export interface TransformationOutput {
   'body' : Uint8Array,
   'headers' : Array<http_header>,
 }
+export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
@@ -39,11 +40,15 @@ export interface _SERVICE {
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'getAppSettings' : ActorMethod<[Principal], [] | [AppSettings]>,
   'getCallerAppSettings' : ActorMethod<[], [] | [AppSettings]>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getLatestCachedSermon' : ActorMethod<[], SermonData>,
+  'getLatestSermonByUrl' : ActorMethod<[string], SermonData>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'refreshAndGetLatestSermon' : ActorMethod<[], SermonData>,
   'saveCallerAppSettings' : ActorMethod<[AppSettings], undefined>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
 }
 export declare const idlService: IDL.ServiceClass;

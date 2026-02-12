@@ -12,6 +12,10 @@ export interface http_request_result {
     body: Uint8Array;
     headers: Array<http_header>;
 }
+export interface AppSettings {
+    offset: string;
+    location: string;
+}
 export interface TransformationOutput {
     status: bigint;
     body: Uint8Array;
@@ -26,9 +30,8 @@ export interface SermonData {
     content: string;
     date?: string;
 }
-export interface AppSettings {
-    offset: string;
-    location: string;
+export interface UserProfile {
+    name: string;
 }
 export interface http_header {
     value: string;
@@ -43,10 +46,14 @@ export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     getAppSettings(user: Principal): Promise<AppSettings | null>;
     getCallerAppSettings(): Promise<AppSettings | null>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getLatestCachedSermon(): Promise<SermonData>;
+    getLatestSermonByUrl(url: string): Promise<SermonData>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     refreshAndGetLatestSermon(): Promise<SermonData>;
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
 }

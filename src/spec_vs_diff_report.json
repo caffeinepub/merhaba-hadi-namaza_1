@@ -1,49 +1,49 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T00:34:53.704Z",
-  "summary": "Backend and frontend were updated to shift sermon loading to backend methods and improve UX with skeletons and React Query settings, but the backend implementation does not actually fetch/parse the latest sermon detail page, uses placeholder parsing logic, and caching lacks TTL/timestamp semantics required by the spec. A migration file was added but the backend does not show stable-state storage for the cache in the provided diff.",
+  "generatedAt": "2026-02-12T10:27:59.183Z",
+  "summary": "Frontend Cuma Hutbesi tab and React Query behavior were rebuilt with loading/error/empty states and a manual refresh flow that keeps prior data visible while refreshing. Backend shows new caching structs and a Friday-10AM check helper, plus a migration module, but the diff summary does not show the required end-to-end Diyanet listing→detail parsing and plain-text extraction pipeline, nor clearly demonstrates Turkey-time weekly refresh behavior wired into the public endpoints.",
   "missing_requirements": [
     {
-      "id": "REQ-51",
-      "requirement": "Backend method fully retrieves and parses the latest hutbe and returns structured {title, date, content} based on listing+detail HTTPS outcalls, with resilient parsing and clear errors on failure.",
-      "reason": "The backend only fetches the listing URL and returns the listing HTML as `content` without performing a second outcall to the sermon detail page. Parsing logic appears stubbed: `findRegexMatch` returns the full input text for any non-empty HTML and `extractFirstMatch` returns the entire text, not the captured groups. This is neither a real parse of title/date nor resilient link discovery, and it does not parse the actual sermon content from the detail page.",
+      "id": "REQ-1",
+      "requirement": "Backend must parse the Diyanet Turkish listing page to find the latest sermon detail URL, fetch the detail page, and return structured SermonData with plain-text content (not listing HTML), trapping with a clear error if parsing fails.",
+      "reason": "The diff summary for backend/main.mo shows HTTP GET helper(s) and cache types, but does not show logic that (a) parses the listing HTML to extract the latest detail link, (b) fetches the detail page, or (c) extracts/cleans sermon text into plain text. No trap/error messages for “no link found / format changed” are evidenced.",
       "evidence": [
-        "backend/main.mo (fetchAndParseLatestSermon only calls makeOutcall(listing URL); parseFirstSermonFromListing sets content=html; findRegexMatch/extractFirstMatch stub implementations)"
+        "backend/main.mo (truncated)"
       ]
     },
     {
-      "id": "REQ-52",
-      "requirement": "Backend-side caching with timestamp and TTL, returning quickly from cache within TTL, and allowing refresh to bypass/revalidate.",
-      "reason": "A cache variable exists (`latestSermonCache`) and there is a separate refresh method, but there is no timestamp stored and no TTL check/expiry logic implemented. Calls always return cached data indefinitely until refresh is called.",
+      "id": "REQ-2",
+      "requirement": "Backend must implement weekly Friday 10:00 (Turkey time) cache invalidation/refresh on the first request after that time, while keeping a manual refresh endpoint that always forces refresh.",
+      "reason": "A helper `isPastFridayTenAM` exists, but the diff summary does not show (1) Turkey-time handling, (2) how the cached metadata is used to decide “current week’s post-Friday-10:00 refresh window”, or (3) that `getLatestCachedSermon` triggers refresh on first request after the cutoff. The shown calculation uses a simple modulo of 7 days and does not evidence Turkey time-zone alignment.",
       "evidence": [
-        "backend/main.mo (var latestSermonCache : ?SermonData = null; getLatestCachedSermon returns cache without any TTL/timestamp; no timestamp field in SermonData)"
+        "backend/main.mo (truncated): isPastFridayTenAM",
+        "frontend/src/features/sermon/useLatestSermon.ts (calls actor.getLatestCachedSermon / actor.refreshAndGetLatestSermon)"
       ]
     },
     {
-      "id": "REQ-50",
-      "requirement": "Fix the Diyanet listing URL used by the backend sermon fetch so it matches the provided URL exactly and is not double-URL-encoded; existing listing fetch returns valid HTML (not redirect/error).",
-      "reason": "The exact URL string is present, but the diff summary does not provide evidence that the existing backend listing-fetch method (the pre-existing method referenced in the requirement) was fixed/updated, nor does it show any validation that the response is the correct listing HTML (as opposed to a redirect/error page). The new fetch path uses the URL, but AC mentions the existing method specifically.",
+      "id": "REQ-3",
+      "requirement": "Backend must ensure sermon content is delivered as plain text by extracting from the sermon detail HTML, and only attempt DOC/DOCX parsing if feasible without external services; if DOC/DOCX conversion isn’t feasible, still return plain text from HTML.",
+      "reason": "No DOC/DOCX handling nor HTML-to-plain-text extraction/cleanup is shown in the diff summary; only generic HTTP GET helpers and cache structs are visible.",
       "evidence": [
-        "backend/main.mo (new fetchAndParseLatestSermon uses the URL; no other listing-fetch method shown/updated in diff summary)"
+        "backend/main.mo (truncated)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Added backend upgrade migration introducing `latestSermonCache` in migrated state, despite no clear evidence in backend/main.mo that the cache is stored as stable state requiring a migration.",
-      "reason": "A migration file was added and wired via `(with migration = Migration.run)`, and `backend/migration.mo` adds `latestSermonCache` to actor state. However, the provided backend/main.mo diff only shows an in-memory `var latestSermonCache` and does not show stable-state persistence (e.g., `stable var` or preupgrade/postupgrade handling). This suggests an upgrade migration may be unnecessary or incomplete relative to the change.",
+      "description": "Added a canister migration module that maps an old actor state to a new empty actor state.",
+      "reason": "The BuildRequest does not ask for state migration or removal of stable variables; this is additional functionality outside the requested sermon fetching/UI rebuild scope.",
       "evidence": [
         "backend/migration.mo",
-        "backend/main.mo ((with migration = Migration.run); var latestSermonCache : ?SermonData = null;)"
+        "backend/main.mo (truncated): (with migration = Migration.run)"
       ]
     }
   ],
-  "confidence": 0.68,
+  "confidence": 0.62,
   "changed_files": [
     "backend/main.mo",
     "backend/migration.mo",
-    "frontend-file-summaries.txt",
     "frontend/src/features/sermon/CumaHutbesiTab.tsx",
     "frontend/src/features/sermon/useLatestSermon.ts",
     "project_state.json"

@@ -1,13 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Fix Cuma Hutbesi loading failures and make fetching the latest sermon fast and reliable by moving all retrieval/parsing to the backend with caching.
+**Goal:** Rebuild the Cuma Hutbesi tab and its backend support so it reliably fetches, caches, and displays only the latest Diyanet Friday sermon as plain text, with a weekly refresh window.
 
 **Planned changes:**
-- Update the backend to use the exact Diyanet listing URL (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) without double-URL-encoding.
-- Add a backend canister method that fetches the listing + latest sermon detail via IC HTTP outcalls, parses them, and returns a structured result: {title, date, content}, with clear backend errors when parsing fails.
-- Add backend caching for the latest parsed sermon with a TTL, plus a way for the frontend refresh action to bypass/revalidate the cache.
-- Update the frontend Cuma Hutbesi data flow to call the new backend structured method (no DOMParser-based link scraping and no browser fetch to Diyanet), keeping any newly introduced user-facing text in English while preserving the tab label exactly as “Cuma Hutbesi”.
-- Tune React Query settings for the sermon query to keep previously shown content visible during background refetch and reduce unnecessary refetch loops (mobile-friendly caching/refetch behavior).
+- Fix backend fetching/parsing to identify the latest sermon by parsing the Diyanet Turkish listing page, following the newest sermon detail URL, and returning structured data (title, date, plain-text content).
+- Add cache metadata and refresh logic so the first request after Friday 10:00 (Turkey time) refreshes the cached sermon; keep the existing manual refresh behavior to force updates anytime.
+- Ensure backend always returns plain text (no raw HTML), extracting from the detail page HTML; only attempt DOC/DOCX parsing if feasible within canister constraints and without external conversion services.
+- Rebuild/clean up the Cuma Hutbesi tab UI to show only the latest sermon with clear loading/error/empty states and a user-initiated refresh action wired to the backend.
+- Adjust React Query behavior so previously loaded sermon content stays visible during background refresh, avoiding repeated refetch loops and long blocking spinners on mobile; ensure refreshed data updates the UI immediately.
+- Ensure all new/changed user-facing text in the Cuma Hutbesi tab is in English.
 
-**User-visible outcome:** The Cuma Hutbesi tab loads quickly and consistently, showing the latest sermon title/date/content without long waits or CORS-related failures; refresh updates content without blanking already displayed sermon text.
+**User-visible outcome:** Users can open the Cuma Hutbesi tab and reliably read the latest Diyanet sermon (title/date/plain text). The tab shows clear loading/error/empty states and supports refresh without hiding previously loaded content; the sermon updates automatically after Friday 10:00 (TR time) on the next request.

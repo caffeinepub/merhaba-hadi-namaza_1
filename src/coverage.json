@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T00:34:53.708Z",
+  "generatedAt": "2026-02-12T10:27:59.186Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,42 +11,40 @@
     "implemented": 2,
     "items": [
       {
-        "id": "REQ-50",
-        "summary": "Fix the Diyanet listing URL used by the backend sermon fetch so it matches the provided URL exactly (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) and is not double-URL-encoded.",
+        "id": "REQ-1",
+        "summary": "Fix the backend sermon fetching/parsing so the app returns a structured latest sermon (title/date/plain text content) instead of returning the listing HTML, by correctly identifying the latest sermon detail URL from the Diyanet Turkish listing page and then extracting the sermon text from the detail page response.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-51",
-        "summary": "Add a new backend update method that fully retrieves and parses the latest hutbe and returns a structured result (title, date, content) to the frontend, so the frontend does not need to parse the listing page or fetch the detail page in the browser.",
+        "id": "REQ-2",
+        "summary": "Implement weekly Friday 10:00 refresh behavior for the latest sermon cache: ensure the backend refreshes the cached sermon when the first request after Friday 10:00 (Turkey time) occurs, while still supporting a manual refresh endpoint from the UI.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-52",
-        "summary": "Add backend-side caching for the latest parsed hutbe so the Cuma Hutbesi screen loads quickly on repeat visits, while still allowing refresh to fetch the newest sermon.",
+        "id": "REQ-3",
+        "summary": "Update the backend parsing pipeline to handle the Diyanet sermon source where a downloadable document (DOC/DOCX) may exist, but the app must display the sermon as plain text: extract plain text from the sermon detail page content (and only attempt document parsing if it is feasible within the canister constraints).",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-53",
-        "summary": "Update the frontend Cuma Hutbesi data flow to call the new backend structured sermon method (instead of parsing the listing HTML in the browser and instead of fetching the sermon detail page with window.fetch), and keep all new Cuma Hutbesi-specific user-facing text in English (tab label remains exactly “Cuma Hutbesi”).",
+        "id": "REQ-4",
+        "summary": "Rebuild/clean up the existing Cuma Hutbesi tab implementation so it reliably shows only the latest sermon text with clear loading/error/empty states, and supports a user-initiated refresh action that calls the backend refresh method.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/sermon/useLatestSermon.ts",
           "frontend/src/features/sermon/CumaHutbesiTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/sermon/useLatestSermon.ts",
           "frontend/src/features/sermon/CumaHutbesiTab.tsx"
         ]
       },
       {
-        "id": "REQ-54",
-        "summary": "Tune React Query behavior for the sermon query to improve perceived speed: keep previous sermon content visible while a background refetch is happening, and avoid unnecessary refetch loops that cause long loading on mobile.",
+        "id": "REQ-5",
+        "summary": "Adjust the sermon React Query behavior to keep previously loaded sermon content visible while a background refresh is occurring, avoiding long blocking spinners and unnecessary refetch loops on mobile.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/features/sermon/useLatestSermon.ts",
@@ -64,7 +62,6 @@
     "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
-    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",

@@ -6,17 +6,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 export function CumaHutbesiTab() {
-  const { data: sermon, isLoading, isError, error, refresh, isFetching } = useLatestSermon();
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const { data: sermon, isLoading, isError, error, refresh, isRefreshing } = useLatestSermon();
 
   const handleRefresh = async () => {
-    setIsRefreshing(true);
     try {
       await refresh();
     } catch (err) {
       console.error('Refresh failed:', err);
-    } finally {
-      setIsRefreshing(false);
     }
   };
 
@@ -71,6 +67,7 @@ export function CumaHutbesiTab() {
     );
   }
 
+  // Show empty state with load button if no data
   if (!sermon) {
     return (
       <div className="space-y-4">
@@ -94,16 +91,27 @@ export function CumaHutbesiTab() {
     );
   }
 
+  // Display sermon content with refresh indicator
   return (
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">
-            {sermon.title || 'Cuma Hutbesi'}
-          </CardTitle>
-          {sermon.date && (
-            <p className="text-sm text-muted-foreground">{sermon.date}</p>
-          )}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <CardTitle className="text-2xl">
+                {sermon.title || 'Latest Friday Sermon'}
+              </CardTitle>
+              {sermon.date && (
+                <p className="text-sm text-muted-foreground mt-1">{sermon.date}</p>
+              )}
+            </div>
+            {isRefreshing && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                <span>Refreshing...</span>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="prose prose-sm max-w-none">
@@ -117,12 +125,12 @@ export function CumaHutbesiTab() {
       <div className="flex justify-center">
         <Button
           onClick={handleRefresh}
-          disabled={isRefreshing || isFetching}
+          disabled={isRefreshing}
           variant="ghost"
           size="sm"
           className="gap-2"
         >
-          <RefreshCw className={`h-4 w-4 ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       </div>

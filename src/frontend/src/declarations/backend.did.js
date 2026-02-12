@@ -17,6 +17,7 @@ export const AppSettings = IDL.Record({
   'offset' : IDL.Text,
   'location' : IDL.Text,
 });
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const SermonData = IDL.Record({
   'title' : IDL.Opt(IDL.Text),
   'content' : IDL.Text,
@@ -50,11 +51,19 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getCallerAppSettings' : IDL.Func([], [IDL.Opt(AppSettings)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getLatestCachedSermon' : IDL.Func([], [SermonData], []),
+  'getLatestCachedSermon' : IDL.Func([], [SermonData], ['query']),
+  'getLatestSermonByUrl' : IDL.Func([IDL.Text], [SermonData], []),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'refreshAndGetLatestSermon' : IDL.Func([], [SermonData], []),
   'saveCallerAppSettings' : IDL.Func([AppSettings], [], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'transform' : IDL.Func(
       [TransformationInput],
       [TransformationOutput],
@@ -74,6 +83,7 @@ export const idlFactory = ({ IDL }) => {
     'offset' : IDL.Text,
     'location' : IDL.Text,
   });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const SermonData = IDL.Record({
     'title' : IDL.Opt(IDL.Text),
     'content' : IDL.Text,
@@ -104,11 +114,19 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getCallerAppSettings' : IDL.Func([], [IDL.Opt(AppSettings)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getLatestCachedSermon' : IDL.Func([], [SermonData], []),
+    'getLatestCachedSermon' : IDL.Func([], [SermonData], ['query']),
+    'getLatestSermonByUrl' : IDL.Func([IDL.Text], [SermonData], []),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'refreshAndGetLatestSermon' : IDL.Func([], [SermonData], []),
     'saveCallerAppSettings' : IDL.Func([AppSettings], [], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'transform' : IDL.Func(
         [TransformationInput],
         [TransformationOutput],

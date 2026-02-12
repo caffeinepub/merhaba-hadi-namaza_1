@@ -1,113 +1,119 @@
 {
   "kind": "build_request",
-  "title": "Fix Cuma Hutbesi loading failure and make sermon retrieval fast and reliable",
-  "priority": "high",
+  "title": "Rebuild Cuma Hutbesi tab to reliably fetch and show the latest Diyanet sermon text with weekly refresh logic",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-50",
-      "text": "Fix the Diyanet listing URL used by the backend sermon fetch so it matches the provided URL exactly (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) and is not double-URL-encoded.",
+      "id": "REQ-1",
+      "text": "Fix the backend sermon fetching/parsing so the app returns a structured latest sermon (title/date/plain text content) instead of returning the listing HTML, by correctly identifying the latest sermon detail URL from the Diyanet Turkish listing page and then extracting the sermon text from the detail page response.",
       "target": "backend",
       "source": {
         "messageIds": [
+          "msg-3",
           "msg-6",
           "msg-8"
         ],
         "quotes": [
-          "Failed to Load Sermon\nCould not find sermon link on listing page",
-          "Hızlı bir şekilde yüklensin istiyorum"
+          "cuma hutbesi kısmında her zaman en son hangi hutbe yayınlandıysa o metin olarak gözüksün",
+          "https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e          bak bu sitede her hafta cuma hutbesi yayınlanıyor buradan alabilirsi",
+          "Zaten cuma hutbesş sekmesi var onun içinde şuan hatalı bir kod var onu temizle yeniden oluşştur sekmeyi. 2- sadece en son hutbe metin olarak gösterilsin"
         ]
       },
       "acceptanceCriteria": [
-        "Backend uses the exact Diyanet URL string (no double-encoding of % characters).",
-        "Calling the existing backend method that fetches the listing page returns valid HTML for the listing page (not a redirect/error page)."
+        "Calling the backend method used by the frontend sermon query returns a SermonData where content is plain text (no raw HTML tags and no full listing HTML dump).",
+        "The backend identifies the latest sermon by parsing the listing page and following the first/latest sermon link to the sermon detail page (not by returning the listing page as content).",
+        "If the listing page format changes or no sermon link is found, the backend returns a clear error (trap) message that is surfaced by the frontend error UI."
       ]
     },
     {
-      "id": "REQ-51",
-      "text": "Add a new backend update method that fully retrieves and parses the latest hutbe and returns a structured result (title, date, content) to the frontend, so the frontend does not need to parse the listing page or fetch the detail page in the browser.",
+      "id": "REQ-2",
+      "text": "Implement weekly Friday 10:00 refresh behavior for the latest sermon cache: ensure the backend refreshes the cached sermon when the first request after Friday 10:00 (Turkey time) occurs, while still supporting a manual refresh endpoint from the UI.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4",
+          "msg-8"
         ],
         "quotes": [
-          "Failed to Load Sermon\nCould not find sermon link on listing page"
+          "her hafta yeni hutbe yayınlandıkca bu metin güncellensin",
+          "3- dış kaynaktan her metin çekme işlemi her cuma günü sabah 10:00 da olsun"
         ]
       },
       "acceptanceCriteria": [
-        "Backend exposes a canister method that returns {title, date, content} for the latest sermon.",
-        "Backend method performs all required HTTPS fetch(es) (listing + detail) via IC HTTP outcalls and does not require any browser fetch to Diyanet.",
-        "Backend parsing is resilient enough to find the latest sermon link even if the listing page CSS classes change (do not rely solely on a single brittle selector equivalent).",
-        "If parsing fails, the backend returns a clear error (trap/message) that the frontend can display."
+        "The backend stores enough metadata with the cached sermon to decide whether it is from the current week’s post-Friday-10:00 refresh window.",
+        "A request made after Friday 10:00 (Turkey time) triggers a refresh if the cached sermon is older than the current refresh window; requests before that time continue serving the last cached sermon.",
+        "The existing manual refresh method continues to force a refresh regardless of cache age."
       ]
     },
     {
-      "id": "REQ-52",
-      "text": "Add backend-side caching for the latest parsed hutbe so the Cuma Hutbesi screen loads quickly on repeat visits, while still allowing refresh to fetch the newest sermon.",
+      "id": "REQ-3",
+      "text": "Update the backend parsing pipeline to handle the Diyanet sermon source where a downloadable document (DOC/DOCX) may exist, but the app must display the sermon as plain text: extract plain text from the sermon detail page content (and only attempt document parsing if it is feasible within the canister constraints).",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-8"
+          "msg-10"
         ],
         "quotes": [
-          "Hızlı bir şekilde yüklensin istiyorum"
+          "DOC olarak var onu normal düz metin olarak gösteremez misin"
         ]
       },
       "acceptanceCriteria": [
-        "Backend caches the most recently fetched/parsed sermon result with a timestamp.",
-        "Within the cache TTL, repeated calls return quickly from cache without re-fetching Diyanet.",
-        "There is a way for the frontend refresh action to bypass or revalidate the cache (e.g., a forceRefresh flag or a separate method)."
+        "The UI ultimately receives and displays plain text sermon content.",
+        "If the document format cannot be converted to text within the canister environment, the backend still produces plain text by extracting from the sermon detail HTML page content (no raw HTML markup returned).",
+        "The backend does not depend on any external non-IC services for DOC/DOCX conversion."
       ]
     },
     {
-      "id": "REQ-53",
-      "text": "Update the frontend Cuma Hutbesi data flow to call the new backend structured sermon method (instead of parsing the listing HTML in the browser and instead of fetching the sermon detail page with window.fetch), and keep all new Cuma Hutbesi-specific user-facing text in English (tab label remains exactly “Cuma Hutbesi”).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6",
-          "msg-8"
-        ],
-        "quotes": [
-          "Failed to Load Sermon\nCould not find sermon link on listing page",
-          "Hızlı bir şekilde yüklensin istiyorum"
-        ]
-      },
-      "acceptanceCriteria": [
-        "frontend/src/features/sermon/useLatestSermon.ts no longer uses DOMParser to find the sermon link from the listing HTML.",
-        "Frontend no longer calls fetch(fullSermonUrl) to Diyanet from the browser (avoids CORS and long waits).",
-        "Cuma Hutbesi tab shows loading skeleton quickly and then renders title/date/content from backend response.",
-        "Any new error/loading/empty-state text introduced for this change is in English; the existing tab label remains exactly “Cuma Hutbesi”."
-      ]
-    },
-    {
-      "id": "REQ-54",
-      "text": "Tune React Query behavior for the sermon query to improve perceived speed: keep previous sermon content visible while a background refetch is happening, and avoid unnecessary refetch loops that cause long loading on mobile.",
+      "id": "REQ-4",
+      "text": "Rebuild/clean up the existing Cuma Hutbesi tab implementation so it reliably shows only the latest sermon text with clear loading/error/empty states, and supports a user-initiated refresh action that calls the backend refresh method.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-8"
         ],
         "quotes": [
-          "çok uzun süre bekledi"
+          "Zaten cuma hutbesş sekmesi var onun içinde şuan hatalı bir kod var onu temizle yeniden oluşştur sekmeyi. 2- sadece en son hutbe metin olarak gösterilsin"
         ]
       },
       "acceptanceCriteria": [
-        "When the user taps Refresh/Retry, the UI indicates fetching without blanking already-displayed sermon content (if available).",
-        "React Query caching settings prevent frequent refetches during normal navigation (staleTime and refetch behavior are set to mobile-friendly defaults).",
-        "If the backend returns cached content quickly, the tab renders content without showing the error state seen previously."
+        "The Cuma Hutbesi tab renders: (1) a loading skeleton on first load, (2) a readable error state with a retry button on failure, (3) an empty state with a load button if no data is available, and (4) the latest sermon title/date/content when available.",
+        "Only the latest sermon is displayed; there is no archive/list of prior sermons.",
+        "All user-facing text added/changed for this rebuild is in English."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Adjust the sermon React Query behavior to keep previously loaded sermon content visible while a background refresh is occurring, avoiding long blocking spinners and unnecessary refetch loops on mobile.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-8",
+          "msg-12"
+        ],
+        "quotes": [
+          "Zaten cuma hutbesş sekmesi var onun içinde şuan hatalı bir kod var onu temizle yeniden oluşştur sekmeyi.",
+          "yeniden dene"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When the user taps Refresh, the previous sermon content remains visible while the refresh is in progress (with a subtle ‘refreshing’ indicator), unless there is no prior sermon data.",
+        "The query does not repeatedly refetch on mount/focus/reconnect beyond the configured behavior, and the tab does not get stuck in long loading states on subsequent opens.",
+        "Manual refresh updates the cached query data so the UI updates immediately after refresh completes."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services.",
-    "Only generate backend/migration.mo if a stable-state upgrade is required for new cached sermon state.",
-    "Do not edit frontend files under the immutable paths listed in SYSTEM_CONTEXT (compose existing hooks/components instead)."
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not edit any files under frontend/src/components/ui (compose existing shadcn components only).",
+    "Do not edit frontend immutable paths listed in SYSTEM_CONTEXT (e.g., frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
+    "Do not rely on external databases or third-party conversion APIs for DOC/DOCX-to-text.",
+    "True cron/scheduled jobs are not available; the ‘Friday 10:00’ update must be implemented as cache invalidation/refresh logic that runs on the first request after that time."
   ],
   "nonGoals": [
-    "Changing the bottom tab structure or renaming the “Cuma Hutbesi” tab label.",
-    "Adding third-party integrations or external databases.",
-    "Implementing real-time updates (WebSockets/push notifications) for sermons."
+    "Adding a sermon archive/browse history UI.",
+    "Adding push notifications or reminders about the sermon refresh.",
+    "Adding new authentication methods or third-party login providers.",
+    "Implementing real-time updates (WebSockets) for sermon changes."
   ],
   "imageRequirements": {
     "required": [],
@@ -117,7 +123,7 @@
     "goalsToAdd": [],
     "goalsToRemove": [],
     "preferencesToAdd": [
-      "Use English for any user-facing text introduced for the Cuma Hutbesi feature (tab label stays “Cuma Hutbesi”)."
+      "Use English for any user-facing text added/changed in the Cuma Hutbesi rebuild."
     ],
     "preferencesToRemove": [],
     "miscToAdd": [],
