@@ -19,8 +19,9 @@ interface CardConfig {
   type: CardType;
   title: string;
   icon: React.ElementType;
-  bgColor: string;
+  bgGradient: string;
   iconColor: string;
+  borderColor: string;
 }
 
 const cardConfigs: CardConfig[] = [
@@ -28,29 +29,33 @@ const cardConfigs: CardConfig[] = [
     type: 'verse',
     title: 'Vaktin Ayeti',
     icon: BookOpen,
-    bgColor: 'bg-gradient-to-br from-primary/10 to-primary/5',
-    iconColor: 'text-primary'
+    bgGradient: 'bg-gradient-to-br from-primary/20 to-primary/5',
+    iconColor: 'text-primary',
+    borderColor: 'border-primary/30'
   },
   {
     type: 'hadith',
     title: 'Vaktin Hadisi',
     icon: MessageSquare,
-    bgColor: 'bg-gradient-to-br from-secondary/10 to-secondary/5',
-    iconColor: 'text-secondary'
+    bgGradient: 'bg-gradient-to-br from-secondary/20 to-secondary/5',
+    iconColor: 'text-secondary-foreground',
+    borderColor: 'border-secondary/30'
   },
   {
     type: 'dua',
     title: 'Vaktin Duası',
     icon: Heart,
-    bgColor: 'bg-gradient-to-br from-accent/10 to-accent/5',
-    iconColor: 'text-accent'
+    bgGradient: 'bg-gradient-to-br from-accent/20 to-accent/5',
+    iconColor: 'text-accent-foreground',
+    borderColor: 'border-accent/30'
   },
   {
     type: 'esma',
     title: 'Vaktin Esmaül Hüsnası',
     icon: Sparkles,
-    bgColor: 'bg-gradient-to-br from-muted-foreground/10 to-muted-foreground/5',
-    iconColor: 'text-muted-foreground'
+    bgGradient: 'bg-gradient-to-br from-chart-2/20 to-chart-2/5',
+    iconColor: 'text-chart-2',
+    borderColor: 'border-chart-2/30'
   }
 ];
 
@@ -110,21 +115,32 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
           const cardContent = getCardContent(config.type);
           
           return (
-            <Card
-              key={config.type}
-              className={`${config.bgColor} border-2 cursor-pointer hover:scale-[1.02] transition-transform`}
-              onClick={() => handleCardClick(config.type)}
-            >
-              <CardContent className="pt-4 pb-4 px-3 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Icon className={`h-4 w-4 ${config.iconColor}`} />
-                  <h3 className="font-semibold text-sm leading-tight">{config.title}</h3>
-                </div>
-                <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
-                  {cardContent.turkish}
-                </p>
-              </CardContent>
-            </Card>
+            <div key={config.type} className="relative">
+              {/* Subtle corner ornaments on cards */}
+              <div className="absolute -top-2 -left-2 w-8 h-8 opacity-20 pointer-events-none z-10">
+                <img
+                  src="/assets/generated/islamic-corner-ornament.dim_512x512.png"
+                  alt=""
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <Card
+                className={`${config.bgGradient} border-2 ${config.borderColor} cursor-pointer hover:scale-[1.02] transition-transform shadow-md relative`}
+                onClick={() => handleCardClick(config.type)}
+              >
+                <CardContent className="pt-4 pb-4 px-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-md bg-background/50">
+                      <Icon className={`h-4 w-4 ${config.iconColor}`} />
+                    </div>
+                    <h3 className="font-semibold text-sm leading-tight">{config.title}</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                    {cardContent.turkish}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           );
         })}
       </div>

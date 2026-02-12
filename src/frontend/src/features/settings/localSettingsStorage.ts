@@ -25,10 +25,13 @@ export interface LocalSettings {
   ramadanDayStatuses?: RamadanDayStatus[];
   prayerDailyChecklists?: Record<string, PrayerDailyChecklist>;
   prayerKazaCounters?: PrayerKazaCounters;
+  quranLastSurahNumber?: number;
+  quranLastAyahNumber?: number;
+  quranScrollPosition?: number;
 }
 
 const STORAGE_KEY = 'merhaba-hadi-namaza-settings';
-const STORAGE_VERSION = 9;
+const STORAGE_VERSION = 10;
 
 interface StoredData {
   version: number;
@@ -70,7 +73,10 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -92,7 +98,10 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -115,7 +124,10 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -138,7 +150,10 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -161,7 +176,10 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -184,7 +202,10 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -207,26 +228,15 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
         ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
     // Handle migration from version 7 to version 8
     if (data.version === 7) {
-      // Migrate from old boolean array to new status array
-      const oldRamadanDays = (data.settings as any).ramadanCompletedDays;
-      let ramadanDayStatuses: RamadanDayStatus[];
-      
-      if (Array.isArray(oldRamadanDays) && oldRamadanDays.length === 30) {
-        // Convert boolean array: true -> 'Fasted', false -> 'Missed'
-        ramadanDayStatuses = oldRamadanDays.map(completed => 
-          completed ? 'Fasted' : 'Missed'
-        ) as RamadanDayStatus[];
-      } else {
-        // Default to all Fasted if no valid data
-        ramadanDayStatuses = Array(30).fill('Fasted' as RamadanDayStatus);
-      }
-
       return {
         location: data.settings.location || null,
         offsetMinutes: data.settings.offsetMinutes || 0,
@@ -242,9 +252,12 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
         fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
         fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-        ramadanDayStatuses,
+        ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
@@ -267,11 +280,40 @@ export function loadLocalSettings(): LocalSettings {
         fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
         ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
         prayerDailyChecklists: {},
-        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
       };
     }
 
-    // Version 9 (current) - return as-is with defaults for missing fields
+    // Handle migration from version 9 to version 10
+    if (data.version === 9) {
+      return {
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+        adhkarMorningCompleted: data.settings.adhkarMorningCompleted ?? {},
+        adhkarEveningCompleted: data.settings.adhkarEveningCompleted ?? {},
+        fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
+        fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
+        fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
+        ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: data.settings.prayerDailyChecklists ?? {},
+        prayerKazaCounters: data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS,
+        quranLastSurahNumber: 1,
+        quranLastAyahNumber: 1,
+        quranScrollPosition: 0
+      };
+    }
+
+    // Version 10 - current version with Quran reading state
     return {
       location: data.settings.location || null,
       offsetMinutes: data.settings.offsetMinutes || 0,
@@ -289,10 +331,13 @@ export function loadLocalSettings(): LocalSettings {
       fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
       ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
       prayerDailyChecklists: data.settings.prayerDailyChecklists ?? {},
-      prayerKazaCounters: data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS
+      prayerKazaCounters: data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS,
+      quranLastSurahNumber: data.settings.quranLastSurahNumber ?? 1,
+      quranLastAyahNumber: data.settings.quranLastAyahNumber ?? 1,
+      quranScrollPosition: data.settings.quranScrollPosition ?? 0
     };
   } catch (error) {
-    console.error('Error loading settings:', error);
+    console.error('Failed to load settings from localStorage:', error);
     return {
       location: null,
       offsetMinutes: 0,
@@ -307,7 +352,10 @@ export function loadLocalSettings(): LocalSettings {
       fastingMakeUpTargetCount: 0,
       ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
       prayerDailyChecklists: {},
-      prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+      prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
+      quranLastSurahNumber: 1,
+      quranLastAyahNumber: 1,
+      quranScrollPosition: 0
     };
   }
 }
@@ -320,6 +368,6 @@ export function saveLocalSettings(settings: LocalSettings): void {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
-    console.error('Error saving settings:', error);
+    console.error('Failed to save settings to localStorage:', error);
   }
 }

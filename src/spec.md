@@ -1,12 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Add a new “Namaz Takibi” tab to track daily prayers and kaza (make-up) prayer counts, with state persisted locally like the existing “Oruç Takibi”.
+**Goal:** Make Quran ayah audio playback work reliably so pressing Play or an ayah’s Listen action produces audible recitation using Al Quran Cloud / Islamic Network CDN MP3 URLs.
 
 **Planned changes:**
-- Add a new top-level tab “Namaz Takibi” wired into the main tab navigation, including the overflow menu.
-- Implement a “Daily Prayers” checklist for the 5 daily prayers, toggleable and persisted per calendar date via existing local settings persistence.
-- Implement a “Kaza (Make-up) Prayers” section with per-prayer counters that can be set/updated and reduced without going below zero, persisted via local settings.
-- Extend the local settings model and storage migration to include prayer tracking fields (daily checklist by date + kaza counts) with a storage version bump and forward migration defaults.
+- Update the QuranOgreniyorumTab reader audio controls to always set a valid HTTPS MP3 source (from the ayah audio field and/or the Islamic Network CDN URL pattern) before attempting playback.
+- Prevent playback attempts when the selected ayah audio URL is missing/empty, and show a clear error state instead of entering a “playing” state.
+- Ensure the ayah-level “Listen” action sets the selected ayah in the player and starts audible playback immediately (even if audio was previously stopped).
+- Surface HTMLAudioElement load/play errors in the existing audio controls error area, and keep Next/Previous behavior working when autoPlayNext is enabled.
 
-**User-visible outcome:** Users can open the new “Namaz Takibi” tab, check off today’s five daily prayers, and track/update/reduce remaining kaza counts for each prayer; all data remains saved locally across refreshes.
+**User-visible outcome:** In the Quran reader, tapping Play or an ayah’s Listen button immediately plays audible recitation for the selected ayah; if audio is unavailable or fails to load/play, the UI shows a clear error instead of staying silent.

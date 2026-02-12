@@ -32,4 +32,7 @@ export interface AppSettingsModel {
   ramadanDayStatuses?: RamadanDayStatus[];
   prayerDailyChecklists?: Record<string, PrayerDailyChecklist>;
   prayerKazaCounters?: PrayerKazaCounters;
+  quranLastSurahNumber?: number;
+  quranLastAyahNumber?: number;
+  quranScrollPosition?: number;
 }

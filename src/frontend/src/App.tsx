@@ -15,6 +15,7 @@ import { ReligiousDaysTab } from './features/religious-days/ReligiousDaysTab';
 import { NearbyMosqueTab } from './features/nearbymosque/NearbyMosqueTab';
 import { FastingTrackerTab } from './features/fasting-tracker/FastingTrackerTab';
 import { PrayerTrackerTab } from './features/prayer-tracker/PrayerTrackerTab';
+import { QuranOgreniyorumTab } from './features/quran-reading/QuranOgreniyorumTab';
 import { CompactWeatherSummary } from './features/weather/CompactWeatherSummary';
 import { UpdateAvailablePrompt } from './features/app-release/UpdateAvailablePrompt';
 import { Button } from './components/ui/button';
@@ -25,21 +26,46 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Decorative background */}
-      <div className="fixed inset-0 pattern-bg opacity-5 pointer-events-none" />
+      {/* Enhanced decorative background with vivid motifs */}
+      <div className="fixed inset-0 vivid-motif-bg opacity-15 pointer-events-none" />
+      <div
+        className="fixed inset-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: 'url(/assets/generated/islamic-pattern-tile.dim_512x512.png)',
+          backgroundSize: '128px 128px',
+          backgroundRepeat: 'repeat'
+        }}
+      />
 
       {/* Main container */}
       <div className="relative">
-        {/* Header */}
-        <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4">
+        {/* Header with motif styling */}
+        <header className="border-b-2 border-primary/20 bg-card/90 backdrop-blur-sm sticky top-0 z-10 shadow-md">
+          <div
+            className="absolute inset-0 opacity-5 pointer-events-none"
+            style={{
+              backgroundImage: 'url(/assets/generated/islamic-pattern-tile.dim_512x512.png)',
+              backgroundSize: '64px 64px',
+              backgroundRepeat: 'repeat'
+            }}
+          />
+          <div className="container mx-auto px-4 py-4 relative">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <img
-                  src="/assets/generated/merhaba-hadi-namaza-icon.dim_512x512.png"
-                  alt="Hadi Namaza"
-                  className="h-10 w-10 rounded-lg"
-                />
+                <div className="relative">
+                  <img
+                    src="/assets/generated/merhaba-hadi-namaza-icon.dim_512x512.png"
+                    alt="Hadi Namaza"
+                    className="h-10 w-10 rounded-lg border-2 border-primary/30"
+                  />
+                  <div className="absolute -top-1 -right-1 w-4 h-4 opacity-40">
+                    <img
+                      src="/assets/generated/islamic-corner-ornament.dim_512x512.png"
+                      alt=""
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
                 <div>
                   <h1 className="text-lg font-bold font-display">Hadi Namaza</h1>
                   <p className="text-xs text-muted-foreground">Namaz Vakitleri</p>
@@ -54,7 +80,7 @@ function App() {
                   size="icon"
                   onClick={() => setActiveTab('settings')}
                   aria-label="Ayarlar"
-                  className="h-9 w-9"
+                  className="h-9 w-9 border border-primary/20 hover:bg-primary/10"
                 >
                   <Settings className="h-5 w-5" />
                 </Button>
@@ -86,7 +112,8 @@ function App() {
               religiousdays: <ReligiousDaysTab />,
               nearbymosque: <NearbyMosqueTab onNavigateToSettings={() => setActiveTab('settings')} />,
               fastingtracker: <FastingTrackerTab />,
-              prayertracker: <PrayerTrackerTab />
+              prayertracker: <PrayerTrackerTab />,
+              quranreading: <QuranOgreniyorumTab />
             }}
           />
         </main>

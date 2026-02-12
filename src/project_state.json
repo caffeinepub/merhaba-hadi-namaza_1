@@ -1,42 +1,28 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Religious tracking app with an 'Oruç Takibi' (fasting) section, now adding a new 'Namaz Takibi' (prayer tracking) tab for daily prayers and make-up (kaza) prayer tracking.",
+  "summary": "Build a Quran ayah audio playback feature so users can press Play and hear recitations, using the free Al Quran Cloud API / Islamic Network CDN MP3 links.",
   "architectural_notes": [
-    "Implement 'Namaz Takibi' as a separate tab/section, parallel to existing 'Oruç Takibi' tab."
+    "Use Al Quran Cloud API (api.alquran.cloud) JSON 'audio' field or Islamic Network CDN MP3 format https://cdn.islamic.network/quran/audio/128/{reciter}/{ayahNo}.mp3 for playback (no API key)."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Play button currently produces no sound for any ayah; audio source/playback not implemented yet."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-add-a-new-top-level-tab-called-namaz-takibi-prayer-tracking-similar-in-structure-to-the-existing-oru-takibi-tab-and-make-it-reachable-from-the-tab-navigation-including-the-overflow-menu",
-      "title": "Add a new top-level tab called “Namaz Takibi” (Prayer Tracking) similar in structure to the existing “Oruç Takibi” tab, and make it reachable from the tab navigation (including the overflow menu).",
+      "id": "feature-fix-the-quran-reader-audio-playback-so-that-pressing-the-play-button-reliably-starts-audible-ayah-recitation-for-all-ayahs-using-al-quran-cloud-islamic-network-cdn-mp3-urls-e-g-https-cdn-islamic-network-quran-audio-128-ar-alafasy-ayahno-mp3",
+      "title": "Fix the Quran reader audio playback so that pressing the Play button reliably starts audible ayah recitation for all ayahs, using Al Quran Cloud / Islamic Network CDN MP3 URLs (e.g., https://cdn.islamic.network/quran/audio/128/ar.alafasy/{ayahNo}.mp3).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-the-daily-prayers-section-in-the-new-namaz-takibi-tab-show-a-checklist-for-the-5-daily-prayers-fajr-sabah-dhuhr-le-asr-i-kindi-maghrib-ak-am-isha-yats-that-the-user-can-mark-as-completed-for-the-current-day",
-      "title": "Implement the “Daily Prayers” section in the new Namaz Takibi tab: show a checklist for the 5 daily prayers (Fajr/Sabah, Dhuhr/Öğle, Asr/İkindi, Maghrib/Akşam, Isha/Yatsı) that the user can mark as completed for the current day.",
+      "id": "feature-ensure-the-ayah-level-listen-action-plays-the-selected-ayah-even-if-audio-was-not-already-playing-and-does-not-remain-silent-due-to-an-unset-empty-audio-source",
+      "title": "Ensure the ayah-level “Listen” action plays the selected ayah even if audio was not already playing, and does not remain silent due to an unset/empty audio source.",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-kaza-make-up-prayers-section-in-the-new-namaz-takibi-tab-allow-the-user-to-track-make-up-prayer-counts-per-prayer-type-and-reduce-those-counts-as-make-up-prayers-are-performed",
-      "title": "Implement the “Kaza (Make-up) Prayers” section in the new Namaz Takibi tab: allow the user to track make-up prayer counts per prayer type and reduce those counts as make-up prayers are performed.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-extend-the-local-settings-model-and-storage-migration-to-persist-namaz-takibi-data-daily-checklist-by-date-kaza-counts",
-      "title": "Extend the local settings model and storage migration to persist Namaz Takibi data (daily checklist by date + kaza counts).",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -44,13 +30,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add 'Namaz Takibi' tab similar to 'Oruç Takibi' with daily prayer checklist (Sabah/Öğle/İkindi/Akşam/Yatsı) and kaza prayer counters that can be reduced as completed.",
+      "summary": "Integrate Al Quran Cloud API / Islamic Network CDN ayah audio so Play button fetches/uses MP3 URL (e.g., ar.alafasy) and plays recitations",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "Add 'Namaz Takibi' tab with daily prayer checklist and make-up (kaza) counters",
+  "projectName": "Enable ayah audio playback via Al Quran Cloud (Play button should produce sound)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

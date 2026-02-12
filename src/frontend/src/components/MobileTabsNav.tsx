@@ -20,6 +20,7 @@ interface MobileTabsNavProps {
     nearbymosque: React.ReactNode;
     fastingtracker: React.ReactNode;
     prayertracker: React.ReactNode;
+    quranreading: React.ReactNode;
   };
   value?: string;
   onValueChange?: (value: string) => void;
@@ -28,27 +29,38 @@ interface MobileTabsNavProps {
 export function MobileTabsNav({ children, value, onValueChange }: MobileTabsNavProps) {
   return (
     <Tabs value={value} onValueChange={onValueChange} defaultValue="home" className="w-full">
-      <TabsList className="grid w-full grid-cols-5 gap-0.5 h-auto p-1">
-        <TabsTrigger value="home" className="flex-col gap-1 px-0.5 py-2 h-auto">
-          <Home className="h-4 w-4" />
-          <span className="text-[9px] leading-tight hidden sm:inline">Ana Sayfa</span>
-        </TabsTrigger>
-        <TabsTrigger value="esmaulhusna" className="flex-col gap-1 px-0.5 py-2 h-auto">
-          <BookOpen className="h-4 w-4" />
-          <span className="text-[9px] leading-tight hidden sm:inline">Esmaül Hüsna</span>
-        </TabsTrigger>
-        <TabsTrigger value="ramazan" className="flex-col gap-1 px-0.5 py-2 h-auto">
-          <Moon className="h-4 w-4" />
-          <span className="text-[9px] leading-tight hidden sm:inline">Ramazan</span>
-        </TabsTrigger>
-        <TabsTrigger value="zikirmatik" className="flex-col gap-1 px-0.5 py-2 h-auto">
-          <CircleDot className="h-4 w-4" />
-          <span className="text-[9px] leading-tight hidden sm:inline">Zikir</span>
-        </TabsTrigger>
-        <div className="flex items-center justify-center">
-          <TabsOverflowMenu onSelectTab={(tab) => onValueChange?.(tab)} />
-        </div>
-      </TabsList>
+      <div className="relative">
+        {/* Tile pattern background for tab bar */}
+        <div
+          className="absolute inset-0 rounded-lg opacity-5 pointer-events-none"
+          style={{
+            backgroundImage: 'url(/assets/generated/islamic-pattern-tile.dim_512x512.png)',
+            backgroundSize: '48px 48px',
+            backgroundRepeat: 'repeat'
+          }}
+        />
+        <TabsList className="relative grid w-full grid-cols-5 gap-0.5 h-auto p-1 border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
+          <TabsTrigger value="home" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
+            <Home className="h-4 w-4" />
+            <span className="text-[9px] leading-tight hidden sm:inline">Ana Sayfa</span>
+          </TabsTrigger>
+          <TabsTrigger value="esmaulhusna" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
+            <BookOpen className="h-4 w-4" />
+            <span className="text-[9px] leading-tight hidden sm:inline">Esmaül Hüsna</span>
+          </TabsTrigger>
+          <TabsTrigger value="ramazan" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
+            <Moon className="h-4 w-4" />
+            <span className="text-[9px] leading-tight hidden sm:inline">Ramazan</span>
+          </TabsTrigger>
+          <TabsTrigger value="zikirmatik" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
+            <CircleDot className="h-4 w-4" />
+            <span className="text-[9px] leading-tight hidden sm:inline">Zikir</span>
+          </TabsTrigger>
+          <div className="flex items-center justify-center">
+            <TabsOverflowMenu onSelectTab={(tab) => onValueChange?.(tab)} />
+          </div>
+        </TabsList>
+      </div>
 
       <TabsContent value="home" className="mt-4">
         {children.home}
@@ -108,6 +120,10 @@ export function MobileTabsNav({ children, value, onValueChange }: MobileTabsNavP
 
       <TabsContent value="prayertracker" className="mt-4">
         {children.prayertracker}
+      </TabsContent>
+
+      <TabsContent value="quranreading" className="mt-4">
+        {children.quranreading}
       </TabsContent>
     </Tabs>
   );

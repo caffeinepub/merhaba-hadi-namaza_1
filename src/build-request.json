@@ -1,105 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Add 'Namaz Takibi' tab with daily prayer checklist and make-up (kaza) counters",
+  "title": "Enable ayah audio playback via Al Quran Cloud (Play button should produce sound)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a new top-level tab called “Namaz Takibi” (Prayer Tracking) similar in structure to the existing “Oruç Takibi” tab, and make it reachable from the tab navigation (including the overflow menu).",
+      "text": "Fix the Quran reader audio playback so that pressing the Play button reliably starts audible ayah recitation for all ayahs, using Al Quran Cloud / Islamic Network CDN MP3 URLs (e.g., https://cdn.islamic.network/quran/audio/128/ar.alafasy/{ayahNo}.mp3).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5",
-          "msg-7",
-          "msg-9"
+          "recent-messages"
         ],
         "quotes": [
-          "Oruç Takibi gibi bir Sekmede Namaz Takibi için Yap Hem Günlük Namaz Hemde Kaza Namazları takibi gibisinden bir sekme",
-          "1 evet 2 evet 3 evet",
-          "başla"
+          "ekle ve artık playe basınca ayetleri duyalım",
+          "Ayetleri dinlemek iisteyince playe basınca ses gelmiyor",
+          "🎧 Al Quran Cloud API"
         ]
       },
       "acceptanceCriteria": [
-        "A new tab value (e.g., `prayertracker`) is wired in `frontend/src/App.tsx` and rendered by `MobileTabsNav` like other tabs.",
-        "`frontend/src/components/TabsOverflowMenu.tsx` includes a new overflow item for the new tab.",
-        "`frontend/src/components/MobileTabsNav.tsx` accepts the new tab node in its `children` prop type and includes a `<TabsContent>` for it.",
-        "Switching to the new tab shows the Prayer Tracking UI without runtime errors."
+        "In the “QuranOgreniyorumTab” reader view, tapping the main Play button starts audible playback (not silent) for the currently selected ayah.",
+        "The audio source used is a valid HTTPS MP3 URL from Al Quran Cloud API response (audio field) and/or the Islamic Network CDN format provided by the user; playback must not depend on any backend changes.",
+        "If the current ayah’s audio URL is missing/empty, the UI must show a clear error state and not attempt to play an empty source.",
+        "Next/Previous ayah controls continue playback correctly when autoPlayNext is enabled.",
+        "Errors from the HTMLAudioElement (load/play failures) are surfaced in the existing error area in the audio controls."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Implement the “Daily Prayers” section in the new Namaz Takibi tab: show a checklist for the 5 daily prayers (Fajr/Sabah, Dhuhr/Öğle, Asr/İkindi, Maghrib/Akşam, Isha/Yatsı) that the user can mark as completed for the current day.",
+      "text": "Ensure the ayah-level “Listen” action plays the selected ayah even if audio was not already playing, and does not remain silent due to an unset/empty audio source.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5",
-          "msg-7"
+          "recent-messages"
         ],
         "quotes": [
-          "Hem Günlük Namaz",
-          "1 evet"
+          "playe basınca ses hiç başlamıyor tüm ayetlerde aynı sorun var"
         ]
       },
       "acceptanceCriteria": [
-        "The Daily Prayers section renders five clearly labeled items corresponding to the five daily prayers.",
-        "Each prayer item can be toggled completed/uncompleted.",
-        "Completion state is persisted and restored on refresh via the existing `useAppSettings` settings persistence.",
-        "The checklist is stored per calendar date (so a new day starts with a fresh checklist by default)."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Implement the “Kaza (Make-up) Prayers” section in the new Namaz Takibi tab: allow the user to track make-up prayer counts per prayer type and reduce those counts as make-up prayers are performed.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5",
-          "msg-7"
-        ],
-        "quotes": [
-          "Hemde Kaza Namazları takibi",
-          "2 evet"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The UI provides a per-prayer counter for the same five prayers (Sabah/Öğle/İkindi/Akşam/Yatsı).",
-        "Each counter supports reducing the remaining count (and must never go below 0).",
-        "The user can set/update the stored counts (e.g., via numeric inputs and a save action, or plus/minus controls) so the tracker is usable from an initial zero state.",
-        "All kaza counts persist and restore via `useAppSettings` on refresh."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Extend the local settings model and storage migration to persist Namaz Takibi data (daily checklist by date + kaza counts).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5",
-          "msg-7"
-        ],
-        "quotes": [
-          "Oruç Takibi gibi bir Sekmede Namaz Takibi",
-          "3 evet"
-        ]
-      },
-      "acceptanceCriteria": [
-        "`frontend/src/features/settings/appSettingsModel.ts` and `frontend/src/features/settings/localSettingsStorage.ts` include new fields required for prayer tracking persistence.",
-        "`frontend/src/features/settings/localSettingsStorage.ts` STORAGE_VERSION is incremented and includes a forward migration so existing users keep their current settings and simply receive defaults for the new prayer-tracking fields.",
-        "`frontend/src/features/settings/useAppSettings.ts` default settings include defaults for the new fields (or defaults are reliably applied by `loadLocalSettings`)."
+        "Tapping an ayah’s “Listen” button sets the player to that ayah and starts audible playback immediately.",
+        "If the selected ayah audio URL is not available, the app shows an error and does not enter a playing state."
       ]
     }
   ],
   "constraints": [
-    "Frontend files listed as immutable must not be edited: `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`, and anything under `frontend/src/components/ui`.",
-    "Keep the backend as-is unless strictly necessary; this feature should use the existing local settings persistence pattern (React Query + localStorage)."
+    "Do not edit files under frontend/src/components/ui (compose existing Shadcn components only).",
+    "Do not modify any immutable frontend paths listed in SYSTEM_CONTEXT.",
+    "Do not add any third-party auth provider; Internet Identity remains the only supported auth mechanism (not required for this change).",
+    "Keep all backend logic in a single Motoko actor; avoid backend changes unless strictly necessary for audio playback."
   ],
   "nonGoals": [
-    "Adding prayer tracking data to the Motoko backend canister storage.",
-    "Adding notifications, reminders, streaks, analytics, or calendar integrations for prayer tracking.",
-    "Changing existing fasting tracker behavior or its stored data model beyond required settings versioning updates."
+    "Adding offline audio download/caching features.",
+    "Adding background music or continuous playlist across different surahs beyond the existing next/previous ayah behavior.",
+    "Implementing a new backend proxy for audio; audio should be fetched/played directly from the external HTTPS sources in the client."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }
