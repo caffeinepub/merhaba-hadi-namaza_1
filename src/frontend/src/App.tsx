@@ -5,6 +5,7 @@ import { SettingsTab } from './features/settings/SettingsTab';
 import { EsmaulHusnaTab } from './features/esmaulhusna/EsmaulHusnaTab';
 import { ZikirmatikTab } from './features/zikirmatik/ZikirmatikTab';
 import { NamazOgreticiTab } from './features/namaz-ogretici/NamazOgreticiTab';
+import { CumaHutbesiTab } from './features/sermon/CumaHutbesiTab';
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
               settings: <SettingsTab />,
               esmaulhusna: <EsmaulHusnaTab />,
               zikirmatik: <ZikirmatikTab />,
-              namazogretici: <NamazOgreticiTab />
+              namazogretici: <NamazOgreticiTab />,
+              cumahutbesi: <CumaHutbesiTab />
             }}
           />
         </main>

@@ -1,61 +1,77 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T23:46:33.208Z",
+  "generatedAt": "2026-02-12T00:34:53.708Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 5,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-42",
-        "summary": "Update the Namaz Öğretici tab to remove the step-by-step/swipe tutorial UI entirely (no swipe gestures, no step indicator dots, no previous/next controls, and no per-step paging). Instead, show a single scrollable page of text content for the selected gender flow (Men/Women).",
+        "id": "REQ-50",
+        "summary": "Fix the Diyanet listing URL used by the backend sermon fetch so it matches the provided URL exactly (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) and is not double-URL-encoded.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-51",
+        "summary": "Add a new backend update method that fully retrieves and parses the latest hutbe and returns a structured result (title, date, content) to the frontend, so the frontend does not need to parse the listing page or fetch the detail page in the browser.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-52",
+        "summary": "Add backend-side caching for the latest parsed hutbe so the Cuma Hutbesi screen loads quickly on repeat visits, while still allowing refresh to fetch the newest sermon.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-53",
+        "summary": "Update the frontend Cuma Hutbesi data flow to call the new backend structured sermon method (instead of parsing the listing HTML in the browser and instead of fetching the sermon detail page with window.fetch), and keep all new Cuma Hutbesi-specific user-facing text in English (tab label remains exactly “Cuma Hutbesi”).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx"
+          "frontend/src/features/sermon/useLatestSermon.ts",
+          "frontend/src/features/sermon/CumaHutbesiTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx"
+          "frontend/src/features/sermon/useLatestSermon.ts",
+          "frontend/src/features/sermon/CumaHutbesiTab.tsx"
         ]
       },
       {
-        "id": "REQ-43",
-        "summary": "Remove all tutorial images from the Namaz Öğretici experience: do not render any <img> for steps and remove any runtime dependency on tutorial image asset paths.",
+        "id": "REQ-54",
+        "summary": "Tune React Query behavior for the sermon query to improve perceived speed: keep previous sermon content visible while a background refetch is happening, and avoid unnecessary refetch loops that cause long loading on mobile.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
-          "frontend/src/features/namaz-ogretici/namazTutorialContent.ts"
+          "frontend/src/features/sermon/useLatestSermon.ts",
+          "frontend/src/features/sermon/CumaHutbesiTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
-          "frontend/src/features/namaz-ogretici/namazTutorialContent.ts"
-        ]
-      },
-      {
-        "id": "REQ-44",
-        "summary": "Refactor the Namaz Öğretici built-in content model in frontend/src/features/namaz-ogretici/namazTutorialContent.ts to support the text-only tutorial: remove the need for per-step imagePath fields and ensure both menNamazSteps and womenNamazSteps remain complete, ordered, and stable via their existing step ids.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
-          "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
-          "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx"
+          "frontend/src/features/sermon/useLatestSermon.ts",
+          "frontend/src/features/sermon/CumaHutbesiTab.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
-    "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/features/sermon/CumaHutbesiTab.tsx",
+    "frontend/src/features/sermon/useLatestSermon.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

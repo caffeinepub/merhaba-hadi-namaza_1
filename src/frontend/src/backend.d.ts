@@ -7,9 +7,32 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
+export interface http_request_result {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export interface TransformationOutput {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export interface TransformationInput {
+    context: Uint8Array;
+    response: http_request_result;
+}
+export interface SermonData {
+    title?: string;
+    content: string;
+    date?: string;
+}
 export interface AppSettings {
     offset: string;
     location: string;
+}
+export interface http_header {
+    value: string;
+    name: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -21,6 +44,9 @@ export interface backendInterface {
     getAppSettings(user: Principal): Promise<AppSettings | null>;
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getLatestCachedSermon(): Promise<SermonData>;
     isCallerAdmin(): Promise<boolean>;
+    refreshAndGetLatestSermon(): Promise<SermonData>;
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
+    transform(input: TransformationInput): Promise<TransformationOutput>;
 }

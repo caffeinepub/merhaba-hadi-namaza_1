@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 23,
-  "summary": "Mobil kullanım hedefli, anadili Türkçe olan “Merhaba Hadi Namaza” isimli İslami uygulama: Kullanıcı ilçe adını yazar, Open‑Meteo Geocoding ile koordinata çevrilip konum kaydedilir; namaz vakitleri Aladhan API’den alınır ve Diyanet’e göre saat farkı (offset) düzeltmesi uygulanarak ekranda gösterilir. Seçilen konumla hava durumu verileri de alınır. Uygulamada kesinlikle kimlik doğrulaması (login/Internet Identity vb.) olmayacak ve “© 2026 Built with using caffeine.ai” ibaresi tamamen kaldırılacak. Ayrıca “Esmaül Hüsna” sekmesi eklenecek: Allah’ın 99 ismi büyük ve okunabilir renkli kartlarla listelenecek; kartta Arapça isim + Arapça okunuş, karta basınca Türkçe anlam ve ilgili dua gösterilecek (içerikler uygulamaya standart listeden eklenecek). Ek olarak “Zikirmatik” adlı ayrı bir sekme eklenecek: dijital tesbih/sayaç ile +1 artırma, sıfırlama ve hedef belirleme olacak; sayaç/hedef değerleri uygulama kapatılsa da kalıcı saklanacak. “Namaz Öğretici” sekmesi görselsiz olacak: adım adım swiper yapı kaldırılacak; kadın/erkek seçimiyle tek sayfada metinsel anlatım gösterilecek.",
+  "projectStateVersion": 27,
+  "summary": "Mobil kullanım hedefli, anadili Türkçe olan “Merhaba Hadi Namaza” isimli İslami uygulama: Kullanıcı ilçe adını yazar, Open‑Meteo Geocoding ile koordinata çevrilip konum kaydedilir; namaz vakitleri Aladhan API’den alınır ve Diyanet’e göre saat farkı (offset) düzeltmesi uygulanarak ekranda gösterilir. Seçilen konumla hava durumu verileri de alınır. Uygulamada kesinlikle kimlik doğrulaması (login/Internet Identity vb.) olmayacak ve “© 2026 Built with using caffeine.ai” ibaresi tamamen kaldırılacak. Ayrıca “Esmaül Hüsna” sekmesi eklenecek: Allah’ın 99 ismi büyük ve okunabilir renkli kartlarla listelenecek; kartta Arapça isim + Arapça okunuş, karta basınca Türkçe anlam ve ilgili dua gösterilecek (içerikler uygulamaya standart listeden eklenecek). Ek olarak “Zikirmatik” adlı ayrı bir sekme eklenecek: dijital tesbih/sayaç ile +1 artırma, sıfırlama ve hedef belirleme olacak; sayaç/hedef değerleri uygulama kapatılsa da kalıcı saklanacak. “Namaz Öğretici” sekmesi görselsiz olacak: adım adım swiper yapı kaldırılacak; kadın/erkek seçimiyle tek sayfada metinsel anlatım gösterilecek. Yeni “Cuma Hutbesi” sekmesi eklenecek: Diyanet’in belirlenen sayfasından en son yayınlanan hutbe otomatik çekilip ekranda gösterilecek.",
   "architectural_notes": [
     "Konum çözümleme (ilçe->enlem/boylam) için Open‑Meteo Geocoding API kullanılacak.",
     "Namaz vakitleri Aladhan API’den alınacak ve Diyanet’e göre offset düzeltmesi uygulanacak.",
@@ -14,8 +14,10 @@
     "Ana Sayfa’da “Vaktin Ayeti/Hadisi/Duası/Esma’sı” içerikleri uygulamaya gömülü geniş ölçekli veri setlerinden seçilecek ve her vakit değişiminde her kategori için rastgele yenilenecek; UI 2x2 renkli kart/pencere düzeninde gösterilecek.",
     "Zikirmatik sekmesi ayrı bir sekme olacak; sayaç ve hedef değerleri tarayıcı localStorage’da kalıcı olarak saklanacak."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Cuma Hutbesi sekmesi yüklenmiyor: uzun bekleme sonrası 'Failed to Load Sermon — Could not find sermon link on listing page' hatası; Diyanet liste sayfasından hutbe linki çıkarma/HTML parse seçicileri başarısız oluyor."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-a-mobile-first-react-ui-for-the-app-named-merhaba-hadi-namaza-with-a-coherent-distinctive-visual-theme-colors-typography-spacing-components-applied-consistently-across-all-screens-avoid-blue-purple-as-primary-colors",
@@ -352,6 +354,54 @@
         "REQ-44"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-new-bottom-navigation-tab-labeled-cuma-hutbesi-and-render-a-dedicated-cuma-hutbesi-screen-when-selected-while-keeping-existing-tabs-home-settings-esma-l-h-sna-zikirmatik-namaz-retici-unchanged-and-still-available",
+      "title": "Add a new bottom navigation tab labeled “Cuma Hutbesi” and render a dedicated Cuma Hutbesi screen when selected, while keeping existing tabs (Home, Settings, Esmaül Hüsna, Zikirmatik, Namaz Öğretici) unchanged and still available.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-automatic-retrieval-of-the-latest-published-sermon-from-diyanet-using-the-provided-url-https-dinhizmetleri-diyanet-gov-tr-kategoriler-yayinlarimiz-hutbeler-t-c3-bcrk-c3-a7e-always-display-the-most-recently-published-hutbe-on-the-cuma-hutbesi-screen",
+      "title": "Implement automatic retrieval of the latest published sermon from Diyanet using the provided URL (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e): always display the most recently published hutbe on the “Cuma Hutbesi” screen.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-frontend-fetch-and-display-the-latest-hutbe-using-react-query-with-sensible-caching-including-loading-and-error-ui-states-on-the-cuma-hutbesi-screen",
+      "title": "On the frontend, fetch and display the latest hutbe using React Query with sensible caching, including loading and error UI states on the “Cuma Hutbesi” screen.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-all-new-user-facing-text-introduced-specifically-for-the-cuma-hutbesi-feature-is-in-english-except-the-tab-label-which-must-remain-exactly-cuma-hutbesi",
+      "title": "Ensure all new user-facing text introduced specifically for the “Cuma Hutbesi” feature is in English, except the tab label which must remain exactly “Cuma Hutbesi”.",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-frontend-cuma-hutbesi-data-flow-to-call-the-new-backend-structured-sermon-method-instead-of-parsing-the-listing-html-in-the-browser-and-instead-of-fetching-the-sermon-detail-page-with-window-fetch-and-keep-all-new-cuma-hutbesi-specific-user-facing-text-in-english-tab-label-remains-exactly-cuma-hutbesi",
+      "title": "Update the frontend Cuma Hutbesi data flow to call the new backend structured sermon method (instead of parsing the listing HTML in the browser and instead of fetching the sermon detail page with window.fetch), and keep all new Cuma Hutbesi-specific user-facing text in English (tab label remains exactly “Cuma Hutbesi”).",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-tune-react-query-behavior-for-the-sermon-query-to-improve-perceived-speed-keep-previous-sermon-content-visible-while-a-background-refetch-is-happening-and-avoid-unnecessary-refetch-loops-that-cause-long-loading-on-mobile",
+      "title": "Tune React Query behavior for the sermon query to improve perceived speed: keep previous sermon content visible while a background refetch is happening, and avoid unnecessary refetch loops that cause long loading on mobile.",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -431,6 +481,44 @@
       "id": "AR-20",
       "summary": "Namaz Öğretici’yi görselsiz yap: tüm görselleri kaldır; adım-adım/swiper (dot/ileri-geri dahil) yapısını kaldır; Kadın/Erkek seçimi (toggle) ile her biri için tek uzun sayfada metin olarak anlatımı göster",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Yeni “Cuma Hutbesi” sekmesi ekle: Diyanet (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) sayfasından en son yayınlanan cuma hutbesini otomatik çek (HTML parse) ve sekmede göster",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Add a backend method that performs the required HTTPS fetch(es) and HTML parsing to extract the latest hutbe content from Diyanet, and expose the parsed result to the frontend via a canister call (to avoid browser CORS limitations).",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Fix the Diyanet listing URL used by the backend sermon fetch so it matches the provided URL exactly (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) and is not double-URL-encoded.",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Add a new backend update method that fully retrieves and parses the latest hutbe and returns a structured result (title, date, content) to the frontend, so the frontend does not need to parse the listing page or fetch the detail page in the browser.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Add backend-side caching for the latest parsed hutbe so the Cuma Hutbesi screen loads quickly on repeat visits, while still allowing refresh to fetch the newest sermon.",
+      "reqIds": [
+        "REQ-52"
+      ],
       "status": "pending"
     }
   ],

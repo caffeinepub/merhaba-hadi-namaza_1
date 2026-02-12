@@ -1,62 +1,48 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Namaz Öğretici: text-only single-page Men/Women flows (remove images + swipe UI)",
+  "title": "Cuma Hutbesi: structured backend retrieval + faster, stable React Query UX",
   "requirements": [
     {
-      "id": "REQ-42",
-      "summary": "Replace the Namaz Öğretici step-by-step/swipe tutorial with a single scrollable, text-only page per gender (Men/Women).",
+      "id": "REQ-53",
+      "summary": "Switch Cuma Hutbesi to the backend structured sermon methods and remove all browser-side HTML parsing/fetching; keep any new user-facing text in English (tab label remains “Cuma Hutbesi”).",
       "acceptanceCriteria": [
-        "In the Namaz Öğretici tab, there are no swipe handlers, no pagination state (current step), no step dots, and no previous/next buttons rendered.",
-        "For the selected gender (Men or Women), all tutorial steps are displayed in order on one long, scrollable page.",
-        "Switching between Men and Women updates the page content immediately and does not cause any out-of-range/index errors."
+        "frontend/src/features/sermon/useLatestSermon.ts no longer uses DOMParser to find the sermon link from the listing HTML.",
+        "Frontend no longer calls fetch(fullSermonUrl) to Diyanet from the browser (avoids CORS and long waits).",
+        "Cuma Hutbesi tab shows loading skeleton quickly and then renders title/date/content from backend response.",
+        "Any new error/loading/empty-state text introduced for this change is in English; the existing tab label remains exactly “Cuma Hutbesi”."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
+          "path": "frontend/src/features/sermon/useLatestSermon.ts",
           "operation": "modify",
-          "description": "Remove step pagination UI/logic (currentStep state, swipe/touch handlers, step dots, previous/next controls) and render all steps for the selected gender in order as a single scrollable text page (map through steps and display title/description and optional arabicText). Keep the existing gender selector and rakat counts sections intact."
+          "description": "Replace the current raw-HTML/DOMParser + browser fetch flow with calls to the backendInterface structured methods: use getLatestCachedSermon() for the main query result and provide a refresh function that triggers refreshAndGetLatestSermon() and updates the React Query cache. Ensure the returned data shape matches backend SermonData (optional title/date, required content) and remove any Diyanet URL construction or browser network calls."
+        },
+        {
+          "path": "frontend/src/features/sermon/CumaHutbesiTab.tsx",
+          "operation": "modify",
+          "description": "Update the tab to use the revised hook API (structured data + explicit refresh action). Render title/date/content from the backend response and keep all newly introduced user-facing strings (e.g., empty state wording, refresh status text if added) in English while leaving the tab label “Cuma Hutbesi” unchanged."
         }
       ]
     },
     {
-      "id": "REQ-43",
-      "summary": "Remove all tutorial images and any runtime dependency on Namaz tutorial image asset paths.",
+      "id": "REQ-54",
+      "summary": "Tune React Query caching/refetch behavior so sermon content stays visible during refetch and avoid unnecessary refetch loops on mobile.",
       "acceptanceCriteria": [
-        "Namaz Öğretici renders no step images in the UI.",
-        "The app does not reference /assets/generated/namaz-*.png (or any step image filenames) from the Namaz Öğretici screen at runtime."
+        "When the user taps Refresh/Retry, the UI indicates fetching without blanking already-displayed sermon content (if available).",
+        "React Query caching settings prevent frequent refetches during normal navigation (staleTime and refetch behavior are set to mobile-friendly defaults).",
+        "If the backend returns cached content quickly, the tab renders content without showing the error state seen previously."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
+          "path": "frontend/src/features/sermon/useLatestSermon.ts",
           "operation": "modify",
-          "description": "Remove the <img> rendering for steps and any remaining UI/layout assumptions tied to per-step images (e.g., aspect-square image container), ensuring the Namaz Öğretici screen never references tutorial image paths at runtime."
+          "description": "Adjust React Query options for the sermon query to be mobile-friendly: keep prior data visible during background updates (e.g., placeholderData/keep-previous-data pattern), set an appropriate staleTime, and disable aggressive automatic refetch triggers (e.g., refetchOnWindowFocus/refetchOnMount) to prevent refetch loops. Ensure refresh uses an explicit action that updates the cache without clearing the displayed sermon."
         },
         {
-          "path": "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
+          "path": "frontend/src/features/sermon/CumaHutbesiTab.tsx",
           "operation": "modify",
-          "description": "Remove all hard-coded tutorial image asset path values from menNamazSteps and womenNamazSteps so the Namaz Öğretici flow has no runtime dependency on /assets/generated/namaz-*.png."
-        }
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "summary": "Refactor namazTutorialContent.ts to a text-only step model without imagePath while keeping stable step ids and required text fields.",
-      "acceptanceCriteria": [
-        "The Namaz tutorial step type no longer requires an imagePath field.",
-        "menNamazSteps and womenNamazSteps still export stable step ids and all text fields needed to render the single-page tutorial (title, description, and optional arabicText).",
-        "Namaz Öğretici builds and renders successfully after the refactor without TypeScript errors related to removed image fields."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/namaz-ogretici/namazTutorialContent.ts",
-          "operation": "modify",
-          "description": "Update the NamazStep type to remove the imagePath field and refactor menNamazSteps/womenNamazSteps to match the new type while preserving existing step ids, ordering, and text fields (title, description, optional arabicText)."
-        },
-        {
-          "path": "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
-          "operation": "modify",
-          "description": "Update Namaz Öğretici rendering to use the refactored text-only step model (no imagePath usage) and ensure the single-page list rendering compiles cleanly with the updated types."
+          "description": "Change loading/error rendering so that when a refetch/refresh is in progress and prior sermon data exists, the UI shows a fetching indicator (e.g., spinning icon/disabled button) without switching back to the full-page skeleton or blank state."
         }
       ]
     }

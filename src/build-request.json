@@ -1,76 +1,113 @@
 {
   "kind": "build_request",
-  "title": "Make Namaz Öğretici text-only with single-page men/women flows (remove all images and swipe UI)",
-  "priority": "normal",
+  "title": "Fix Cuma Hutbesi loading failure and make sermon retrieval fast and reliable",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-42",
-      "text": "Update the Namaz Öğretici tab to remove the step-by-step/swipe tutorial UI entirely (no swipe gestures, no step indicator dots, no previous/next controls, and no per-step paging). Instead, show a single scrollable page of text content for the selected gender flow (Men/Women).",
-      "target": "frontend",
+      "id": "REQ-50",
+      "text": "Fix the Diyanet listing URL used by the backend sermon fetch so it matches the provided URL exactly (https://dinhizmetleri.diyanet.gov.tr/kategoriler/yayinlarimiz/hutbeler/t%C3%BCrk%C3%A7e) and is not double-URL-encoded.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-4",
           "msg-6",
           "msg-8"
         ],
         "quotes": [
-          "öğretici kısmında görselleri kaldır sadece yazılar kalsın görseller yanıltıcı olabilir",
-          "2- adım adım değilde kadın erkek olarak tek bir sayfada metin olarak göster",
-          "evet"
+          "Failed to Load Sermon\nCould not find sermon link on listing page",
+          "Hızlı bir şekilde yüklensin istiyorum"
         ]
       },
       "acceptanceCriteria": [
-        "In the Namaz Öğretici tab, there are no swipe handlers, no pagination state (current step), no step dots, and no previous/next buttons rendered.",
-        "For the selected gender (Men or Women), all tutorial steps are displayed in order on one long, scrollable page.",
-        "Switching between Men and Women updates the page content immediately and does not cause any out-of-range/index errors."
+        "Backend uses the exact Diyanet URL string (no double-encoding of % characters).",
+        "Calling the existing backend method that fetches the listing page returns valid HTML for the listing page (not a redirect/error page)."
       ]
     },
     {
-      "id": "REQ-43",
-      "text": "Remove all tutorial images from the Namaz Öğretici experience: do not render any <img> for steps and remove any runtime dependency on tutorial image asset paths.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4",
-          "msg-6"
-        ],
-        "quotes": [
-          "öğretici kısmında görselleri kaldır sadece yazılar kalsın görseller yanıltıcı olabilir",
-          "1-evet ... 3-evet görsel setler iptal"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Namaz Öğretici renders no step images in the UI.",
-        "The app does not reference /assets/generated/namaz-*.png (or any step image filenames) from the Namaz Öğretici screen at runtime."
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "text": "Refactor the Namaz Öğretici built-in content model in frontend/src/features/namaz-ogretici/namazTutorialContent.ts to support the text-only tutorial: remove the need for per-step imagePath fields and ensure both menNamazSteps and womenNamazSteps remain complete, ordered, and stable via their existing step ids.",
-      "target": "frontend",
+      "id": "REQ-51",
+      "text": "Add a new backend update method that fully retrieves and parses the latest hutbe and returns a structured result (title, date, content) to the frontend, so the frontend does not need to parse the listing page or fetch the detail page in the browser.",
+      "target": "backend",
       "source": {
         "messageIds": [
           "msg-6"
         ],
         "quotes": [
-          "3-evet görsel setler iptal"
+          "Failed to Load Sermon\nCould not find sermon link on listing page"
         ]
       },
       "acceptanceCriteria": [
-        "The Namaz tutorial step type no longer requires an imagePath field.",
-        "menNamazSteps and womenNamazSteps still export stable step ids and all text fields needed to render the single-page tutorial (title, description, and optional arabicText).",
-        "Namaz Öğretici builds and renders successfully after the refactor without TypeScript errors related to removed image fields."
+        "Backend exposes a canister method that returns {title, date, content} for the latest sermon.",
+        "Backend method performs all required HTTPS fetch(es) (listing + detail) via IC HTTP outcalls and does not require any browser fetch to Diyanet.",
+        "Backend parsing is resilient enough to find the latest sermon link even if the listing page CSS classes change (do not rely solely on a single brittle selector equivalent).",
+        "If parsing fails, the backend returns a clear error (trap/message) that the frontend can display."
+      ]
+    },
+    {
+      "id": "REQ-52",
+      "text": "Add backend-side caching for the latest parsed hutbe so the Cuma Hutbesi screen loads quickly on repeat visits, while still allowing refresh to fetch the newest sermon.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-8"
+        ],
+        "quotes": [
+          "Hızlı bir şekilde yüklensin istiyorum"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend caches the most recently fetched/parsed sermon result with a timestamp.",
+        "Within the cache TTL, repeated calls return quickly from cache without re-fetching Diyanet.",
+        "There is a way for the frontend refresh action to bypass or revalidate the cache (e.g., a forceRefresh flag or a separate method)."
+      ]
+    },
+    {
+      "id": "REQ-53",
+      "text": "Update the frontend Cuma Hutbesi data flow to call the new backend structured sermon method (instead of parsing the listing HTML in the browser and instead of fetching the sermon detail page with window.fetch), and keep all new Cuma Hutbesi-specific user-facing text in English (tab label remains exactly “Cuma Hutbesi”).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-8"
+        ],
+        "quotes": [
+          "Failed to Load Sermon\nCould not find sermon link on listing page",
+          "Hızlı bir şekilde yüklensin istiyorum"
+        ]
+      },
+      "acceptanceCriteria": [
+        "frontend/src/features/sermon/useLatestSermon.ts no longer uses DOMParser to find the sermon link from the listing HTML.",
+        "Frontend no longer calls fetch(fullSermonUrl) to Diyanet from the browser (avoids CORS and long waits).",
+        "Cuma Hutbesi tab shows loading skeleton quickly and then renders title/date/content from backend response.",
+        "Any new error/loading/empty-state text introduced for this change is in English; the existing tab label remains exactly “Cuma Hutbesi”."
+      ]
+    },
+    {
+      "id": "REQ-54",
+      "text": "Tune React Query behavior for the sermon query to improve perceived speed: keep previous sermon content visible while a background refetch is happening, and avoid unnecessary refetch loops that cause long loading on mobile.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-8"
+        ],
+        "quotes": [
+          "çok uzun süre bekledi"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When the user taps Refresh/Retry, the UI indicates fetching without blanking already-displayed sermon content (if available).",
+        "React Query caching settings prevent frequent refetches during normal navigation (staleTime and refetch behavior are set to mobile-friendly defaults).",
+        "If the backend returns cached content quickly, the tab renders content without showing the error state seen previously."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (compose-only).",
-    "Keep the Internet Computer backend as a single Motoko actor; no new backend services."
+    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services.",
+    "Only generate backend/migration.mo if a stable-state upgrade is required for new cached sermon state.",
+    "Do not edit frontend files under the immutable paths listed in SYSTEM_CONTEXT (compose existing hooks/components instead)."
   ],
   "nonGoals": [
-    "Do not change the bottom tab/navigation structure beyond updating the Namaz Öğretici tab’s internal content.",
-    "Do not add new illustration assets for the Namaz tutorial (the image set is canceled).",
-    "Do not modify prayer times, location, weather, Esmaül Hüsna, Zikirmatik, or Settings behaviors as part of this change."
+    "Changing the bottom tab structure or renaming the “Cuma Hutbesi” tab label.",
+    "Adding third-party integrations or external databases.",
+    "Implementing real-time updates (WebSockets/push notifications) for sermons."
   ],
   "imageRequirements": {
     "required": [],
@@ -79,7 +116,9 @@
   "userProfileUpdate": {
     "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [],
+    "preferencesToAdd": [
+      "Use English for any user-facing text introduced for the Cuma Hutbesi feature (tab label stays “Cuma Hutbesi”)."
+    ],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],
