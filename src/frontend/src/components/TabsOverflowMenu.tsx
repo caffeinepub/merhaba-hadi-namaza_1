@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Menu, Sun, BookHeart, Sparkles, Book, BookMarked, Compass, CalendarDays, MapPin, Apple } from 'lucide-react';
+import { Menu, Sun, BookHeart, Sparkles, Book, BookMarked, Compass, CalendarDays, MapPin, Apple, CheckSquare } from 'lucide-react';
 
 interface TabsOverflowMenuProps {
   onSelectTab: (tabValue: string) => void;
@@ -11,6 +11,7 @@ export function TabsOverflowMenu({ onSelectTab }: TabsOverflowMenuProps) {
   const [open, setOpen] = useState(false);
 
   const overflowItems = [
+    { value: 'prayertracker', label: 'Namaz Takibi', icon: CheckSquare },
     { value: 'fastingtracker', label: 'Oruç Takibi', icon: Apple },
     { value: 'nearbymosque', label: 'Yakındaki Camiler', icon: MapPin },
     { value: 'religiousdays', label: 'Dini Günler', icon: CalendarDays },

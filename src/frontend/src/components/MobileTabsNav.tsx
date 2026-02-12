@@ -19,6 +19,7 @@ interface MobileTabsNavProps {
     religiousdays: React.ReactNode;
     nearbymosque: React.ReactNode;
     fastingtracker: React.ReactNode;
+    prayertracker: React.ReactNode;
   };
   value?: string;
   onValueChange?: (value: string) => void;
@@ -103,6 +104,10 @@ export function MobileTabsNav({ children, value, onValueChange }: MobileTabsNavP
 
       <TabsContent value="fastingtracker" className="mt-4">
         {children.fastingtracker}
+      </TabsContent>
+
+      <TabsContent value="prayertracker" className="mt-4">
+        {children.prayertracker}
       </TabsContent>
     </Tabs>
   );

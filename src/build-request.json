@@ -1,84 +1,105 @@
 {
   "kind": "build_request",
-  "title": "Add a 30-day Ramadan fasting checklist to the Fasting Tracker",
+  "title": "Add 'Namaz Takibi' tab with daily prayer checklist and make-up (kaza) counters",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a dedicated \"Ramadan (30 days)\" tracking section to the existing Fasting Tracker tab that lets the user mark/unmark each of 30 days as completed, shows progress (e.g., X/30), and provides a one-tap reset/clear action for the Ramadan checklist.",
+      "text": "Add a new top-level tab called “Namaz Takibi” (Prayer Tracking) similar in structure to the existing “Oruç Takibi” tab, and make it reachable from the tab navigation (including the overflow menu).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5",
+          "msg-7",
+          "msg-9"
         ],
         "quotes": [
-          "Oruç Takibinde Ramazan Ayı içinde 30 gün işaretlemeli şekilde bir takip sistemi yap"
+          "Oruç Takibi gibi bir Sekmede Namaz Takibi için Yap Hem Günlük Namaz Hemde Kaza Namazları takibi gibisinden bir sekme",
+          "1 evet 2 evet 3 evet",
+          "başla"
         ]
       },
       "acceptanceCriteria": [
-        "The Fasting Tracker tab includes a Ramadan checklist UI with exactly 30 individually toggleable day items (Day 1 … Day 30).",
-        "Toggling a day immediately updates the displayed progress count.",
-        "A reset/clear control is available to unmark all 30 days in one action (with a confirmation step or clearly safe UX).",
-        "The Ramadan section does not interfere with existing 'voluntary' and 'make-up' fasting tracking features."
+        "A new tab value (e.g., `prayertracker`) is wired in `frontend/src/App.tsx` and rendered by `MobileTabsNav` like other tabs.",
+        "`frontend/src/components/TabsOverflowMenu.tsx` includes a new overflow item for the new tab.",
+        "`frontend/src/components/MobileTabsNav.tsx` accepts the new tab node in its `children` prop type and includes a `<TabsContent>` for it.",
+        "Switching to the new tab shows the Prayer Tracking UI without runtime errors."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Persist the Ramadan 30-day checklist state in local settings so it remains after reload, and implement a forward-compatible localStorage migration for the new settings fields.",
+      "text": "Implement the “Daily Prayers” section in the new Namaz Takibi tab: show a checklist for the 5 daily prayers (Fajr/Sabah, Dhuhr/Öğle, Asr/İkindi, Maghrib/Akşam, Isha/Yatsı) that the user can mark as completed for the current day.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5",
+          "msg-7"
         ],
         "quotes": [
-          "30 gün işaretlemeli şekilde bir takip sistemi yap"
+          "Hem Günlük Namaz",
+          "1 evet"
         ]
       },
       "acceptanceCriteria": [
-        "Ramadan checklist completion state persists across page refreshes and app restarts.",
-        "No runtime errors occur for existing users with older localStorage data; settings load successfully and new Ramadan fields default to an empty/unmarked state.",
-        "Local settings versioning is incremented and older versions migrate without data loss for existing settings fields (location, offsets, adhkar, fasting dates, etc.)."
+        "The Daily Prayers section renders five clearly labeled items corresponding to the five daily prayers.",
+        "Each prayer item can be toggled completed/uncompleted.",
+        "Completion state is persisted and restored on refresh via the existing `useAppSettings` settings persistence.",
+        "The checklist is stored per calendar date (so a new day starts with a fresh checklist by default)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Ensure the Ramadan checklist UI is mobile-friendly and consistent with the app’s existing warm theme (cards, badges, separators), including a compact layout (e.g., responsive grid or list) suitable for 30 items.",
+      "text": "Implement the “Kaza (Make-up) Prayers” section in the new Namaz Takibi tab: allow the user to track make-up prayer counts per prayer type and reduce those counts as make-up prayers are performed.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5",
+          "msg-7"
         ],
         "quotes": [
-          "Ramazan Ayı içinde 30 gün işaretlemeli"
+          "Hemde Kaza Namazları takibi",
+          "2 evet"
         ]
       },
       "acceptanceCriteria": [
-        "On small screens, the 30-day UI remains readable and usable without horizontal scrolling.",
-        "Visual styling matches existing components used in the Fasting Tracker tab (Card/Badge/Button/etc.)."
+        "The UI provides a per-prayer counter for the same five prayers (Sabah/Öğle/İkindi/Akşam/Yatsı).",
+        "Each counter supports reducing the remaining count (and must never go below 0).",
+        "The user can set/update the stored counts (e.g., via numeric inputs and a save action, or plus/minus controls) so the tracker is usable from an initial zero state.",
+        "All kaza counts persist and restore via `useAppSettings` on refresh."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Extend the local settings model and storage migration to persist Namaz Takibi data (daily checklist by date + kaza counts).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5",
+          "msg-7"
+        ],
+        "quotes": [
+          "Oruç Takibi gibi bir Sekmede Namaz Takibi",
+          "3 evet"
+        ]
+      },
+      "acceptanceCriteria": [
+        "`frontend/src/features/settings/appSettingsModel.ts` and `frontend/src/features/settings/localSettingsStorage.ts` include new fields required for prayer tracking persistence.",
+        "`frontend/src/features/settings/localSettingsStorage.ts` STORAGE_VERSION is incremented and includes a forward migration so existing users keep their current settings and simply receive defaults for the new prayer-tracking fields.",
+        "`frontend/src/features/settings/useAppSettings.ts` default settings include defaults for the new fields (or defaults are reliably applied by `loadLocalSettings`)."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/immutablePaths (e.g., frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
-    "Keep the backend as a single Motoko actor; do not introduce additional backend services or external databases."
+    "Frontend files listed as immutable must not be edited: `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`, and anything under `frontend/src/components/ui`.",
+    "Keep the backend as-is unless strictly necessary; this feature should use the existing local settings persistence pattern (React Query + localStorage)."
   ],
   "nonGoals": [
-    "Do not implement notifications, reminders, or push messaging for Ramadan days (not requested).",
-    "Do not implement server-side persistence or multi-device sync for the Ramadan checklist (local persistence is sufficient unless explicitly requested).",
-    "Do not add new authentication methods beyond the existing Internet Identity setup."
+    "Adding prayer tracking data to the Motoko backend canister storage.",
+    "Adding notifications, reminders, streaks, analytics, or calendar integrations for prayer tracking.",
+    "Changing existing fasting tracker behavior or its stored data model beyond required settings versioning updates."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

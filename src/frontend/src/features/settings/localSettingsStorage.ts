@@ -1,4 +1,5 @@
 import type { Location } from '../location/types';
+import type { RamadanDayStatus, PrayerDailyChecklist, PrayerKazaCounters } from './appSettingsModel';
 
 export interface NotificationLeadTimes {
   fajr: number;
@@ -21,11 +22,13 @@ export interface LocalSettings {
   fastingVoluntaryDates?: string[];
   fastingMakeUpDates?: string[];
   fastingMakeUpTargetCount?: number;
-  ramadanCompletedDays?: boolean[];
+  ramadanDayStatuses?: RamadanDayStatus[];
+  prayerDailyChecklists?: Record<string, PrayerDailyChecklist>;
+  prayerKazaCounters?: PrayerKazaCounters;
 }
 
 const STORAGE_KEY = 'merhaba-hadi-namaza-settings';
-const STORAGE_VERSION = 7;
+const STORAGE_VERSION = 9;
 
 interface StoredData {
   version: number;
@@ -39,6 +42,14 @@ const DEFAULT_NOTIFICATION_LEAD_TIMES: NotificationLeadTimes = {
   asr: 15,
   maghrib: 15,
   isha: 15
+};
+
+const DEFAULT_PRAYER_KAZA_COUNTERS: PrayerKazaCounters = {
+  fajr: 0,
+  dhuhr: 0,
+  asr: 0,
+  maghrib: 0,
+  isha: 0
 };
 
 export function loadLocalSettings(): LocalSettings {
@@ -57,7 +68,9 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
@@ -77,7 +90,9 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
@@ -98,7 +113,9 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
@@ -119,7 +136,9 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
@@ -140,7 +159,9 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
@@ -161,7 +182,9 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
@@ -182,36 +205,80 @@ export function loadLocalSettings(): LocalSettings {
         fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
         fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
         fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
-    if (data.version !== STORAGE_VERSION) {
+    // Handle migration from version 7 to version 8
+    if (data.version === 7) {
+      // Migrate from old boolean array to new status array
+      const oldRamadanDays = (data.settings as any).ramadanCompletedDays;
+      let ramadanDayStatuses: RamadanDayStatus[];
+      
+      if (Array.isArray(oldRamadanDays) && oldRamadanDays.length === 30) {
+        // Convert boolean array: true -> 'Fasted', false -> 'Missed'
+        ramadanDayStatuses = oldRamadanDays.map(completed => 
+          completed ? 'Fasted' : 'Missed'
+        ) as RamadanDayStatus[];
+      } else {
+        // Default to all Fasted if no valid data
+        ramadanDayStatuses = Array(30).fill('Fasted' as RamadanDayStatus);
+      }
+
       return {
-        location: null,
-        offsetMinutes: 0,
-        notificationLeadTimes: DEFAULT_NOTIFICATION_LEAD_TIMES,
-        zikirmatikCount: 0,
-        zikirmatikTarget: 33,
-        hatimLastReadPage: 1,
-        adhkarMorningCompleted: {},
-        adhkarEveningCompleted: {},
-        fastingVoluntaryDates: [],
-        fastingMakeUpDates: [],
-        fastingMakeUpTargetCount: 0,
-        ramadanCompletedDays: Array(30).fill(false)
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+        adhkarMorningCompleted: data.settings.adhkarMorningCompleted ?? {},
+        adhkarEveningCompleted: data.settings.adhkarEveningCompleted ?? {},
+        fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
+        fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
+        fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
+        ramadanDayStatuses,
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
       };
     }
 
-    // Ensure all fields exist with defaults
-    const notificationLeadTimes = {
-      ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-      ...(data.settings.notificationLeadTimes || {})
-    };
+    // Handle migration from version 8 to version 9
+    if (data.version === 8) {
+      return {
+        location: data.settings.location || null,
+        offsetMinutes: data.settings.offsetMinutes || 0,
+        notificationLeadTimes: {
+          ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+          ...(data.settings.notificationLeadTimes || {})
+        },
+        zikirmatikCount: data.settings.zikirmatikCount ?? 0,
+        zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
+        hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
+        adhkarMorningCompleted: data.settings.adhkarMorningCompleted ?? {},
+        adhkarEveningCompleted: data.settings.adhkarEveningCompleted ?? {},
+        fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
+        fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
+        fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
+        ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+        prayerDailyChecklists: {},
+        prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
+      };
+    }
 
+    // Version 9 (current) - return as-is with defaults for missing fields
     return {
-      ...data.settings,
-      notificationLeadTimes,
+      location: data.settings.location || null,
+      offsetMinutes: data.settings.offsetMinutes || 0,
+      notificationLeadTimes: {
+        ...DEFAULT_NOTIFICATION_LEAD_TIMES,
+        ...(data.settings.notificationLeadTimes || {})
+      },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
       hatimLastReadPage: data.settings.hatimLastReadPage ?? 1,
@@ -220,7 +287,9 @@ export function loadLocalSettings(): LocalSettings {
       fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
       fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
       fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-      ramadanCompletedDays: data.settings.ramadanCompletedDays ?? Array(30).fill(false)
+      ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+      prayerDailyChecklists: data.settings.prayerDailyChecklists ?? {},
+      prayerKazaCounters: data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS
     };
   } catch (error) {
     console.error('Error loading settings:', error);
@@ -236,7 +305,9 @@ export function loadLocalSettings(): LocalSettings {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanCompletedDays: Array(30).fill(false)
+      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      prayerDailyChecklists: {},
+      prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS
     };
   }
 }

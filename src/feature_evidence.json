@@ -2,11 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-dedicated-ramadan-30-days-tracking-section-to-the-existing-fasting-tracker-tab-that-lets-the-user-mark-unmark-each-of-30-days-as-completed-shows-progress-e-g-x-30-and-provides-a-one-tap-reset-clear-action-for-the-ramadan-checklist",
-      "featureTitle": "Add a dedicated \"Ramadan (30 days)\" tracking section to the existing Fasting Tracker tab that lets the user mark/unmark each of 30 days as completed, shows progress (e.g., X/30), and provides a one-tap reset/clear action for the Ramadan checklist.",
+      "featureId": "feature-add-a-new-top-level-tab-called-namaz-takibi-prayer-tracking-similar-in-structure-to-the-existing-oru-takibi-tab-and-make-it-reachable-from-the-tab-navigation-including-the-overflow-menu",
+      "featureTitle": "Add a new top-level tab called “Namaz Takibi” (Prayer Tracking) similar in structure to the existing “Oruç Takibi” tab, and make it reachable from the tab navigation (including the overflow menu).",
       "files": [
-        "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
-        "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/components/MobileTabsNav.tsx",
+        "frontend/src/components/TabsOverflowMenu.tsx",
+        "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -23,11 +25,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-persist-the-ramadan-30-day-checklist-state-in-local-settings-so-it-remains-after-reload-and-implement-a-forward-compatible-localstorage-migration-for-the-new-settings-fields",
-      "featureTitle": "Persist the Ramadan 30-day checklist state in local settings so it remains after reload, and implement a forward-compatible localStorage migration for the new settings fields.",
+      "featureId": "feature-implement-the-daily-prayers-section-in-the-new-namaz-takibi-tab-show-a-checklist-for-the-5-daily-prayers-fajr-sabah-dhuhr-le-asr-i-kindi-maghrib-ak-am-isha-yats-that-the-user-can-mark-as-completed-for-the-current-day",
+      "featureTitle": "Implement the “Daily Prayers” section in the new Namaz Takibi tab: show a checklist for the 5 daily prayers (Fajr/Sabah, Dhuhr/Öğle, Asr/İkindi, Maghrib/Akşam, Isha/Yatsı) that the user can mark as completed for the current day.",
       "files": [
-        "frontend/src/features/settings/appSettingsModel.ts",
-        "frontend/src/features/settings/localSettingsStorage.ts",
+        "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx",
         "frontend/src/features/settings/useAppSettings.ts"
       ],
       "components": [
@@ -45,11 +46,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-ramadan-checklist-ui-is-mobile-friendly-and-consistent-with-the-app-s-existing-warm-theme-cards-badges-separators-including-a-compact-layout-e-g-responsive-grid-or-list-suitable-for-30-items",
-      "featureTitle": "Ensure the Ramadan checklist UI is mobile-friendly and consistent with the app’s existing warm theme (cards, badges, separators), including a compact layout (e.g., responsive grid or list) suitable for 30 items.",
+      "featureId": "feature-implement-the-kaza-make-up-prayers-section-in-the-new-namaz-takibi-tab-allow-the-user-to-track-make-up-prayer-counts-per-prayer-type-and-reduce-those-counts-as-make-up-prayers-are-performed",
+      "featureTitle": "Implement the “Kaza (Make-up) Prayers” section in the new Namaz Takibi tab: allow the user to track make-up prayer counts per prayer type and reduce those counts as make-up prayers are performed.",
       "files": [
-        "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
-        "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx"
+        "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx",
+        "frontend/src/features/settings/useAppSettings.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -62,6 +63,28 @@
       ],
       "testIds": [
         "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-extend-the-local-settings-model-and-storage-migration-to-persist-namaz-takibi-data-daily-checklist-by-date-kaza-counts",
+      "featureTitle": "Extend the local settings model and storage migration to persist Namaz Takibi data (daily checklist by date + kaza counts).",
+      "files": [
+        "frontend/src/features/settings/appSettingsModel.ts",
+        "frontend/src/features/settings/localSettingsStorage.ts",
+        "frontend/src/features/settings/useAppSettings.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

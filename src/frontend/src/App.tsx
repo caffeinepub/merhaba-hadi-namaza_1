@@ -14,6 +14,7 @@ import { TasbihatTab } from './features/tasbihat/TasbihatTab';
 import { ReligiousDaysTab } from './features/religious-days/ReligiousDaysTab';
 import { NearbyMosqueTab } from './features/nearbymosque/NearbyMosqueTab';
 import { FastingTrackerTab } from './features/fasting-tracker/FastingTrackerTab';
+import { PrayerTrackerTab } from './features/prayer-tracker/PrayerTrackerTab';
 import { CompactWeatherSummary } from './features/weather/CompactWeatherSummary';
 import { UpdateAvailablePrompt } from './features/app-release/UpdateAvailablePrompt';
 import { Button } from './components/ui/button';
@@ -84,7 +85,8 @@ function App() {
               ramazan: <RamazanKosesiTab />,
               religiousdays: <ReligiousDaysTab />,
               nearbymosque: <NearbyMosqueTab onNavigateToSettings={() => setActiveTab('settings')} />,
-              fastingtracker: <FastingTrackerTab />
+              fastingtracker: <FastingTrackerTab />,
+              prayertracker: <PrayerTrackerTab />
             }}
           />
         </main>

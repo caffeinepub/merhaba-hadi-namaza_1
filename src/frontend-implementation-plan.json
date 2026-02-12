@@ -1,73 +1,107 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add Ramadan 30-day checklist to Fasting Tracker with local persistence",
+  "title": "Add Namaz Takibi tab with daily prayer checklist and kaza counters (local settings persistence)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a Ramadan (30 days) checklist section inside the existing Fasting Tracker tab with per-day toggles, progress, and a one-tap reset action.",
+      "summary": "Add a new top-level “Namaz Takibi” tab and wire it into tab navigation and overflow menu.",
       "acceptanceCriteria": [
-        "The Fasting Tracker tab includes a Ramadan checklist UI with exactly 30 individually toggleable day items (Day 1 … Day 30).",
-        "Toggling a day immediately updates the displayed progress count.",
-        "A reset/clear control is available to unmark all 30 days in one action (with a confirmation step or clearly safe UX).",
-        "The Ramadan section does not interfere with existing 'voluntary' and 'make-up' fasting tracking features."
+        "A new tab value (e.g., `prayertracker`) is wired in `frontend/src/App.tsx` and rendered by `MobileTabsNav` like other tabs.",
+        "`frontend/src/components/TabsOverflowMenu.tsx` includes a new overflow item for the new tab.",
+        "`frontend/src/components/MobileTabsNav.tsx` accepts the new tab node in its `children` prop type and includes a `<TabsContent>` for it.",
+        "Switching to the new tab shows the Prayer Tracking UI without runtime errors."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx",
+          "path": "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx",
           "operation": "create",
-          "description": "Create a dedicated Ramadan (30 days) checklist section component that renders 30 toggleable day items, shows X/30 progress, and offers a reset action with a safe confirmation UX. Use existing warm-theme UI building blocks already used in the Fasting Tracker tab (e.g., Card/Badge/Button/Separator). Verify the component's usage instructions before implementing."
+          "description": "Create the Namaz Takibi tab UI container (page-level) that will render the “Daily Prayers” checklist and “Kaza (Make-up) Prayers” counters using persisted settings from `useAppSettings`."
         },
         {
-          "path": "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire the new RamadanChecklistSection into the existing Fasting Tracker tab without changing the current voluntary and make-up tracking behavior. Connect toggles/reset to the local settings state via useAppSettings so progress updates immediately. Verify the component's usage instructions before implementing."
+          "description": "Import and register the new `PrayerTrackerTab` and add a `prayertracker` entry to the `children` passed into `MobileTabsNav` so the tab can be displayed."
+        },
+        {
+          "path": "frontend/src/components/MobileTabsNav.tsx",
+          "operation": "modify",
+          "description": "Extend the `children` prop type to include `prayertracker`, and add a corresponding `<TabsContent value=\"prayertracker\">` rendering `children.prayertracker`."
+        },
+        {
+          "path": "frontend/src/components/TabsOverflowMenu.tsx",
+          "operation": "modify",
+          "description": "Add a new overflow menu item `{ value: 'prayertracker', label: 'Namaz Takibi', icon: ... }` so users can navigate to the Prayer Tracking tab from the overflow menu."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Persist Ramadan checklist state in local settings and add forward-compatible localStorage migration for the new fields.",
+      "summary": "Implement per-day checklist for the five daily prayers, persisted per calendar date in local settings.",
       "acceptanceCriteria": [
-        "Ramadan checklist completion state persists across page refreshes and app restarts.",
-        "No runtime errors occur for existing users with older localStorage data; settings load successfully and new Ramadan fields default to an empty/unmarked state.",
-        "Local settings versioning is incremented and older versions migrate without data loss for existing settings fields (location, offsets, adhkar, fasting dates, etc.)."
+        "The Daily Prayers section renders five clearly labeled items corresponding to the five daily prayers.",
+        "Each prayer item can be toggled completed/uncompleted.",
+        "Completion state is persisted and restored on refresh via the existing `useAppSettings` settings persistence.",
+        "The checklist is stored per calendar date (so a new day starts with a fresh checklist by default)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/settings/appSettingsModel.ts",
+          "path": "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx",
           "operation": "modify",
-          "description": "Extend the AppSettingsModel to include Ramadan 30-day checklist state (a stable representation that supports exactly 30 day toggles and future extension)."
+          "description": "Implement a “Günlük Namazlar” section that computes a stable local calendar date key (e.g., YYYY-MM-DD in local time), reads/writes that date’s checklist in `useAppSettings`, renders five labeled toggles (Sabah/Öğle/İkindi/Akşam/Yatsı), and persists changes via `saveSettings`."
         },
         {
           "path": "frontend/src/features/settings/useAppSettings.ts",
           "operation": "modify",
-          "description": "Update DEFAULT_SETTINGS to include the new Ramadan checklist defaults (all 30 days unmarked) so the UI has safe initial values even before localStorage is populated."
-        },
-        {
-          "path": "frontend/src/features/settings/localSettingsStorage.ts",
-          "operation": "modify",
-          "description": "Add the new Ramadan checklist fields to LocalSettings, increment STORAGE_VERSION, and implement a migration path from the current version to the new version that preserves all existing stored fields and safely defaults Ramadan days to unmarked when missing. Also ensure the post-load defaulting logic fills the Ramadan field when absent to prevent runtime errors."
+          "description": "Ensure default settings include safe defaults for the daily prayer checklist storage structure so new days start empty unless already stored for that date."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Make the Ramadan checklist mobile-friendly and visually consistent with the app’s existing warm theme and Fasting Tracker styling.",
+      "summary": "Implement kaza (make-up) prayer counters per prayer type with non-negative decrement and persisted values.",
       "acceptanceCriteria": [
-        "On small screens, the 30-day UI remains readable and usable without horizontal scrolling.",
-        "Visual styling matches existing components used in the Fasting Tracker tab (Card/Badge/Button/etc.)."
+        "The UI provides a per-prayer counter for the same five prayers (Sabah/Öğle/İkindi/Akşam/Yatsı).",
+        "Each counter supports reducing the remaining count (and must never go below 0).",
+        "The user can set/update the stored counts (e.g., via numeric inputs and a save action, or plus/minus controls) so the tracker is usable from an initial zero state.",
+        "All kaza counts persist and restore via `useAppSettings` on refresh."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/fasting-tracker/RamadanChecklistSection.tsx",
+          "path": "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx",
           "operation": "modify",
-          "description": "Implement a compact responsive layout for 30 items (e.g., a grid/list that reflows on small screens and avoids horizontal scrolling) and match existing warm theme patterns (cards, badges, separators, button variants) used elsewhere in the Fasting Tracker. Verify the component's usage instructions before implementing."
+          "description": "Implement a “Kaza Namazları” section with five per-prayer counters backed by `useAppSettings`, supporting increment/decrement (clamped at 0) and direct numeric editing (or other explicit set/update UX) with persistence via `saveSettings`."
         },
         {
-          "path": "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
+          "path": "frontend/src/features/settings/useAppSettings.ts",
           "operation": "modify",
-          "description": "Position the Ramadan section within the existing tab flow using the same spacing and card structure as other sections, ensuring the overall page remains mobile-friendly and consistent. Verify the component's usage instructions before implementing."
+          "description": "Ensure default settings include a kaza counters object (all zeros) so the section works from a clean state and restores correctly after refresh."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Extend settings model and localStorage migrations to persist daily prayer checklist (by date) and kaza counters.",
+      "acceptanceCriteria": [
+        "`frontend/src/features/settings/appSettingsModel.ts` and `frontend/src/features/settings/localSettingsStorage.ts` include new fields required for prayer tracking persistence.",
+        "`frontend/src/features/settings/localSettingsStorage.ts` STORAGE_VERSION is incremented and includes a forward migration so existing users keep their current settings and simply receive defaults for the new prayer-tracking fields.",
+        "`frontend/src/features/settings/useAppSettings.ts` default settings include defaults for the new fields (or defaults are reliably applied by `loadLocalSettings`)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/settings/appSettingsModel.ts",
+          "operation": "modify",
+          "description": "Add typed fields for Namaz Takibi persistence, including (1) a per-date daily checklist map and (2) per-prayer kaza remaining counts, using consistent prayer keys across both sections."
+        },
+        {
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
+          "operation": "modify",
+          "description": "Increment `STORAGE_VERSION` and add a forward migration from the previous version that preserves existing settings while initializing new prayer-tracking fields to defaults; also ensure the non-migrated load path fills missing fields with defaults."
+        },
+        {
+          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "operation": "modify",
+          "description": "Extend `DEFAULT_SETTINGS` to include defaults for the new Namaz Takibi fields so the UI can rely on them when settings are missing or partially loaded."
         }
       ]
     }

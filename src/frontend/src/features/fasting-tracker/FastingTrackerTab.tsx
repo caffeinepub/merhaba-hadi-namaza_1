@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Plus, Trash2, Target } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RamadanChecklistSection } from './RamadanChecklistSection';
+import type { RamadanDayStatus } from '../settings/appSettingsModel';
 
 export function FastingTrackerTab() {
   const { settings, saveSettings } = useAppSettings();
@@ -20,13 +21,16 @@ export function FastingTrackerTab() {
   const voluntaryDates = settings.fastingVoluntaryDates || [];
   const makeUpDates = settings.fastingMakeUpDates || [];
   const makeUpTargetCount = settings.fastingMakeUpTargetCount || 0;
-  const ramadanDays = settings.ramadanCompletedDays || Array(30).fill(false);
+  const ramadanDayStatuses = settings.ramadanDayStatuses || Array(30).fill('Fasted' as RamadanDayStatus);
+
+  // Calculate missed Ramadan days (automatic make-up total)
+  const missedRamadanTotal = ramadanDayStatuses.filter(status => status === 'Missed').length;
 
   // Sort dates descending (newest first)
   const sortedVoluntaryDates = [...voluntaryDates].sort((a, b) => b.localeCompare(a));
   const sortedMakeUpDates = [...makeUpDates].sort((a, b) => b.localeCompare(a));
 
-  // Calculate remaining make-up fasts
+  // Calculate remaining make-up fasts (from manual tracking)
   const remainingMakeUp = Math.max(makeUpTargetCount - makeUpDates.length, 0);
 
   const handleAddVoluntary = async () => {
@@ -87,20 +91,20 @@ export function FastingTrackerTab() {
     });
   };
 
-  const handleToggleRamadanDay = async (dayIndex: number) => {
-    const newRamadanDays = [...ramadanDays];
-    newRamadanDays[dayIndex] = !newRamadanDays[dayIndex];
+  const handleSetRamadanDayStatus = async (dayIndex: number, status: RamadanDayStatus) => {
+    const newStatuses = [...ramadanDayStatuses];
+    newStatuses[dayIndex] = status;
     
     await saveSettings({
       ...settings,
-      ramadanCompletedDays: newRamadanDays
+      ramadanDayStatuses: newStatuses
     });
   };
 
   const handleResetRamadan = async () => {
     await saveSettings({
       ...settings,
-      ramadanCompletedDays: Array(30).fill(false)
+      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus)
     });
   };
 
@@ -123,8 +127,8 @@ export function FastingTrackerTab() {
 
       {/* Ramadan Checklist Section */}
       <RamadanChecklistSection
-        completedDays={ramadanDays}
-        onToggleDay={handleToggleRamadanDay}
+        dayStatuses={ramadanDayStatuses}
+        onSetDayStatus={handleSetRamadanDayStatus}
         onReset={handleResetRamadan}
       />
 
@@ -141,6 +145,13 @@ export function FastingTrackerTab() {
             <span className="text-sm text-muted-foreground">Nafile Oruçlar:</span>
             <Badge variant="secondary" className="text-base font-semibold">
               {voluntaryDates.length}
+            </Badge>
+          </div>
+          <Separator />
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-muted-foreground">Ramazan Kaza Orucu:</span>
+            <Badge variant="destructive" className="text-base font-semibold">
+              {missedRamadanTotal}
             </Badge>
           </div>
           <Separator />
@@ -213,7 +224,6 @@ export function FastingTrackerTab() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemoveVoluntary(date)}
-                      className="h-8 w-8"
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -229,14 +239,14 @@ export function FastingTrackerTab() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
+            <Target className="h-5 w-5" />
             Kaza Oruçları
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Set Target */}
           <div className="space-y-2">
-            <Label htmlFor="makeup-target">Toplam Kaza Orucu Hedefi</Label>
+            <Label htmlFor="makeup-target">Hedef Kaza Orucu Sayısı</Label>
             <div className="flex gap-2">
               <Input
                 id="makeup-target"
@@ -246,13 +256,10 @@ export function FastingTrackerTab() {
                 onChange={(e) => setMakeUpTarget(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={handleUpdateTarget} variant="secondary">
+              <Button onClick={handleUpdateTarget}>
                 Güncelle
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Tamamlamanız gereken toplam kaza orucu sayısını belirleyin.
-            </p>
           </div>
 
           <Separator />
@@ -301,7 +308,6 @@ export function FastingTrackerTab() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemoveMakeUp(date)}
-                      className="h-8 w-8"
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

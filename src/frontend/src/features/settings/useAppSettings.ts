@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { loadLocalSettings, saveLocalSettings } from './localSettingsStorage';
-import { type AppSettingsModel } from './appSettingsModel';
+import { type AppSettingsModel, type RamadanDayStatus, type PrayerKazaCounters } from './appSettingsModel';
 
 const DEFAULT_SETTINGS: AppSettingsModel = {
   location: null,
@@ -21,7 +21,15 @@ const DEFAULT_SETTINGS: AppSettingsModel = {
   fastingVoluntaryDates: [],
   fastingMakeUpDates: [],
   fastingMakeUpTargetCount: 0,
-  ramadanCompletedDays: Array(30).fill(false)
+  ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+  prayerDailyChecklists: {},
+  prayerKazaCounters: {
+    fajr: 0,
+    dhuhr: 0,
+    asr: 0,
+    maghrib: 0,
+    isha: 0
+  } as PrayerKazaCounters
 };
 
 export function useAppSettings() {
