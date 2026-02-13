@@ -1,26 +1,25 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Build a Quran ayah audio playback feature so users can press Play and hear recitations, using the free Al Quran Cloud API / Islamic Network CDN MP3 links.",
+  "summary": "Homepage’e mevcut API’ler üzerinden, seçili konuma göre 1 haftalık namaz vakitlerini mevcut tasarıma uyumlu tablo/liste formatında ekleme çalışması.",
   "architectural_notes": [
-    "Use Al Quran Cloud API (api.alquran.cloud) JSON 'audio' field or Islamic Network CDN MP3 format https://cdn.islamic.network/quran/audio/128/{reciter}/{ayahNo}.mp3 for playback (no API key)."
+    "Namaz vakitleri verisi mevcut kullanılan API kaynağından çekilecek ve UI’de 1 haftalık görünüm için formatlanacak.",
+    "Namaz vakitleri anasayfada kullanıcının seçili konumuna göre gösterilecek."
   ],
-  "known_issues": [
-    "Play button currently produces no sound for any ayah; audio source/playback not implemented yet."
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-fix-the-quran-reader-audio-playback-so-that-pressing-the-play-button-reliably-starts-audible-ayah-recitation-for-all-ayahs-using-al-quran-cloud-islamic-network-cdn-mp3-urls-e-g-https-cdn-islamic-network-quran-audio-128-ar-alafasy-ayahno-mp3",
-      "title": "Fix the Quran reader audio playback so that pressing the Play button reliably starts audible ayah recitation for all ayahs, using Al Quran Cloud / Islamic Network CDN MP3 URLs (e.g., https://cdn.islamic.network/quran/audio/128/ar.alafasy/{ayahNo}.mp3).",
+      "id": "feature-add-a-new-frontend-data-fetching-utility-that-retrieves-prayer-times-for-the-next-7-days-today-6-days-using-the-same-aladhan-api-currently-used-for-daily-prayer-times-parameterized-by-the-currently-selected-location-latitude-longitude",
+      "title": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-the-ayah-level-listen-action-plays-the-selected-ayah-even-if-audio-was-not-already-playing-and-does-not-remain-silent-due-to-an-unset-empty-audio-source",
-      "title": "Ensure the ayah-level “Listen” action plays the selected ayah even if audio was not already playing, and does not remain silent due to an unset/empty audio source.",
+      "id": "feature-render-a-7-day-prayer-times-section-on-the-home-page-frontend-src-features-home-hometab-tsx-that-matches-the-existing-home-design-language-and-presents-the-weekly-data-in-a-table-list-format",
+      "title": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
       "reqIds": [
         "REQ-2"
       ],
@@ -30,12 +29,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Integrate Al Quran Cloud API / Islamic Network CDN ayah audio so Play button fetches/uses MP3 URL (e.g., ar.alafasy) and plays recitations",
+      "summary": "Anasayfada seçili konuma göre mevcut API’lerden alınan 1 haftalık namaz vakitlerini mevcut tasarıma uyumlu tablo/liste şeklinde göster",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Enable ayah audio playback via Al Quran Cloud (Play button should produce sound)",
+  "projectName": "Show 7-day prayer times on the Home page for the selected location",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

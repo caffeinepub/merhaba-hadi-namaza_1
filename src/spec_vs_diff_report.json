@@ -1,51 +1,46 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T23:38:25.931Z",
-  "summary": "Diff adds Al Quran Cloud fetching with audio URL fallback to Islamic Network CDN and introduces/updates a hook-based HTMLAudioElement player with URL validation and basic error handling. However, based on the visible diff, autoplay-next continuity and the ayah-level “Listen” behavior can’t be fully confirmed, and autoplay-next appears incorrect in the shown logic.",
+  "generatedAt": "2026-02-13T00:46:32.199Z",
+  "summary": "Diff adds a weekly Aladhan fetcher + React Query hook and a new WeeklyPrayerTimesSection UI component, and wires weekly fetching/offset logic into HomeTab. However, the diff evidence is insufficient to confirm HomeTab actually renders the weekly section with the adjusted data, and newly introduced user-facing strings in the weekly section are Turkish (not English), which conflicts with the stated constraint for new user-facing text.",
   "missing_requirements": [
     {
-      "id": "REQ-1",
-      "requirement": "Next/Previous ayah controls continue playback correctly when autoPlayNext is enabled.",
-      "reason": "In the shown useAyahAudioPlayer logic, when audio ends it sets isPlaying(false) and increments the index, but the subsequent source-update effect only calls audio.play() if `wasPlaying` was true. Since ended sets `isPlaying` to false, playback will not automatically continue to the next ayah.",
-      "evidence": [
-        "frontend/src/features/quran-reading/useAyahAudioPlayer.ts"
-      ]
-    },
-    {
-      "id": "REQ-1",
-      "requirement": "Errors from the HTMLAudioElement (load/play failures) are surfaced in the existing error area in the audio controls.",
-      "reason": "The hook sets an internal `error` state (e.g., 'Ses dosyası yüklenemedi', 'Ses çalınamadı'), but the diff excerpt for QuranOgreniyorumTab.tsx is truncated and does not show that this error is rendered in the audio controls’ existing error area.",
-      "evidence": [
-        "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-        "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx"
-      ]
-    },
-    {
       "id": "REQ-2",
-      "requirement": "Tapping an ayah’s “Listen” button sets the player to that ayah and starts audible playback immediately; if audio URL is unavailable, show an error and do not enter playing state.",
-      "reason": "The hook interface includes `selectAndPlay`, suggesting support, but the QuranOgreniyorumTab.tsx diff is truncated and does not show an ayah-level “Listen” UI wired to `selectAndPlay` (or equivalent) and its error handling behavior.",
+      "requirement": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format (including 7 rows and required columns/labels), with loading/error states and respecting settings.offsetMinutes.",
+      "reason": "HomeTab.tsx is truncated and the diff snippet shows imports and computed `adjustedWeeklyTimes`, but does not show any JSX that actually renders `<WeeklyPrayerTimesSection ...>` or confirms it receives the offset-adjusted weekly data and shows exactly 7 rows/required fields.",
       "evidence": [
-        "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-        "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx"
+        "frontend/src/features/home/HomeTab.tsx (truncated)",
+        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "Keep all user-facing text introduced by this build in English.",
+      "reason": "New weekly section introduces user-facing strings in Turkish (title, loading, error). This violates the constraint that all user-facing text in the build request be in English (even if existing Turkish UI can remain).",
+      "evidence": [
+        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Expanded Quran API data layer to fetch Arabic text and Turkish translation (tr.diyanet) in addition to audio, with an in-memory cache for all these endpoints.",
-      "reason": "BuildRequest is specifically about fixing audio playback and using Al Quran Cloud/Islamic Network CDN audio URLs; it does not request adding/altering translation fetching or introducing a generalized caching layer for surah/text/translation endpoints.",
+      "description": "Introduced/changed shared Aladhan method constant export (ALADHAN_METHOD) in the daily aladhanApi module.",
+      "reason": "BuildRequest did not ask to refactor the existing daily API module; weekly fetching could have been implemented without changing the daily module interface. This is an extra implementation detail beyond the explicit requirements.",
       "evidence": [
-        "frontend/src/features/quran-reading/quranApi.ts"
+        "frontend/src/features/prayer/aladhanApi.ts",
+        "frontend/src/features/prayer/aladhanWeeklyApi.ts"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.63,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
-    "frontend/src/features/quran-reading/quranApi.ts",
-    "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
+    "frontend/src/features/home/HomeTab.tsx",
+    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+    "frontend/src/features/prayer/aladhanApi.ts",
+    "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+    "frontend/src/features/prayer/timeOffset.ts",
+    "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
     "project_state.json"
   ]
 }

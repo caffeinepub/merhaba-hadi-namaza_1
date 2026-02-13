@@ -2,12 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-fix-the-quran-reader-audio-playback-so-that-pressing-the-play-button-reliably-starts-audible-ayah-recitation-for-all-ayahs-using-al-quran-cloud-islamic-network-cdn-mp3-urls-e-g-https-cdn-islamic-network-quran-audio-128-ar-alafasy-ayahno-mp3",
-      "featureTitle": "Fix the Quran reader audio playback so that pressing the Play button reliably starts audible ayah recitation for all ayahs, using Al Quran Cloud / Islamic Network CDN MP3 URLs (e.g., https://cdn.islamic.network/quran/audio/128/ar.alafasy/{ayahNo}.mp3).",
+      "featureId": "feature-add-a-new-frontend-data-fetching-utility-that-retrieves-prayer-times-for-the-next-7-days-today-6-days-using-the-same-aladhan-api-currently-used-for-daily-prayer-times-parameterized-by-the-currently-selected-location-latitude-longitude",
+      "featureTitle": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
       "files": [
-        "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
-        "frontend/src/features/quran-reading/quranApi.ts",
-        "frontend/src/features/quran-reading/useAyahAudioPlayer.ts"
+        "frontend/src/features/prayer/aladhanApi.ts",
+        "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+        "frontend/src/features/prayer/useWeeklyPrayerTimes.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -24,11 +24,12 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-ayah-level-listen-action-plays-the-selected-ayah-even-if-audio-was-not-already-playing-and-does-not-remain-silent-due-to-an-unset-empty-audio-source",
-      "featureTitle": "Ensure the ayah-level “Listen” action plays the selected ayah even if audio was not already playing, and does not remain silent due to an unset/empty audio source.",
+      "featureId": "feature-render-a-7-day-prayer-times-section-on-the-home-page-frontend-src-features-home-hometab-tsx-that-matches-the-existing-home-design-language-and-presents-the-weekly-data-in-a-table-list-format",
+      "featureTitle": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
       "files": [
-        "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
-        "frontend/src/features/quran-reading/useAyahAudioPlayer.ts"
+        "frontend/src/features/home/HomeTab.tsx",
+        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+        "frontend/src/features/prayer/timeOffset.ts"
       ],
       "components": [
         "authorization@4.0.0",

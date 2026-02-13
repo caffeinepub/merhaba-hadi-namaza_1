@@ -1,53 +1,58 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix Quran reader ayah audio playback using Al Quran Cloud / Islamic Network MP3 URLs",
+  "title": "Show 7-day prayer times on the Home page for the selected location",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Make the main Play button in QuranOgreniyorumTab reliably start audible ayah recitation using valid Al Quran Cloud audio URLs and/or Islamic Network CDN MP3 fallbacks, with robust error handling and correct next/previous behavior.",
+      "summary": "Add a new weekly prayer-times fetch utility + React Query hook (7 days) using Aladhan, keyed and enabled by selected location coordinates.",
       "acceptanceCriteria": [
-        "In the “QuranOgreniyorumTab” reader view, tapping the main Play button starts audible playback (not silent) for the currently selected ayah.",
-        "The audio source used is a valid HTTPS MP3 URL from Al Quran Cloud API response (audio field) and/or the Islamic Network CDN format provided by the user; playback must not depend on any backend changes.",
-        "If the current ayah’s audio URL is missing/empty, the UI must show a clear error state and not attempt to play an empty source.",
-        "Next/Previous ayah controls continue playback correctly when autoPlayNext is enabled.",
-        "Errors from the HTMLAudioElement (load/play failures) are surfaced in the existing error area in the audio controls."
+        "When a location is selected, the app fetches prayer times for 7 consecutive days using Aladhan (same provider as current daily timings).",
+        "The query is disabled when there is no selected location, and surfaces a user-friendly error state if the request fails.",
+        "The React Query cache key includes the selected location coordinates so changing location refetches the 7-day data."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/quran-reading/quranApi.ts",
-          "operation": "modify",
-          "description": "Ensure each Ayah returned by getSurahContent has a valid HTTPS MP3 audio URL: prefer the Al Quran Cloud API-provided audio field, and when missing/empty, derive a fallback Islamic Network CDN MP3 URL using the ayah's global number so the player never receives empty sources for normal cases."
+          "path": "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+          "operation": "create",
+          "description": "Create a new Aladhan-based data-fetching utility that retrieves and normalizes prayer times for today + the next 6 days using the selected location latitude/longitude and the same calculation method as the existing daily fetch. Ensure thrown errors intended for display are in English."
         },
         {
-          "path": "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-          "operation": "modify",
-          "description": "Harden the audio hook to prevent silent playback: validate current ayah URL before attempting to play, surface a clear error when missing/invalid, and ensure autoPlayNext advances to the next ayah and continues playback (not just changing index). Also improve HTMLAudioElement error propagation to the existing error string and avoid entering a playing state when play() fails."
+          "path": "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+          "operation": "create",
+          "description": "Create a React Query hook wrapping the weekly fetch utility. Ensure the queryKey includes latitude/longitude, enabled is false when location is null, and failures can be surfaced as a user-friendly English message in the UI."
         },
         {
-          "path": "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
+          "path": "frontend/src/features/prayer/aladhanApi.ts",
           "operation": "modify",
-          "description": "Wire the reader UI to the improved audio behavior: ensure the main Play button cannot trigger playback when the current ayah URL is empty (showing the hook error), and verify Next/Previous controls keep audio playing when appropriate, while continuing to display HTMLAudioElement errors in the existing error area."
+          "description": "Refactor/shared-constant extraction (if needed) to guarantee the weekly fetch uses the exact same Aladhan provider configuration as the existing daily fetch, without changing the daily behavior."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Make the ayah-level “Dinle/Listen” action select the tapped ayah and start audible playback immediately, without becoming silently 'playing' when audio source is unset/empty.",
+      "summary": "Render a Home page 7-day prayer times section (table/list) that matches existing styling, hides without location, and applies the configured time offset consistently.",
       "acceptanceCriteria": [
-        "Tapping an ayah’s “Listen” button sets the player to that ayah and starts audible playback immediately.",
-        "If the selected ayah audio URL is not available, the app shows an error and does not enter a playing state."
+        "If no location is selected, the weekly section is not shown (the existing location setup UI remains the only prompt).",
+        "When weekly data is available, the Home page displays 7 rows (one per day) and columns (or labeled fields) for at least: İmsak (Fajr), Güneş (Sunrise), Öğle (Dhuhr), İkindi (Asr), Akşam (Maghrib), Yatsı (Isha), plus the date/day label.",
+        "The weekly display respects the user’s configured offset (settings.offsetMinutes) consistently across all shown times, using the same offset behavior as the existing daily Home list.",
+        "Loading and error states are styled consistently with existing HomeTab patterns (e.g., muted loading text, destructive error text) and do not break layout on mobile."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-          "operation": "modify",
-          "description": "Add/adjust a control path that atomically selects an ayah index and starts playback only after a non-empty audio source is set (e.g., a dedicated control method that sets index + triggers playback with proper sequencing). Ensure missing URL results in an error and no playing state."
+          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "operation": "create",
+          "description": "Create a Home feature component that renders weekly prayer times in a table/list format consistent with HomeTab’s Card/MotifFrame design language. Use existing shadcn-ui components already present in the project (e.g., Card) to keep styling consistent; verify the component's usage instructions before implementing. Include mobile-safe horizontal handling (e.g., responsive layout) and styled loading/error states (muted/destructive) with any new user-facing text in English."
         },
         {
-          "path": "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
+          "path": "frontend/src/features/home/HomeTab.tsx",
           "operation": "modify",
-          "description": "Update the per-ayah “Dinle” button handler to use the hook's select-and-play control so tapping it always plays the selected ayah immediately; if the selected ayah has no audio URL available, show the error via the existing audio controls error area and do not present as playing."
+          "description": "Wire the new weekly hook + WeeklyPrayerTimesSection into the Home page after the existing daily prayer list (and before/around existing sections as appropriate). Only render the weekly section when a location exists (HomeTab already short-circuits), apply settings.offsetMinutes to every day’s times using the same offset utility behavior as the daily list, and pass through loading/error states for consistent styling."
+        },
+        {
+          "path": "frontend/src/features/prayer/timeOffset.ts",
+          "operation": "modify",
+          "description": "Add/adjust helper typing or a small utility (if needed) to apply the existing offset behavior cleanly to each day in the 7-day dataset without changing current daily offset behavior."
         }
       ]
     }

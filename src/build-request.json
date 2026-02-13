@@ -1,71 +1,60 @@
 {
   "kind": "build_request",
-  "title": "Enable ayah audio playback via Al Quran Cloud (Play button should produce sound)",
+  "title": "Show 7-day prayer times on the Home page for the selected location",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the Quran reader audio playback so that pressing the Play button reliably starts audible ayah recitation for all ayahs, using Al Quran Cloud / Islamic Network CDN MP3 URLs (e.g., https://cdn.islamic.network/quran/audio/128/ar.alafasy/{ayahNo}.mp3).",
+      "text": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-6"
         ],
         "quotes": [
-          "ekle ve artık playe basınca ayetleri duyalım",
-          "Ayetleri dinlemek iisteyince playe basınca ses gelmiyor",
-          "🎧 Al Quran Cloud API"
+          "1-mevcut kullandığın apılerden devam et 2-tablo liste şeklinde olsun mevcut tasarımlara uysun 3-seçili olan konum için"
         ]
       },
       "acceptanceCriteria": [
-        "In the “QuranOgreniyorumTab” reader view, tapping the main Play button starts audible playback (not silent) for the currently selected ayah.",
-        "The audio source used is a valid HTTPS MP3 URL from Al Quran Cloud API response (audio field) and/or the Islamic Network CDN format provided by the user; playback must not depend on any backend changes.",
-        "If the current ayah’s audio URL is missing/empty, the UI must show a clear error state and not attempt to play an empty source.",
-        "Next/Previous ayah controls continue playback correctly when autoPlayNext is enabled.",
-        "Errors from the HTMLAudioElement (load/play failures) are surfaced in the existing error area in the audio controls."
+        "When a location is selected, the app fetches prayer times for 7 consecutive days using Aladhan (same provider as current daily timings).",
+        "The query is disabled when there is no selected location, and surfaces a user-friendly error state if the request fails.",
+        "The React Query cache key includes the selected location coordinates so changing location refetches the 7-day data."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure the ayah-level “Listen” action plays the selected ayah even if audio was not already playing, and does not remain silent due to an unset/empty audio source.",
+      "text": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-5",
+          "msg-6"
         ],
         "quotes": [
-          "playe basınca ses hiç başlamıyor tüm ayetlerde aynı sorun var"
+          "Anasayfada mevcut bilgilere ek olarak 1 haftalık Namaz Vaktini gösterebilir misin?",
+          "1-mevcut kullandığın apılerden devam et 2-tablo liste şeklinde olsun mevcut tasarımlara uysun 3-seçili olan konum için"
         ]
       },
       "acceptanceCriteria": [
-        "Tapping an ayah’s “Listen” button sets the player to that ayah and starts audible playback immediately.",
-        "If the selected ayah audio URL is not available, the app shows an error and does not enter a playing state."
+        "If no location is selected, the weekly section is not shown (the existing location setup UI remains the only prompt).",
+        "When weekly data is available, the Home page displays 7 rows (one per day) and columns (or labeled fields) for at least: İmsak (Fajr), Güneş (Sunrise), Öğle (Dhuhr), İkindi (Asr), Akşam (Maghrib), Yatsı (Isha), plus the date/day label.",
+        "The weekly display respects the user’s configured offset (settings.offsetMinutes) consistently across all shown times, using the same offset behavior as the existing daily Home list.",
+        "Loading and error states are styled consistently with existing HomeTab patterns (e.g., muted loading text, destructive error text) and do not break layout on mobile."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (compose existing Shadcn components only).",
-    "Do not modify any immutable frontend paths listed in SYSTEM_CONTEXT.",
-    "Do not add any third-party auth provider; Internet Identity remains the only supported auth mechanism (not required for this change).",
-    "Keep all backend logic in a single Motoko actor; avoid backend changes unless strictly necessary for audio playback."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Do not introduce a new backend service; keep prayer time retrieval on the frontend using the existing API approach.",
+    "Keep all user-facing text in the build request in English (the app’s existing Turkish UI copy can remain as-is unless explicitly changed)."
   ],
   "nonGoals": [
-    "Adding offline audio download/caching features.",
-    "Adding background music or continuous playlist across different surahs beyond the existing next/previous ayah behavior.",
-    "Implementing a new backend proxy for audio; audio should be fetched/played directly from the external HTTPS sources in the client."
+    "Adding a new location selection flow or changing how the selected location is stored.",
+    "Changing the prayer time calculation method or the Aladhan method parameter currently used for daily timings.",
+    "Adding notifications or reminders for the weekly schedule."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

@@ -21,3 +21,7 @@ export function applyOffsetToPrayerTimes(times: any, offsetMinutes: number) {
     isha: applyOffsetToTime(times.isha, offsetMinutes)
   };
 }
+
+export function applyOffsetToWeeklyPrayerTimes(weeklyTimes: any[], offsetMinutes: number) {
+  return weeklyTimes.map(dayTimes => applyOffsetToPrayerTimes(dayTimes, offsetMinutes));
+}

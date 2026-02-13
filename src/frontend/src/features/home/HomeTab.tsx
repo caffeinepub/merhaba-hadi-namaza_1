@@ -4,24 +4,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { LocationSetupSection } from '../location/LocationSetupSection';
 import { NextPrayerCountdown } from './NextPrayerCountdown';
 import { PrayerTimeCardsSection } from './PrayerTimeCardsSection';
+import { WeeklyPrayerTimesSection } from './WeeklyPrayerTimesSection';
 import { MotifFrame } from './MotifFrame';
 import { MotifButton } from './MotifButton';
 import { useAppSettings } from '../settings/useAppSettings';
 import { usePrayerTimes } from '../prayer/usePrayerTimes';
+import { useWeeklyPrayerTimes } from '../prayer/useWeeklyPrayerTimes';
 import { useWeather } from '../weather/useWeather';
-import { applyOffsetToPrayerTimes } from '../prayer/timeOffset';
+import { applyOffsetToPrayerTimes, applyOffsetToWeeklyPrayerTimes } from '../prayer/timeOffset';
 import { computeKerahatWindows, mergeTimesWithKerahat } from '../prayer/kerahatTimes';
 import { MapPin, Sunrise, Sun, Sunset, Moon, Cloud, AlertCircle } from 'lucide-react';
 
 export function HomeTab() {
   const { settings } = useAppSettings();
   const { data: prayerTimes, isLoading: prayerLoading, error: prayerError } = usePrayerTimes(settings.location);
+  const { data: weeklyPrayerTimes, isLoading: weeklyLoading, error: weeklyError } = useWeeklyPrayerTimes(settings.location);
   const { data: weather } = useWeather(settings.location);
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
 
   const adjustedTimes = prayerTimes
     ? applyOffsetToPrayerTimes(prayerTimes, settings.offsetMinutes)
     : null;
+
+  const adjustedWeeklyTimes = weeklyPrayerTimes
+    ? applyOffsetToWeeklyPrayerTimes(weeklyPrayerTimes, settings.offsetMinutes)
+    : [];
 
   const prayerList = adjustedTimes
     ? [
@@ -138,6 +145,15 @@ export function HomeTab() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Weekly prayer times section */}
+      <MotifFrame variant="divider">
+        <WeeklyPrayerTimesSection
+          weeklyData={adjustedWeeklyTimes}
+          isLoading={weeklyLoading}
+          error={weeklyError}
+        />
+      </MotifFrame>
 
       {/* Prayer time cards section with divider */}
       <MotifFrame variant="divider">

@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-12T23:38:25.934Z",
+  "generatedAt": "2026-02-13T00:46:32.203Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,30 +12,32 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Fix the Quran reader audio playback so that pressing the Play button reliably starts audible ayah recitation for all ayahs, using Al Quran Cloud / Islamic Network CDN MP3 URLs (e.g., https://cdn.islamic.network/quran/audio/128/ar.alafasy/{ayahNo}.mp3).",
+        "summary": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/quran-reading/quranApi.ts",
-          "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-          "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx"
+          "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+          "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+          "frontend/src/features/prayer/aladhanApi.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/quran-reading/quranApi.ts",
-          "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-          "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx"
+          "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+          "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+          "frontend/src/features/prayer/aladhanApi.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Ensure the ayah-level “Listen” action plays the selected ayah even if audio was not already playing, and does not remain silent due to an unset/empty audio source.",
+        "summary": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-          "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx"
+          "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "frontend/src/features/home/HomeTab.tsx",
+          "frontend/src/features/prayer/timeOffset.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
-          "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx"
+          "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "frontend/src/features/home/HomeTab.tsx",
+          "frontend/src/features/prayer/timeOffset.ts"
         ]
       }
     ]
@@ -45,9 +47,12 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
-    "frontend/src/features/quran-reading/quranApi.ts",
-    "frontend/src/features/quran-reading/useAyahAudioPlayer.ts",
+    "frontend/src/features/home/HomeTab.tsx",
+    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+    "frontend/src/features/prayer/aladhanApi.ts",
+    "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+    "frontend/src/features/prayer/timeOffset.ts",
+    "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

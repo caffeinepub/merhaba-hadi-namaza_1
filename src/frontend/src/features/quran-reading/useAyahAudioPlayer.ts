@@ -39,12 +39,31 @@ export function useAyahAudioPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  // Use refs to track latest values without triggering effects
+  const currentAyahIndexRef = useRef(currentAyahIndex);
+  const autoPlayNextRef = useRef(autoPlayNext);
+  const audioUrlsRef = useRef(audioUrls);
+  const shouldPlayAfterLoadRef = useRef(false);
+
+  // Keep refs in sync
+  useEffect(() => {
+    currentAyahIndexRef.current = currentAyahIndex;
+  }, [currentAyahIndex]);
+
+  useEffect(() => {
+    autoPlayNextRef.current = autoPlayNext;
+  }, [autoPlayNext]);
+
+  useEffect(() => {
+    audioUrlsRef.current = audioUrls;
+  }, [audioUrls]);
+
   // Validate audio URL
   const isValidAudioUrl = useCallback((url: string): boolean => {
     return !!(url && url.trim().length > 0 && url.startsWith('http'));
   }, []);
 
-  // Initialize audio element
+  // Initialize audio element and attach event listeners ONCE
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
@@ -59,6 +78,19 @@ export function useAyahAudioPlayer({
 
     const handleCanPlay = () => {
       setIsLoading(false);
+      
+      // If we should play after load, do it now
+      if (shouldPlayAfterLoadRef.current) {
+        shouldPlayAfterLoadRef.current = false;
+        audio.play().then(() => {
+          setIsPlaying(true);
+          setError(null);
+        }).catch((err) => {
+          console.error('Failed to play audio after load:', err);
+          setIsPlaying(false);
+          setError('Ses çalınamadı');
+        });
+      }
     };
 
     const handleLoadedMetadata = () => {
@@ -71,20 +103,35 @@ export function useAyahAudioPlayer({
 
     const handleEnded = () => {
       setIsPlaying(false);
-      if (autoPlayNext && currentAyahIndex < audioUrls.length - 1) {
+      
+      // Use refs to get latest values
+      const currentIndex = currentAyahIndexRef.current;
+      const shouldAutoPlay = autoPlayNextRef.current;
+      const urls = audioUrlsRef.current;
+      
+      if (shouldAutoPlay && currentIndex < urls.length - 1) {
         // Move to next ayah and continue playing
-        const nextIndex = currentAyahIndex + 1;
+        const nextIndex = currentIndex + 1;
         setCurrentAyahIndex(nextIndex);
-        // The audio source will be updated in the next effect, and we'll auto-play
+        shouldPlayAfterLoadRef.current = true;
       }
     };
 
     const handleError = (e: Event) => {
       setIsLoading(false);
       setIsPlaying(false);
+      shouldPlayAfterLoadRef.current = false;
       const errorMsg = 'Ses dosyası yüklenemedi';
       setError(errorMsg);
       console.error('Audio error:', e);
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+    };
+
+    const handlePlay = () => {
+      setIsPlaying(true);
     };
 
     audio.addEventListener('loadstart', handleLoadStart);
@@ -93,6 +140,8 @@ export function useAyahAudioPlayer({
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('play', handlePlay);
 
     return () => {
       audio.removeEventListener('loadstart', handleLoadStart);
@@ -101,10 +150,12 @@ export function useAyahAudioPlayer({
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('play', handlePlay);
     };
-  }, [autoPlayNext, currentAyahIndex, audioUrls.length]);
+  }, []); // Only run once on mount
 
-  // Update audio source when ayah changes
+  // Update audio source when ayah changes (but NOT when isPlaying changes)
   useEffect(() => {
     if (!audioRef.current) return;
 
@@ -114,24 +165,19 @@ export function useAyahAudioPlayer({
     if (!isValidAudioUrl(currentUrl)) {
       setError('Ses dosyası bulunamadı');
       setIsPlaying(false);
+      shouldPlayAfterLoadRef.current = false;
       return;
     }
 
     const audio = audioRef.current;
-    const wasPlaying = isPlaying;
 
-    audio.pause();
-    audio.src = currentUrl;
-    audio.load();
-
-    if (wasPlaying) {
-      audio.play().catch((err) => {
-        console.error('Failed to play audio:', err);
-        setIsPlaying(false);
-        setError('Ses çalınamadı');
-      });
+    // Only update source if it's different
+    if (audio.src !== currentUrl) {
+      audio.pause();
+      audio.src = currentUrl;
+      audio.load();
     }
-  }, [currentAyahIndex, audioUrls, isValidAudioUrl, isPlaying]);
+  }, [currentAyahIndex, audioUrls, isValidAudioUrl]); // Removed isPlaying from dependencies
 
   const play = useCallback(() => {
     if (!audioRef.current) return;
@@ -175,8 +221,7 @@ export function useAyahAudioPlayer({
       
       // If currently playing, continue playing the next ayah
       if (isPlaying) {
-        // The effect will handle loading and playing
-        // We just need to maintain the playing state
+        shouldPlayAfterLoadRef.current = true;
       }
     }
   }, [currentAyahIndex, audioUrls.length, isPlaying]);
@@ -188,7 +233,7 @@ export function useAyahAudioPlayer({
       
       // If currently playing, continue playing the previous ayah
       if (isPlaying) {
-        // The effect will handle loading and playing
+        shouldPlayAfterLoadRef.current = true;
       }
     }
   }, [currentAyahIndex, isPlaying]);
@@ -217,22 +262,9 @@ export function useAyahAudioPlayer({
       return;
     }
 
-    // Set the index first
+    // Set the index and mark that we should play after load
     setCurrentAyahIndex(index);
-    
-    // Then play after a brief delay to allow the effect to update the source
-    setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.play().then(() => {
-          setIsPlaying(true);
-          setError(null);
-        }).catch((err) => {
-          console.error('Failed to play audio:', err);
-          setIsPlaying(false);
-          setError('Ses çalınamadı');
-        });
-      }
-    }, 100);
+    shouldPlayAfterLoadRef.current = true;
   }, [audioUrls, isValidAudioUrl]);
 
   const state: AudioPlayerState = {

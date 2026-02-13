@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Make Quran ayah audio playback work reliably so pressing Play or an ayah’s Listen action produces audible recitation using Al Quran Cloud / Islamic Network CDN MP3 URLs.
+**Goal:** Show prayer times for the next 7 days on the Home page for the currently selected location.
 
 **Planned changes:**
-- Update the QuranOgreniyorumTab reader audio controls to always set a valid HTTPS MP3 source (from the ayah audio field and/or the Islamic Network CDN URL pattern) before attempting playback.
-- Prevent playback attempts when the selected ayah audio URL is missing/empty, and show a clear error state instead of entering a “playing” state.
-- Ensure the ayah-level “Listen” action sets the selected ayah in the player and starts audible playback immediately (even if audio was previously stopped).
-- Surface HTMLAudioElement load/play errors in the existing audio controls error area, and keep Next/Previous behavior working when autoPlayNext is enabled.
+- Add a new frontend data-fetching utility (using the existing Aladhan API approach) to retrieve prayer times for today + the next 6 days, parameterized by the selected location’s latitude/longitude.
+- Integrate the new 7-day query with React Query, including a cache key that incorporates the selected coordinates, disabling the query when no location is selected, and showing a user-friendly error state on failure.
+- Update `frontend/src/features/home/HomeTab.tsx` to render a Home-styled weekly section in a table/list format with 7 rows and fields for: date/day label, İmsak (Fajr), Güneş (Sunrise), Öğle (Dhuhr), İkindi (Asr), Akşam (Maghrib), Yatsı (Isha), applying the user’s configured `settings.offsetMinutes` consistently across all displayed times and matching existing loading/error UI patterns.
 
-**User-visible outcome:** In the Quran reader, tapping Play or an ayah’s Listen button immediately plays audible recitation for the selected ayah; if audio is unavailable or fails to load/play, the UI shows a clear error instead of staying silent.
+**User-visible outcome:** When a location is selected, the Home page shows a weekly (7-day) prayer-times table/list for that location; if no location is selected, the weekly section is not shown.
