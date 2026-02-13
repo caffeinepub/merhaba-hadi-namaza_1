@@ -1,46 +1,36 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T00:46:32.199Z",
-  "summary": "Diff adds a weekly Aladhan fetcher + React Query hook and a new WeeklyPrayerTimesSection UI component, and wires weekly fetching/offset logic into HomeTab. However, the diff evidence is insufficient to confirm HomeTab actually renders the weekly section with the adjusted data, and newly introduced user-facing strings in the weekly section are Turkish (not English), which conflicts with the stated constraint for new user-facing text.",
+  "generatedAt": "2026-02-13T17:34:31.170Z",
+  "summary": "Implemented new AndroidPrayer TypeScript typings and added React-side bridge calls for next prayer, daily prayers, and city updates with guarded/try-catch patterns. However, the diff evidence is insufficient to confirm that the public bridge script actually exposes/forwards the required window.AndroidPrayer.* methods, and the daily-prayers sender implementation is truncated and appears to check window.Android rather than window.AndroidPrayer.",
   "missing_requirements": [
     {
-      "id": "REQ-2",
-      "requirement": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format (including 7 rows and required columns/labels), with loading/error states and respecting settings.offsetMinutes.",
-      "reason": "HomeTab.tsx is truncated and the diff snippet shows imports and computed `adjustedWeeklyTimes`, but does not show any JSX that actually renders `<WeeklyPrayerTimesSection ...>` or confirms it receives the offset-adjusted weekly data and shows exactly 7 rows/required fields.",
+      "id": "REQ-3",
+      "requirement": "frontend/public/android-widget-bridge.js exposes (or forwards to) window.AndroidPrayer.updateNextPrayer(name, time) when available, without removing existing legacy widget bridge behavior.",
+      "reason": "The diff shows legacy functions (updateNextPrayerWidget/updateDailyPrayersWidget) calling window.Android.* methods, but the provided truncated content does not show any code that creates/forwards a window.AndroidPrayer object with updateNextPrayer/updateDailyPrayers/updateCity. Therefore it cannot be verified that the AndroidPrayer interface is exposed as required.",
       "evidence": [
-        "frontend/src/features/home/HomeTab.tsx (truncated)",
-        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
+        "frontend/public/android-widget-bridge.js (truncated; shows legacy updateNextPrayerWidget/updateDailyPrayersWidget using window.Android.updateNextPrayer/updateDailyPrayers, but no visible window.AndroidPrayer wiring)"
       ]
     },
     {
-      "id": "REQ-1",
-      "requirement": "Keep all user-facing text introduced by this build in English.",
-      "reason": "New weekly section introduces user-facing strings in Turkish (title, loading, error). This violates the constraint that all user-facing text in the build request be in English (even if existing Turkish UI can remain).",
+      "id": "REQ-2",
+      "requirement": "Provide guarded calls for sending daily prayer times via window.AndroidPrayer.* (only when AndroidPrayer exists) and ensure they do not break normal browsers.",
+      "reason": "The sendDailyPrayersToAndroid helper implementation is truncated, and the visible portion appears to start with a guard checking window.Android (legacy) rather than window.AndroidPrayer, so it is not verifiable that daily-prayer sending uses the required AndroidPrayer interface with proper guarding.",
       "evidence": [
-        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
+        "frontend/src/utils/androidBridge.ts (truncated at sendDailyPrayersToAndroid; visible code starts checking `window.Android` rather than `window.AndroidPrayer`)"
       ]
     }
   ],
-  "hallucinated_features": [
-    {
-      "description": "Introduced/changed shared Aladhan method constant export (ALADHAN_METHOD) in the daily aladhanApi module.",
-      "reason": "BuildRequest did not ask to refactor the existing daily API module; weekly fetching could have been implemented without changing the daily module interface. This is an extra implementation detail beyond the explicit requirements.",
-      "evidence": [
-        "frontend/src/features/prayer/aladhanApi.ts",
-        "frontend/src/features/prayer/aladhanWeeklyApi.ts"
-      ]
-    }
-  ],
-  "confidence": 0.63,
+  "hallucinated_features": [],
+  "confidence": 0.56,
   "changed_files": [
     "frontend-file-summaries.txt",
+    "frontend/public/android-widget-bridge.js",
+    "frontend/src/androidWidgetBridge.d.ts",
     "frontend/src/features/home/HomeTab.tsx",
-    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
-    "frontend/src/features/prayer/aladhanApi.ts",
-    "frontend/src/features/prayer/aladhanWeeklyApi.ts",
-    "frontend/src/features/prayer/timeOffset.ts",
-    "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+    "frontend/src/features/home/useAndroidWidgetUpdates.ts",
+    "frontend/src/features/home/useNextPrayerCountdown.ts",
+    "frontend/src/utils/androidBridge.ts",
     "project_state.json"
   ]
 }

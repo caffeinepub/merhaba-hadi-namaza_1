@@ -18,6 +18,7 @@ import { PrayerTrackerTab } from './features/prayer-tracker/PrayerTrackerTab';
 import { QuranOgreniyorumTab } from './features/quran-reading/QuranOgreniyorumTab';
 import { CompactWeatherSummary } from './features/weather/CompactWeatherSummary';
 import { UpdateAvailablePrompt } from './features/app-release/UpdateAvailablePrompt';
+import { HeaderFlourish } from './components/HeaderFlourish';
 import { Button } from './components/ui/button';
 import { Settings } from 'lucide-react';
 
@@ -71,6 +72,9 @@ function App() {
                   <p className="text-xs text-muted-foreground">Namaz Vakitleri</p>
                 </div>
               </div>
+
+              {/* Centered flourish motif */}
+              <HeaderFlourish />
 
               {/* Right action area: Weather + Settings */}
               <div className="flex items-center gap-2">

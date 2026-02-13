@@ -33,6 +33,20 @@
         --chart-3: 0.70 0.14 340;
         --chart-4: 0.65 0.12 100;
         --chart-5: 0.58 0.20 20;
+
+        /* Soft pastel prayer time colors */
+        --prayer-imsak: 0.88 0.08 280;
+        --prayer-imsak-fg: 0.35 0.06 280;
+        --prayer-gunes: 0.90 0.08 50;
+        --prayer-gunes-fg: 0.40 0.06 50;
+        --prayer-ogle: 0.88 0.08 160;
+        --prayer-ogle-fg: 0.35 0.06 160;
+        --prayer-ikindi: 0.90 0.08 200;
+        --prayer-ikindi-fg: 0.40 0.06 200;
+        --prayer-aksam: 0.88 0.08 320;
+        --prayer-aksam-fg: 0.35 0.06 320;
+        --prayer-yatsi: 0.90 0.08 240;
+        --prayer-yatsi-fg: 0.40 0.06 240;
     }
 
     .dark {
@@ -60,6 +74,20 @@
         --chart-3: 0.70 0.14 340;
         --chart-4: 0.65 0.12 100;
         --chart-5: 0.58 0.20 20;
+
+        /* Soft pastel prayer time colors - dark mode */
+        --prayer-imsak: 0.35 0.10 280;
+        --prayer-imsak-fg: 0.85 0.06 280;
+        --prayer-gunes: 0.38 0.10 50;
+        --prayer-gunes-fg: 0.88 0.06 50;
+        --prayer-ogle: 0.35 0.10 160;
+        --prayer-ogle-fg: 0.85 0.06 160;
+        --prayer-ikindi: 0.38 0.10 200;
+        --prayer-ikindi-fg: 0.88 0.06 200;
+        --prayer-aksam: 0.35 0.10 320;
+        --prayer-aksam-fg: 0.85 0.06 320;
+        --prayer-yatsi: 0.38 0.10 240;
+        --prayer-yatsi-fg: 0.88 0.06 240;
     }
 
     * {
@@ -84,5 +112,31 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+    }
+
+    /* Pastel prayer time column utilities */
+    .prayer-imsak-col {
+        background-color: oklch(var(--prayer-imsak) / 0.4);
+        color: oklch(var(--prayer-imsak-fg));
+    }
+    .prayer-gunes-col {
+        background-color: oklch(var(--prayer-gunes) / 0.4);
+        color: oklch(var(--prayer-gunes-fg));
+    }
+    .prayer-ogle-col {
+        background-color: oklch(var(--prayer-ogle) / 0.4);
+        color: oklch(var(--prayer-ogle-fg));
+    }
+    .prayer-ikindi-col {
+        background-color: oklch(var(--prayer-ikindi) / 0.4);
+        color: oklch(var(--prayer-ikindi-fg));
+    }
+    .prayer-aksam-col {
+        background-color: oklch(var(--prayer-aksam) / 0.4);
+        color: oklch(var(--prayer-aksam-fg));
+    }
+    .prayer-yatsi-col {
+        background-color: oklch(var(--prayer-yatsi) / 0.4);
+        color: oklch(var(--prayer-yatsi-fg));
     }
 }

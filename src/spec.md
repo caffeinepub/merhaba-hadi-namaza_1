@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Show prayer times for the next 7 days on the Home page for the currently selected location.
+**Goal:** Forward the web app’s computed prayer times and location to Android WebView via a guarded `window.AndroidPrayer` JavaScriptInterface so Android widgets can display real-time values without breaking normal browsers.
 
 **Planned changes:**
-- Add a new frontend data-fetching utility (using the existing Aladhan API approach) to retrieve prayer times for today + the next 6 days, parameterized by the selected location’s latitude/longitude.
-- Integrate the new 7-day query with React Query, including a cache key that incorporates the selected coordinates, disabling the query when no location is selected, and showing a user-friendly error state on failure.
-- Update `frontend/src/features/home/HomeTab.tsx` to render a Home-styled weekly section in a table/list format with 7 rows and fields for: date/day label, İmsak (Fajr), Güneş (Sunrise), Öğle (Dhuhr), İkindi (Asr), Akşam (Maghrib), Yatsı (Isha), applying the user’s configured `settings.offsetMinutes` consistently across all displayed times and matching existing loading/error UI patterns.
+- When a location is selected and prayer times are loaded, send Android bridge payloads for: next prayer name/time, daily prayer times (imsak/fajr, gunes/sunrise, ogle/dhuhr, ikindi/asr, aksam/maghrib, yatsi/isha), and city/location display name.
+- Add Android-only, guarded bridge calls that invoke `window.AndroidPrayer.updateNextPrayer(name, time)` (and similar calls for daily times and city) only when the `AndroidPrayer` interface exists, with safe checks/try-catch to avoid crashing the React app.
+- Update `frontend/public/android-widget-bridge.js` and `frontend/src/androidWidgetBridge.d.ts` typings to support the `window.AndroidPrayer.*` interface while keeping backward compatibility with existing `window.Android.*` and existing widget update functions.
 
-**User-visible outcome:** When a location is selected, the Home page shows a weekly (7-day) prayer-times table/list for that location; if no location is selected, the weekly section is not shown.
+**User-visible outcome:** In Android WebView, widgets can receive up-to-date next prayer, daily prayer times, and city info from the web app; in normal browsers the app continues to run with no bridge-related errors.

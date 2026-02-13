@@ -1,57 +1,79 @@
 {
   "kind": "build_request",
-  "title": "Show 7-day prayer times on the Home page for the selected location",
+  "title": "Send prayer times from WebView to Android via JavaScriptInterface for widgets",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
+      "text": "When prayer times and location are available in the web app, send the following data to the Android WebView layer so Android widgets can display real-time values: next prayer name, next prayer time, daily prayer times (imsak/fajr, gunes/sunrise, ogle/dhuhr, ikindi/asr, aksam/maghrib, yatsi/isha), and city/location display name.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-1"
         ],
         "quotes": [
-          "1-mevcut kullandığın apılerden devam et 2-tablo liste şeklinde olsun mevcut tasarımlara uysun 3-seçili olan konum için"
+          "Web tarafının Android uygulamasına namaz vakitleri verisini göndermesini istiyorum.",
+          "Sonraki namaz adı (nextPrayerName)",
+          "Sonraki namaz saati (nextPrayerTime)",
+          "Günlük namaz vakitleri (imsak, gunes, ogle, ikindi, aksam, yatsi)",
+          "Şehir bilgisi"
         ]
       },
       "acceptanceCriteria": [
-        "When a location is selected, the app fetches prayer times for 7 consecutive days using Aladhan (same provider as current daily timings).",
-        "The query is disabled when there is no selected location, and surfaces a user-friendly error state if the request fails.",
-        "The React Query cache key includes the selected location coordinates so changing location refetches the 7-day data."
+        "With a location selected and prayer times loaded, the app triggers Android bridge calls containing next prayer name/time, all daily prayer times, and city/location display name.",
+        "The payload values match what the app is currently showing (including any configured offsets).",
+        "No bridge calls are attempted before prayer times are loaded (no errors in console due to undefined times)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
+      "text": "Implement the Android-only JavaScriptInterface calls so they execute only inside Android WebView and do not break normal browsers. Specifically, add a guarded call path that invokes `window.AndroidPrayer.updateNextPrayer(name, time)` when (and only when) the `AndroidPrayer` interface exists, and provide similarly guarded calls for sending daily prayer times and city information.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5",
-          "msg-6"
+          "msg-1"
         ],
         "quotes": [
-          "Anasayfada mevcut bilgilere ek olarak 1 haftalık Namaz Vaktini gösterebilir misin?",
-          "1-mevcut kullandığın apılerden devam et 2-tablo liste şeklinde olsun mevcut tasarımlara uysun 3-seçili olan konum için"
+          "Web uygulamasına, namaz vakitleri yüklendiğinde aşağıdaki Android interface çağrısını yapan JavaScript kodunu eklemen: window.AndroidPrayer.updateNextPrayer(name, time)",
+          "Ama bu çağrı yalnızca Android ortamında çalışmalı.",
+          "Web normal browser’da çalışmaya devam etmeli",
+          "Android WebView içinde çalışıyorsa veri Android’e gönderilmeli"
         ]
       },
       "acceptanceCriteria": [
-        "If no location is selected, the weekly section is not shown (the existing location setup UI remains the only prompt).",
-        "When weekly data is available, the Home page displays 7 rows (one per day) and columns (or labeled fields) for at least: İmsak (Fajr), Güneş (Sunrise), Öğle (Dhuhr), İkindi (Asr), Akşam (Maghrib), Yatsı (Isha), plus the date/day label.",
-        "The weekly display respects the user’s configured offset (settings.offsetMinutes) consistently across all shown times, using the same offset behavior as the existing daily Home list.",
-        "Loading and error states are styled consistently with existing HomeTab patterns (e.g., muted loading text, destructive error text) and do not break layout on mobile."
+        "In a normal desktop/mobile browser where `window.AndroidPrayer` is not present, the app continues to work with no runtime errors and no failed bridge calls.",
+        "In Android WebView where `window.AndroidPrayer.updateNextPrayer` is present, the app calls it with the computed next prayer name and time.",
+        "All Android bridge interactions are wrapped in safe checks/try-catch so unexpected native-side errors cannot crash the React app."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update the existing Android widget bridge layer (loaded via `frontend/index.html` from `frontend/public/android-widget-bridge.js`) and TypeScript global typings so the project supports the `window.AndroidPrayer.*` interface expected by the Android app while maintaining backward compatibility with existing `window.Android.*` bridge methods already used by the web app.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "JavaScript → Android JavascriptInterface üzerinden gönderilecek."
+        ]
+      },
+      "acceptanceCriteria": [
+        "`frontend/public/android-widget-bridge.js` exposes (or forwards to) `window.AndroidPrayer.updateNextPrayer(name, time)` when available, without removing existing `window.updateNextPrayerWidget`, `window.updateDailyPrayersWidget`, and `window.updateWeeklyPrayersWidget` behavior.",
+        "TypeScript compilation succeeds with updated `frontend/src/androidWidgetBridge.d.ts` typings for any newly introduced `window.AndroidPrayer` surface used by the app.",
+        "Existing widget update behavior (daily/weekly/next-prayer) continues to function in environments where only `window.Android.*` methods exist."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Do not introduce a new backend service; keep prayer time retrieval on the frontend using the existing API approach.",
-    "Keep all user-facing text in the build request in English (the app’s existing Turkish UI copy can remain as-is unless explicitly changed)."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
+    "Backend must remain a single Motoko actor in backend/main.mo; no additional backend services.",
+    "Use English for any user-facing text introduced by this change (e.g., new labels, error text)."
   ],
   "nonGoals": [
-    "Adding a new location selection flow or changing how the selected location is stored.",
-    "Changing the prayer time calculation method or the Aladhan method parameter currently used for daily timings.",
-    "Adding notifications or reminders for the weekly schedule."
+    "Do not implement or modify Android (Kotlin) code, widget code, or SharedPreferences storage logic in this build request.",
+    "Do not add push notifications or Play Store in-app update logic (Android-native features) as part of this request.",
+    "Do not change prayer time calculation sources/APIs beyond what is required to forward already-computed values to Android."
   ],
   "imageRequirements": {
     "required": [],

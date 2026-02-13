@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { sendNextPrayerToAndroid, sendNextPrayerWithTimeString } from '@/utils/androidBridge';
 
 interface NextPrayer {
   name: string;
@@ -13,6 +14,10 @@ interface NextPrayerCountdownResult {
 export function useNextPrayerCountdown(adjustedTimes: any): NextPrayerCountdownResult {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [nextPrayer, setNextPrayer] = useState<NextPrayer | null>(null);
+  
+  // Track last sent prayer to avoid excessive bridge calls
+  const lastSentTimestampRef = useRef<{ name: string; timestamp: number } | null>(null);
+  const lastSentTimeStringRef = useRef<{ name: string; time: string } | null>(null);
 
   useEffect(() => {
     if (!adjustedTimes) {
@@ -53,16 +58,50 @@ export function useNextPrayerCountdown(adjustedTimes: any): NextPrayerCountdownR
 
       setNextPrayer(found);
 
-      // Calculate time remaining
+      // Calculate time remaining and compute timestamp
       if (found) {
         const [hours, minutes] = found.time.split(':').map(Number);
         let prayerMinutes = hours * 60 + minutes;
 
+        // Compute the actual timestamp for the next occurrence
+        const nextPrayerDate = new Date();
+        nextPrayerDate.setHours(hours, minutes, 0, 0);
+
         // If prayer is tomorrow, add 24 hours
         if (prayerMinutes <= currentMinutes) {
           prayerMinutes += 24 * 60;
+          nextPrayerDate.setDate(nextPrayerDate.getDate() + 1);
         }
 
+        const nextPrayerTimestamp = nextPrayerDate.getTime();
+
+        // Send to Android bridge (legacy timestamp-based) only if changed
+        const lastSentTimestamp = lastSentTimestampRef.current;
+        if (
+          !lastSentTimestamp ||
+          lastSentTimestamp.name !== found.name ||
+          lastSentTimestamp.timestamp !== nextPrayerTimestamp
+        ) {
+          const success = sendNextPrayerToAndroid(found.name, nextPrayerTimestamp);
+          if (success) {
+            lastSentTimestampRef.current = { name: found.name, timestamp: nextPrayerTimestamp };
+          }
+        }
+
+        // Send to AndroidPrayer interface (new time string-based) only if changed
+        const lastSentTimeString = lastSentTimeStringRef.current;
+        if (
+          !lastSentTimeString ||
+          lastSentTimeString.name !== found.name ||
+          lastSentTimeString.time !== found.time
+        ) {
+          const success = sendNextPrayerWithTimeString(found.name, found.time);
+          if (success) {
+            lastSentTimeStringRef.current = { name: found.name, time: found.time };
+          }
+        }
+
+        // Calculate display string
         const diffMinutes = prayerMinutes - currentMinutes;
         const hoursLeft = Math.floor(diffMinutes / 60);
         const minutesLeft = diffMinutes % 60;
@@ -83,3 +122,4 @@ export function useNextPrayerCountdown(adjustedTimes: any): NextPrayerCountdownR
 
   return { nextPrayer, timeRemaining };
 }
+

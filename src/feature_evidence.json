@@ -2,12 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-frontend-data-fetching-utility-that-retrieves-prayer-times-for-the-next-7-days-today-6-days-using-the-same-aladhan-api-currently-used-for-daily-prayer-times-parameterized-by-the-currently-selected-location-latitude-longitude",
-      "featureTitle": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
+      "featureId": "feature-when-prayer-times-and-location-are-available-in-the-web-app-send-the-following-data-to-the-android-webview-layer-so-android-widgets-can-display-real-time-values-next-prayer-name-next-prayer-time-daily-prayer-times-imsak-fajr-gunes-sunrise-ogle-dhuhr-ikindi-asr-aksam-maghrib-yatsi-isha-and-city-location-display-name",
+      "featureTitle": "When prayer times and location are available in the web app, send the following data to the Android WebView layer so Android widgets can display real-time values: next prayer name, next prayer time, daily prayer times (imsak/fajr, gunes/sunrise, ogle/dhuhr, ikindi/asr, aksam/maghrib, yatsi/isha), and city/location display name.",
       "files": [
-        "frontend/src/features/prayer/aladhanApi.ts",
-        "frontend/src/features/prayer/aladhanWeeklyApi.ts",
-        "frontend/src/features/prayer/useWeeklyPrayerTimes.ts"
+        "frontend/src/features/home/HomeTab.tsx",
+        "frontend/src/features/home/useAndroidWidgetUpdates.ts",
+        "frontend/src/features/home/useNextPrayerCountdown.ts",
+        "frontend/src/utils/androidBridge.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -24,12 +25,12 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-render-a-7-day-prayer-times-section-on-the-home-page-frontend-src-features-home-hometab-tsx-that-matches-the-existing-home-design-language-and-presents-the-weekly-data-in-a-table-list-format",
-      "featureTitle": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
+      "featureId": "feature-implement-the-android-only-javascriptinterface-calls-so-they-execute-only-inside-android-webview-and-do-not-break-normal-browsers-specifically-add-a-guarded-call-path-that-invokes-window-androidprayer-updatenextprayer-name-time-when-and-only-when-the-androidprayer-interface-exists-and-provide-similarly-guarded-calls-for-sending-daily-prayer-times-and-city-information",
+      "featureTitle": "Implement the Android-only JavaScriptInterface calls so they execute only inside Android WebView and do not break normal browsers. Specifically, add a guarded call path that invokes `window.AndroidPrayer.updateNextPrayer(name, time)` when (and only when) the `AndroidPrayer` interface exists, and provide similarly guarded calls for sending daily prayer times and city information.",
       "files": [
-        "frontend/src/features/home/HomeTab.tsx",
-        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
-        "frontend/src/features/prayer/timeOffset.ts"
+        "frontend/src/features/home/useAndroidWidgetUpdates.ts",
+        "frontend/src/features/home/useNextPrayerCountdown.ts",
+        "frontend/src/utils/androidBridge.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -42,6 +43,28 @@
       ],
       "testIds": [
         "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-existing-android-widget-bridge-layer-loaded-via-frontend-index-html-from-frontend-public-android-widget-bridge-js-and-typescript-global-typings-so-the-project-supports-the-window-androidprayer-interface-expected-by-the-android-app-while-maintaining-backward-compatibility-with-existing-window-android-bridge-methods-already-used-by-the-web-app",
+      "featureTitle": "Update the existing Android widget bridge layer (loaded via `frontend/index.html` from `frontend/public/android-widget-bridge.js`) and TypeScript global typings so the project supports the `window.AndroidPrayer.*` interface expected by the Android app while maintaining backward compatibility with existing `window.Android.*` bridge methods already used by the web app.",
+      "files": [
+        "frontend/public/android-widget-bridge.js",
+        "frontend/src/androidWidgetBridge.d.ts",
+        "frontend/src/utils/androidBridge.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

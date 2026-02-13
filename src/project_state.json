@@ -1,27 +1,37 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Homepage’e mevcut API’ler üzerinden, seçili konuma göre 1 haftalık namaz vakitlerini mevcut tasarıma uyumlu tablo/liste formatında ekleme çalışması.",
+  "summary": "Android app (Hadi Namaza) with a WebView-based web app that must send prayer times data from the web layer to Android via JavascriptInterface so Android widgets can display real-time prayer times (saved in SharedPreferences).",
   "architectural_notes": [
-    "Namaz vakitleri verisi mevcut kullanılan API kaynağından çekilecek ve UI’de 1 haftalık görünüm için formatlanacak.",
-    "Namaz vakitleri anasayfada kullanıcının seçili konumuna göre gösterilecek."
+    "WebView-hosted web app should conditionally call Android bridge only when running in Android WebView (e.g., window.AndroidPrayer exists).",
+    "Use JavascriptInterface to pass prayer times payload from JS to Android; persist to SharedPreferences for widgets to consume."
   ],
-  "known_issues": [],
+  "known_issues": [
+    "Assistant previously failed to return the edited MainActivity text when repeatedly requested."
+  ],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-a-new-frontend-data-fetching-utility-that-retrieves-prayer-times-for-the-next-7-days-today-6-days-using-the-same-aladhan-api-currently-used-for-daily-prayer-times-parameterized-by-the-currently-selected-location-latitude-longitude",
-      "title": "Add a new frontend data-fetching utility that retrieves prayer times for the next 7 days (today + 6 days) using the same Aladhan API currently used for daily prayer times, parameterized by the currently selected location (latitude/longitude).",
+      "id": "feature-when-prayer-times-and-location-are-available-in-the-web-app-send-the-following-data-to-the-android-webview-layer-so-android-widgets-can-display-real-time-values-next-prayer-name-next-prayer-time-daily-prayer-times-imsak-fajr-gunes-sunrise-ogle-dhuhr-ikindi-asr-aksam-maghrib-yatsi-isha-and-city-location-display-name",
+      "title": "When prayer times and location are available in the web app, send the following data to the Android WebView layer so Android widgets can display real-time values: next prayer name, next prayer time, daily prayer times (imsak/fajr, gunes/sunrise, ogle/dhuhr, ikindi/asr, aksam/maghrib, yatsi/isha), and city/location display name.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-render-a-7-day-prayer-times-section-on-the-home-page-frontend-src-features-home-hometab-tsx-that-matches-the-existing-home-design-language-and-presents-the-weekly-data-in-a-table-list-format",
-      "title": "Render a 7-day prayer times section on the Home page (frontend/src/features/home/HomeTab.tsx) that matches the existing Home design language and presents the weekly data in a table/list format.",
+      "id": "feature-implement-the-android-only-javascriptinterface-calls-so-they-execute-only-inside-android-webview-and-do-not-break-normal-browsers-specifically-add-a-guarded-call-path-that-invokes-window-androidprayer-updatenextprayer-name-time-when-and-only-when-the-androidprayer-interface-exists-and-provide-similarly-guarded-calls-for-sending-daily-prayer-times-and-city-information",
+      "title": "Implement the Android-only JavaScriptInterface calls so they execute only inside Android WebView and do not break normal browsers. Specifically, add a guarded call path that invokes `window.AndroidPrayer.updateNextPrayer(name, time)` when (and only when) the `AndroidPrayer` interface exists, and provide similarly guarded calls for sending daily prayer times and city information.",
       "reqIds": [
         "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-existing-android-widget-bridge-layer-loaded-via-frontend-index-html-from-frontend-public-android-widget-bridge-js-and-typescript-global-typings-so-the-project-supports-the-window-androidprayer-interface-expected-by-the-android-app-while-maintaining-backward-compatibility-with-existing-window-android-bridge-methods-already-used-by-the-web-app",
+      "title": "Update the existing Android widget bridge layer (loaded via `frontend/index.html` from `frontend/public/android-widget-bridge.js`) and TypeScript global typings so the project supports the `window.AndroidPrayer.*` interface expected by the Android app while maintaining backward compatibility with existing `window.Android.*` bridge methods already used by the web app.",
+      "reqIds": [
+        "REQ-3"
       ],
       "version": 1
     }
@@ -29,12 +39,49 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Anasayfada seçili konuma göre mevcut API’lerden alınan 1 haftalık namaz vakitlerini mevcut tasarıma uyumlu tablo/liste şeklinde göster",
+      "summary": "Send prayer times data from WebView web app to Android via JavascriptInterface (Android-only call) so widgets can display real-time values.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Store received prayer times (next prayer name/time, daily times, city) in SharedPreferences for widgets to read.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Android widgets (Next/Daily/Weekly) should read prayer times from SharedPreferences instead of static data.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Enable offline WebView loading using cacheMode = LOAD_CACHE_ELSE_NETWORK.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Implement Play Store in-app update / version control check (immediate update flow).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Add push notification capability (ezan notifications) for the Android app.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Ensure UI avoids overlap with status bar and navigation buttons (insets/safe area handling).",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Show 7-day prayer times on the Home page for the selected location",
+  "gameProjectType": "none",
+  "projectName": "Hadi Namaza",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

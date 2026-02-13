@@ -3,6 +3,7 @@ import { Card, CardContent } from '../../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { LocationSetupSection } from '../location/LocationSetupSection';
 import { NextPrayerCountdown } from './NextPrayerCountdown';
+import { SahurIftarStrip } from './SahurIftarStrip';
 import { PrayerTimeCardsSection } from './PrayerTimeCardsSection';
 import { WeeklyPrayerTimesSection } from './WeeklyPrayerTimesSection';
 import { MotifFrame } from './MotifFrame';
@@ -13,6 +14,7 @@ import { useWeeklyPrayerTimes } from '../prayer/useWeeklyPrayerTimes';
 import { useWeather } from '../weather/useWeather';
 import { applyOffsetToPrayerTimes, applyOffsetToWeeklyPrayerTimes } from '../prayer/timeOffset';
 import { computeKerahatWindows, mergeTimesWithKerahat } from '../prayer/kerahatTimes';
+import { useAndroidWidgetUpdates } from './useAndroidWidgetUpdates';
 import { MapPin, Sunrise, Sun, Sunset, Moon, Cloud, AlertCircle } from 'lucide-react';
 
 export function HomeTab() {
@@ -29,6 +31,10 @@ export function HomeTab() {
   const adjustedWeeklyTimes = weeklyPrayerTimes
     ? applyOffsetToWeeklyPrayerTimes(weeklyPrayerTimes, settings.offsetMinutes)
     : [];
+
+  // Send widget updates when adjusted times are available, including city name
+  const cityName = settings.location?.displayName;
+  useAndroidWidgetUpdates(adjustedTimes, adjustedWeeklyTimes, cityName);
 
   const prayerList = adjustedTimes
     ? [
@@ -63,29 +69,36 @@ export function HomeTab() {
 
   return (
     <div className="space-y-6">
-      {/* Top summary row with motif styling */}
-      <MotifFrame variant="divider">
-        <div className="flex flex-wrap items-center gap-3">
-          <Dialog open={locationDialogOpen} onOpenChange={setLocationDialogOpen}>
-            <DialogTrigger asChild>
-              <MotifButton variant="outline" size="sm" className="gap-2">
-                <MapPin className="h-4 w-4" />
-                <span className="text-sm">{settings.location.displayName}</span>
-              </MotifButton>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Konum Seç</DialogTitle>
-              </DialogHeader>
-              <LocationSetupSection />
-            </DialogContent>
-          </Dialog>
-        </div>
-      </MotifFrame>
+      {/* Top summary row without divider */}
+      <div className="flex flex-wrap items-center gap-3">
+        <Dialog open={locationDialogOpen} onOpenChange={setLocationDialogOpen}>
+          <DialogTrigger asChild>
+            <MotifButton variant="outline" size="sm" className="gap-2">
+              <MapPin className="h-4 w-4" />
+              <span className="text-sm">{settings.location.displayName}</span>
+            </MotifButton>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Konum Seç</DialogTitle>
+            </DialogHeader>
+            <LocationSetupSection />
+          </DialogContent>
+        </Dialog>
+      </div>
 
       {/* Next prayer countdown with ornamental frame */}
       <MotifFrame variant="ornamental" className="px-4">
         <NextPrayerCountdown
+          adjustedTimes={adjustedTimes}
+          isLoading={prayerLoading}
+          error={prayerError}
+        />
+      </MotifFrame>
+
+      {/* Sahur-Iftar strip with countdown */}
+      <MotifFrame variant="ornamental" className="px-4">
+        <SahurIftarStrip
           adjustedTimes={adjustedTimes}
           isLoading={prayerLoading}
           error={prayerError}
@@ -200,3 +213,4 @@ export function HomeTab() {
     </div>
   );
 }
+

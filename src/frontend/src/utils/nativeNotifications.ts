@@ -124,6 +124,9 @@ declare global {
     Android?: {
       showNotification(title: string, body: string): void;
       getAppVersion(): string;
+      updateNextPrayer(prayerName: string, timeMillis: number): void;
+      updateDailyPrayers(payloadJson: string): void;
+      updateWeeklyPrayers(payloadJson: string): void;
     };
   }
 }
