@@ -1,42 +1,48 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix Weekly Prayer Times table mobile horizontal scroll + sticky first column overlap",
+  "title": "Weekly Prayer Times: sticky Day/Date column with proper separation on mobile horizontal scroll",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Make the weekly prayer times table horizontally scrollable on mobile with a readable, visually separated sticky Day/Date first column and a stable minimum table width.",
+      "summary": "Prevent the left Day/Date column from being visually covered/merged during horizontal scroll by enforcing a true sticky first column with opaque background and clear separator inside a horizontally scrollable container.",
       "acceptanceCriteria": [
-        "On small/mobile widths, the weekly table can be scrolled horizontally inside its own container without affecting other page content.",
-        "While horizontally scrolling, the first column (Day/Date) stays visually fixed and does not blend/overlap with adjacent columns; text remains clearly readable.",
-        "The sticky first column has an opaque background and a clear divider (border and/or shadow) so underlying scrolled columns do not show through.",
-        "The table has a consistent minimum width so columns do not collapse into each other when rendered on narrow screens."
+        "On narrow/mobile widths, the weekly table scrolls horizontally inside its own container (not the whole page).",
+        "While horizontally scrolling, the first column (Day/Date) stays fixed on the left and never gets covered by other columns’ text.",
+        "The sticky first column has an opaque background so underlying cells do not show through.",
+        "A visible separator (border and/or shadow) remains between the sticky first column and the scrollable time columns in both light and dark mode."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
-          "operation": "modify",
-          "description": "Adjust the weekly table wrapper and table classes to: (1) keep horizontal scrolling contained to this section (e.g., overflow-x on a dedicated scroller with max width containment), (2) apply a consistent min-width to the table so columns do not collapse on narrow screens, and (3) make the first column (header + body) sticky with an opaque background plus a clear separator (border/shadow) and appropriate z-index so it never visually merges with scrolled time columns. Do not edit any files under frontend/src/components/ui."
-        },
-        {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add narrowly-scoped global utility classes for the weekly prayer times scroller + sticky first column (e.g., sticky background treatment, right-side divider/shadow, and any needed stacking-context helpers) that can be applied from WeeklyPrayerTimesSection without changing immutable frontend/src/components/ui components."
+          "description": "Harden `.weekly-prayer-table-wrapper`, `.weekly-prayer-table`, and sticky-column CSS so the table only scrolls within its wrapper and the first column is fully readable: make sticky backgrounds fully opaque (no alpha), ensure the table uses compatible border-collapsing (e.g., `border-collapse: separate` if needed), and strengthen the separator treatment (border/shadow) for both light and dark mode."
+        },
+        {
+          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "operation": "modify",
+          "description": "Adjust Weekly Prayer Times table markup/classes (without editing shadcn files under `frontend/src/components/ui`) so the sticky Day/Date column is applied consistently and remains visually separated during horizontal scroll (e.g., ensure the wrapper and table class names align with the updated CSS and avoid any class combinations that cause translucent overlap)."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Ensure consistent sticky-column styling and layering between header and body cells in the Weekly Prayer Times table to prevent header/body mismatch and overlap during horizontal scroll.",
+      "summary": "Make sticky-column styling consistent between header and body (including today row) by aligning sticky positioning, z-index layering, background treatment, and separator so no header/body mismatch occurs while scrolling.",
       "acceptanceCriteria": [
-        "The sticky 'Day' header cell and the sticky day/date body cells render with consistent layering and background, with no flicker or overlap during scroll.",
-        "No other UI elements in the Home tab overlap the table during horizontal scrolling."
+        "The sticky header cell and sticky body cells share consistent `position: sticky; left: 0;` behavior and visually match (background + separator).",
+        "Z-index layering is correct so the sticky column (including header) always appears above scrollable columns, with no flicker when scrolling.",
+        "The 'today' row styling does not reduce readability of the sticky column and remains consistent while scrolling."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Unify sticky column rules for header/body by defining consistent sticky base styles (position/left/background/separator) and explicit z-index tiers (e.g., header above body) to avoid flicker and stacking issues; ensure the 'today' sticky cell background remains opaque and readable while preserving the row highlight."
+        },
+        {
           "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
           "operation": "modify",
-          "description": "Unify the sticky first-column implementation across TableHead and TableCell by reusing the same class set (z-index, opaque background, divider/shadow). Ensure the table scroller establishes a safe stacking context (e.g., via a wrapper class) so other Home tab elements do not overlap the scrolling table area."
+          "description": "Ensure the header sticky cell and body sticky cells use the same sticky class contract (including the same separator and background logic) and that the 'today' row styling does not introduce transparency or class conflicts that could reduce sticky-column readability during horizontal scrolling."
         }
       ]
     }

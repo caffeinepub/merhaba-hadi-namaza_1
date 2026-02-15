@@ -1,55 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Fix mobile horizontal scroll overlap in Weekly Prayer Times table",
+  "title": "Fix weekly prayer times table overlap by making Day/Date column sticky during horizontal scroll",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the mobile weekly prayer times table so that horizontal scrolling does not cause the left Day/Date column text to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "text": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6",
+          "msg-8"
         ],
         "quotes": [
-          "Uygulamada mobilde haftalık namaaz vakitlerinin birkaç sütundan sonra sayfaya sığmıyor yana kaydırmak gerekiyor ancak yana kaydırınca tariflerle çakışıyor zamanlar",
-          "sağa bakmak isteyince sol sütündaki gün tarih yazıları ile birbbirine karışıyorr",
-          "düzeltmeyi yap"
+          "Ben derdimi anlatamadım galiba haftalık ezan vakitleri penceresiinde vakitler sola doğru gidince tarihler altında kalıyor görüntü böyle oluncada yazılar okunmuyor",
+          "düzlet"
         ]
       },
       "acceptanceCriteria": [
-        "On small/mobile widths, the weekly table can be scrolled horizontally inside its own container without affecting other page content.",
-        "While horizontally scrolling, the first column (Day/Date) stays visually fixed and does not blend/overlap with adjacent columns; text remains clearly readable.",
-        "The sticky first column has an opaque background and a clear divider (border and/or shadow) so underlying scrolled columns do not show through.",
-        "The table has a consistent minimum width so columns do not collapse into each other when rendered on narrow screens."
+        "On narrow/mobile widths, the weekly table scrolls horizontally inside its own container (not the whole page).",
+        "While horizontally scrolling, the first column (Day/Date) stays fixed on the left and never gets covered by other columns’ text.",
+        "The sticky first column has an opaque background so underlying cells do not show through.",
+        "A visible separator (border and/or shadow) remains between the sticky first column and the scrollable time columns in both light and dark mode."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure the Weekly Prayer Times section uses consistent scroll + sticky-column styling for both header and body cells (same z-index layering, background treatment, and separator) to prevent any header/body mismatch during horizontal scroll.",
+      "text": "Ensure the Weekly Prayer Times sticky-column styling is consistent for both header and body cells (layering, background treatment, and separator), preventing any header/body mismatch or z-index issues during horizontal scroll.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "sol sütündaki gün tarih yazıları ile birbbirine karışıyorr"
+          "haftalık ezan vakitleri penceresiinde vakitler sola doğru gidince tarihler altında kalıyor"
         ]
       },
       "acceptanceCriteria": [
-        "The sticky 'Day' header cell and the sticky day/date body cells render with consistent layering and background, with no flicker or overlap during scroll.",
-        "No other UI elements in the Home tab overlap the table during horizontal scrolling."
+        "The sticky header cell and sticky body cells share consistent `position: sticky; left: 0;` behavior and visually match (background + separator).",
+        "Z-index layering is correct so the sticky column (including header) always appears above scrollable columns, with no flicker when scrolling.",
+        "The 'today' row styling does not reduce readability of the sticky column and remains consistent while scrolling."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui (immutable path); compose or override via consuming components and global styles instead.",
-    "Keep changes limited to fixing the weekly table mobile scroll/overlap issue (no unrelated UI copy changes)."
+    "Do not edit files under frontend/src/components/ui (shadcn components are read-only).",
+    "Do not edit any paths listed as immutable in SYSTEM_CONTEXT (compose around them instead)."
   ],
   "nonGoals": [
-    "Adding new features to the prayer times table (sorting, filtering, export).",
-    "Changing data sources or prayer time calculation logic.",
-    "Backend changes."
+    "No changes to prayer time calculation or API fetching logic.",
+    "No new features or UI sections beyond fixing the weekly table scroll/overlap behavior."
   ],
   "imageRequirements": {
     "required": [],

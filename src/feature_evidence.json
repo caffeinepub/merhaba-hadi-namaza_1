@@ -2,10 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-fix-the-mobile-weekly-prayer-times-table-so-that-horizontal-scrolling-does-not-cause-the-left-day-date-column-text-to-visually-overlap-merge-with-the-time-columns-the-left-column-must-remain-readable-and-visually-separated-while-scrolling",
-      "featureTitle": "Fix the mobile weekly prayer times table so that horizontal scrolling does not cause the left Day/Date column text to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "featureId": "feature-fix-the-weekly-prayer-times-table-on-mobile-so-horizontal-scrolling-does-not-cause-the-left-day-date-column-to-visually-overlap-merge-with-the-time-columns-the-left-column-must-remain-readable-and-visually-separated-while-scrolling",
+      "featureTitle": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
       "files": [
-        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
         "frontend/src/index.css"
       ],
       "components": [
@@ -23,10 +22,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-weekly-prayer-times-section-uses-consistent-scroll-sticky-column-styling-for-both-header-and-body-cells-same-z-index-layering-background-treatment-and-separator-to-prevent-any-header-body-mismatch-during-horizontal-scroll",
-      "featureTitle": "Ensure the Weekly Prayer Times section uses consistent scroll + sticky-column styling for both header and body cells (same z-index layering, background treatment, and separator) to prevent any header/body mismatch during horizontal scroll.",
+      "featureId": "feature-ensure-the-weekly-prayer-times-sticky-column-styling-is-consistent-for-both-header-and-body-cells-layering-background-treatment-and-separator-preventing-any-header-body-mismatch-or-z-index-issues-during-horizontal-scroll",
+      "featureTitle": "Ensure the Weekly Prayer Times sticky-column styling is consistent for both header and body cells (layering, background treatment, and separator), preventing any header/body mismatch or z-index issues during horizontal scroll.",
       "files": [
-        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
+        "frontend/src/index.css"
       ],
       "components": [
         "authorization@4.0.0",

@@ -1,12 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the Weekly Prayer Times table on mobile so horizontal scrolling works without the left Day/Date column text overlapping with the time columns.
+**Goal:** Fix the Weekly Prayer Times table on mobile so the Day/Date column remains readable and visually separated during horizontal scrolling.
 
 **Planned changes:**
-- Wrap the weekly prayer times table in a dedicated horizontal-scroll container for small screens to keep scrolling contained within the table area.
-- Make the first (Day/Date) column sticky during horizontal scroll, with an opaque background and a clear visual separator (border and/or shadow) so scrolled columns don’t show through or blend.
-- Apply consistent sticky/scroll styling to both header and body cells (matching background treatment and z-index layering) to prevent header/body mismatch while scrolling.
-- Enforce a consistent minimum table width on narrow screens so columns don’t collapse into each other.
+- Make the weekly table horizontally scrollable within its own container on narrow/mobile widths (avoid scrolling the whole page).
+- Implement a sticky first column (Day/Date) for both header and body cells using consistent sticky positioning, opaque background, and correct z-index layering.
+- Add a persistent visual separator (border and/or shadow) between the sticky Day/Date column and the scrollable time columns, supporting both light and dark mode.
+- Ensure “today” row styling remains readable and does not cause overlap/contrast issues in the sticky column while scrolling.
 
-**User-visible outcome:** On mobile, users can swipe horizontally within the Weekly Prayer Times table to view all columns, while the Day/Date column remains readable, visually separated, and does not overlap with the time columns.
+**User-visible outcome:** On mobile, users can scroll the weekly prayer times table horizontally without the time columns overlapping the Day/Date column; the left column stays fixed, readable, and clearly separated.

@@ -1,35 +1,41 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "HadiNamaza uygulamasında mobil görünümde haftalık namaz vakitleri tablosunun yatay kaydırma sırasında sol gün/tarih sütunuyla çakışma (overlap) sorununu düzeltme odaklı çalışma.",
+  "summary": "New project",
   "architectural_notes": [
-    "Mobilde haftalık namaz vakitleri tablosu yatay taşmayı sayfa yerine kendi sarmalayıcısı içinde (overflow-x:auto) yönetmeli; tablo için min-width/white-space:nowrap uygulanarak sütunların kırılması engellenmeli ve gün-tarih sütunuyla çakışma önlenmeli."
+    "Weekly timetable table should keep the first (day/date) column fixed during horizontal scroll (e.g., CSS position: sticky; left: 0; proper background and z-index) to prevent overlap."
   ],
   "known_issues": [
-    "Mobilde haftalık namaz vakitleri tablosu yatay kaydırıldığında sol gün/tarih sütunu ile diğer sütun metinleri birbirine karışıyor/çakışıyor."
+    "Weekly prayer times view: when times are scrolled left/right, columns overlap and day/date text becomes unreadable."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-fix-the-mobile-weekly-prayer-times-table-so-that-horizontal-scrolling-does-not-cause-the-left-day-date-column-text-to-visually-overlap-merge-with-the-time-columns-the-left-column-must-remain-readable-and-visually-separated-while-scrolling",
-      "title": "Fix the mobile weekly prayer times table so that horizontal scrolling does not cause the left Day/Date column text to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "id": "feature-fix-the-weekly-prayer-times-table-on-mobile-so-horizontal-scrolling-does-not-cause-the-left-day-date-column-to-visually-overlap-merge-with-the-time-columns-the-left-column-must-remain-readable-and-visually-separated-while-scrolling",
+      "title": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-the-weekly-prayer-times-section-uses-consistent-scroll-sticky-column-styling-for-both-header-and-body-cells-same-z-index-layering-background-treatment-and-separator-to-prevent-any-header-body-mismatch-during-horizontal-scroll",
-      "title": "Ensure the Weekly Prayer Times section uses consistent scroll + sticky-column styling for both header and body cells (same z-index layering, background treatment, and separator) to prevent any header/body mismatch during horizontal scroll.",
+      "id": "feature-ensure-the-weekly-prayer-times-sticky-column-styling-is-consistent-for-both-header-and-body-cells-layering-background-treatment-and-separator-preventing-any-header-body-mismatch-or-z-index-issues-during-horizontal-scroll",
+      "title": "Ensure the Weekly Prayer Times sticky-column styling is consistent for both header and body cells (layering, background treatment, and separator), preventing any header/body mismatch or z-index issues during horizontal scroll.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [],
-  "gameProjectType": "none",
-  "projectName": "HadiNamaza",
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Fix weekly prayer times table: day/date column overlaps with times when horizontally scrolling; make first column sticky so text remains readable",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Fix weekly prayer times table overlap by making Day/Date column sticky during horizontal scroll",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

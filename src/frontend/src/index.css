@@ -152,39 +152,47 @@
     .weekly-prayer-table {
         min-width: 650px;
         white-space: nowrap;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
-    /* Sticky first column with opaque background and clear separator */
+    /* Sticky first column base - fully opaque backgrounds with clear separator */
     .weekly-sticky-col {
         position: sticky;
         left: 0;
-        z-index: 20;
         border-right: 2px solid oklch(var(--border));
-        box-shadow: 2px 0 4px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 2px 0 6px -1px rgba(0, 0, 0, 0.15);
     }
 
+    /* Header sticky column - highest z-index, fully opaque */
     .weekly-sticky-header {
-        background-color: oklch(var(--muted) / 0.5);
+        z-index: 30;
+        background-color: oklch(0.94 0.02 50);
     }
 
+    /* Body sticky column - fully opaque */
     .weekly-sticky-body {
-        background-color: oklch(var(--muted) / 0.3);
+        z-index: 20;
+        background-color: oklch(0.97 0.01 50);
     }
 
+    /* Today row sticky column - fully opaque with subtle tint */
     .weekly-sticky-today {
-        background-color: oklch(var(--primary) / 0.15);
+        z-index: 20;
+        background-color: oklch(0.90 0.04 160);
     }
 
-    /* Dark mode adjustments for sticky column */
+    /* Dark mode adjustments for sticky column - all fully opaque */
     .dark .weekly-sticky-header {
-        background-color: oklch(var(--muted) / 0.8);
+        background-color: oklch(0.25 0.03 30);
+        box-shadow: 2px 0 6px -1px rgba(0, 0, 0, 0.4);
     }
 
     .dark .weekly-sticky-body {
-        background-color: oklch(var(--card));
+        background-color: oklch(0.22 0.03 30);
     }
 
     .dark .weekly-sticky-today {
-        background-color: oklch(var(--primary) / 0.2);
+        background-color: oklch(0.28 0.08 160);
     }
 }

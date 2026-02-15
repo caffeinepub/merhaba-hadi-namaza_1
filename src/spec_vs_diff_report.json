@@ -1,37 +1,54 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T21:57:21.855Z",
-  "summary": "Weekly Prayer Times table markup was updated to add wrapper/table/sticky-column class hooks for a sticky first column in both header and body. Global CSS was also modified substantially, including theme/palette and background utilities that appear unrelated to the specific mobile table overlap fix request.",
-  "missing_requirements": [],
-  "hallucinated_features": [
+  "generatedAt": "2026-02-15T22:23:49.220Z",
+  "summary": "The diff does not provide concrete evidence that the Weekly Prayer Times table was updated to use a sticky first (Day/Date) column with proper scroll container behavior, consistent header/body styling, opaque backgrounds, and separators. The visible changes are largely global theme/style changes (palette, backgrounds, prayer-color tokens) and metadata/summaries, which go beyond the requested narrow table-overlap fix.",
+  "missing_requirements": [
     {
-      "description": "Large-scale global theme/palette changes (OKLCH color tokens for background/foreground/primary/etc.) beyond the weekly table scroll/overlap fix.",
-      "reason": "BuildRequest constrained changes to fixing the weekly table mobile scroll/overlap issue only; global palette updates are unrelated to sticky column behavior.",
+      "id": "REQ-1",
+      "requirement": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to overlap/merge with time columns; first column stays fixed, opaque, and separated while table scrolls inside its own container.",
+      "reason": "No diff evidence shows changes to the Weekly Prayer Times table markup/container (e.g., scroll wrapper with horizontal overflow) or to the specific header/body first-column cells to make them sticky with opaque background and a separator. The only concrete code shown is global CSS variable/theme changes; the table-specific utilities mentioned in the summary are not visible in the truncated diff.",
       "evidence": [
-        "frontend/src/index.css"
+        "frontend/src/index.css (truncated; no visible weekly table sticky-column rules)"
       ]
     },
     {
-      "description": "Added/modified global background utilities for Islamic pattern images (pattern-bg, vivid-motif-bg).",
-      "reason": "Not requested; also violates the 'no unrelated UI changes' constraint since it changes global styling/background capabilities unrelated to the weekly table overlap bug.",
+      "id": "REQ-2",
+      "requirement": "Ensure sticky-column styling is consistent for both header and body cells (position: sticky; left: 0; consistent background + separator), correct z-index layering, and today-row styling remains readable.",
+      "reason": "No diff evidence shows coordinated header+body sticky styling, explicit z-index layering applied to the weekly table header/body sticky cells, or handling for today-row styling. The only mention is in a generated summary file, not in verifiable code changes within the provided diff snippet.",
       "evidence": [
-        "frontend/src/index.css"
-      ]
-    },
-    {
-      "description": "Introduced/expanded pastel prayer-time column color utilities/tokens (e.g., --prayer-imsak, .prayer-imsak-col, etc.).",
-      "reason": "While the table uses prayer-*-col classes, the BuildRequest did not ask to add/alter column color theming—only to fix sticky/scroll overlap and separation.",
-      "evidence": [
-        "frontend/src/index.css",
-        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
+        "frontend/src/index.css (truncated; no visible header/body sticky rules)",
+        "frontend-file-summaries.txt (claims changes but is not direct code evidence)"
       ]
     }
   ],
-  "confidence": 0.62,
+  "hallucinated_features": [
+    {
+      "description": "Global vivid OKLCH palette overhaul and addition of many new CSS color tokens (including prayer-time pastel tokens) unrelated to the weekly table overlap fix.",
+      "reason": "BuildRequest explicitly limits scope to fixing weekly table scroll/overlap behavior and lists no new UI/theme changes; the diff shows extensive global theme token changes.",
+      "evidence": [
+        "frontend/src/index.css"
+      ]
+    },
+    {
+      "description": "Addition of global background pattern utilities (e.g., pattern-bg, vivid-motif-bg) unrelated to the weekly table sticky-column behavior.",
+      "reason": "Not requested; constitutes new styling utilities beyond the stated non-goals.",
+      "evidence": [
+        "frontend/src/index.css"
+      ]
+    },
+    {
+      "description": "Modification/maintenance of meta documentation/state files (frontend-file-summaries.txt, project_state.json) unrelated to implementing the sticky Day/Date column behavior.",
+      "reason": "Not requested by the BuildRequest; these changes do not implement the UI behavior fix.",
+      "evidence": [
+        "frontend-file-summaries.txt",
+        "project_state.json"
+      ]
+    }
+  ],
+  "confidence": 0.66,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
     "frontend/src/index.css",
     "project_state.json"
   ]
