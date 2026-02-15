@@ -1,6 +1,44 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "No new actionable requirements (awaiting clarification of 'sıradkai')",
-  "requirements": []
+  "title": "Fix Weekly Prayer Times table mobile horizontal scroll + sticky first column overlap",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Make the weekly prayer times table horizontally scrollable on mobile with a readable, visually separated sticky Day/Date first column and a stable minimum table width.",
+      "acceptanceCriteria": [
+        "On small/mobile widths, the weekly table can be scrolled horizontally inside its own container without affecting other page content.",
+        "While horizontally scrolling, the first column (Day/Date) stays visually fixed and does not blend/overlap with adjacent columns; text remains clearly readable.",
+        "The sticky first column has an opaque background and a clear divider (border and/or shadow) so underlying scrolled columns do not show through.",
+        "The table has a consistent minimum width so columns do not collapse into each other when rendered on narrow screens."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "operation": "modify",
+          "description": "Adjust the weekly table wrapper and table classes to: (1) keep horizontal scrolling contained to this section (e.g., overflow-x on a dedicated scroller with max width containment), (2) apply a consistent min-width to the table so columns do not collapse on narrow screens, and (3) make the first column (header + body) sticky with an opaque background plus a clear separator (border/shadow) and appropriate z-index so it never visually merges with scrolled time columns. Do not edit any files under frontend/src/components/ui."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add narrowly-scoped global utility classes for the weekly prayer times scroller + sticky first column (e.g., sticky background treatment, right-side divider/shadow, and any needed stacking-context helpers) that can be applied from WeeklyPrayerTimesSection without changing immutable frontend/src/components/ui components."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Ensure consistent sticky-column styling and layering between header and body cells in the Weekly Prayer Times table to prevent header/body mismatch and overlap during horizontal scroll.",
+      "acceptanceCriteria": [
+        "The sticky 'Day' header cell and the sticky day/date body cells render with consistent layering and background, with no flicker or overlap during scroll.",
+        "No other UI elements in the Home tab overlap the table during horizontal scrolling."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "operation": "modify",
+          "description": "Unify the sticky first-column implementation across TableHead and TableCell by reusing the same class set (z-index, opaque background, divider/shadow). Ensure the table scroller establishes a safe stacking context (e.g., via a wrapper class) so other Home tab elements do not overlap the scrolling table area."
+        }
+      ]
+    }
+  ]
 }

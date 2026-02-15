@@ -42,11 +42,11 @@ export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: Weekl
         <CardTitle className="text-lg">Haftalık Namaz Vakitleri</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
+        <div className="weekly-prayer-table-wrapper">
+          <Table className="weekly-prayer-table">
             <TableHeader>
               <TableRow className="border-b-2 hover:bg-transparent">
-                <TableHead className="font-semibold bg-muted/30 sticky left-0 z-10">Gün</TableHead>
+                <TableHead className="font-semibold weekly-sticky-col weekly-sticky-header">Gün</TableHead>
                 <TableHead className="text-center font-semibold prayer-imsak-col border-l">İmsak</TableHead>
                 <TableHead className="text-center font-semibold prayer-gunes-col border-l">Güneş</TableHead>
                 <TableHead className="text-center font-semibold prayer-ogle-col border-l">Öğle</TableHead>
@@ -66,7 +66,7 @@ export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: Weekl
                       ${isToday ? 'bg-primary/10 hover:bg-primary/15 font-medium' : 'hover:bg-muted/20'}
                     `}
                   >
-                    <TableCell className="font-medium whitespace-nowrap bg-muted/20 sticky left-0 z-10">
+                    <TableCell className={`font-medium whitespace-nowrap weekly-sticky-col ${isToday ? 'weekly-sticky-today' : 'weekly-sticky-body'}`}>
                       {day.dayLabel}
                       {isToday && <span className="ml-2 text-xs text-primary">(Bugün)</span>}
                     </TableCell>

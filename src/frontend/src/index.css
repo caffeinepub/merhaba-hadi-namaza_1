@@ -139,4 +139,52 @@
         background-color: oklch(var(--prayer-yatsi) / 0.4);
         color: oklch(var(--prayer-yatsi-fg));
     }
+
+    /* Weekly prayer times table horizontal scroll with sticky first column */
+    .weekly-prayer-table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+        isolation: isolate;
+    }
+
+    .weekly-prayer-table {
+        min-width: 650px;
+        white-space: nowrap;
+    }
+
+    /* Sticky first column with opaque background and clear separator */
+    .weekly-sticky-col {
+        position: sticky;
+        left: 0;
+        z-index: 20;
+        border-right: 2px solid oklch(var(--border));
+        box-shadow: 2px 0 4px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .weekly-sticky-header {
+        background-color: oklch(var(--muted) / 0.5);
+    }
+
+    .weekly-sticky-body {
+        background-color: oklch(var(--muted) / 0.3);
+    }
+
+    .weekly-sticky-today {
+        background-color: oklch(var(--primary) / 0.15);
+    }
+
+    /* Dark mode adjustments for sticky column */
+    .dark .weekly-sticky-header {
+        background-color: oklch(var(--muted) / 0.8);
+    }
+
+    .dark .weekly-sticky-body {
+        background-color: oklch(var(--card));
+    }
+
+    .dark .weekly-sticky-today {
+        background-color: oklch(var(--primary) / 0.2);
+    }
 }

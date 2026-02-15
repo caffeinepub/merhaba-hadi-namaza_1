@@ -1,16 +1,55 @@
 {
   "kind": "build_request",
-  "title": "No new actionable requirements (awaiting clarification of 'sıradkai')",
+  "title": "Fix mobile horizontal scroll overlap in Weekly Prayer Times table",
   "priority": "normal",
-  "requirements": [],
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Fix the mobile weekly prayer times table so that horizontal scrolling does not cause the left Day/Date column text to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Uygulamada mobilde haftalık namaaz vakitlerinin birkaç sütundan sonra sayfaya sığmıyor yana kaydırmak gerekiyor ancak yana kaydırınca tariflerle çakışıyor zamanlar",
+          "sağa bakmak isteyince sol sütündaki gün tarih yazıları ile birbbirine karışıyorr",
+          "düzeltmeyi yap"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On small/mobile widths, the weekly table can be scrolled horizontally inside its own container without affecting other page content.",
+        "While horizontally scrolling, the first column (Day/Date) stays visually fixed and does not blend/overlap with adjacent columns; text remains clearly readable.",
+        "The sticky first column has an opaque background and a clear divider (border and/or shadow) so underlying scrolled columns do not show through.",
+        "The table has a consistent minimum width so columns do not collapse into each other when rendered on narrow screens."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Ensure the Weekly Prayer Times section uses consistent scroll + sticky-column styling for both header and body cells (same z-index layering, background treatment, and separator) to prevent any header/body mismatch during horizontal scroll.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "sol sütündaki gün tarih yazıları ile birbbirine karışıyorr"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The sticky 'Day' header cell and the sticky day/date body cells render with consistent layering and background, with no flicker or overlap during scroll.",
+        "No other UI elements in the Home tab overlap the table during horizontal scrolling."
+      ]
+    }
+  ],
   "constraints": [
-    "Use English for any user-facing text in the build request.",
-    "Backend must remain a single Motoko actor (all logic in backend/main.mo).",
-    "Do not edit files under frontend/src/components/ui or any paths listed as immutable: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
+    "Do not edit any files under frontend/src/components/ui (immutable path); compose or override via consuming components and global styles instead.",
+    "Keep changes limited to fixing the weekly table mobile scroll/overlap issue (no unrelated UI copy changes)."
   ],
   "nonGoals": [
-    "Do not implement any new features (e.g., widgets, notifications, sermon fetching) without an explicit user request.",
-    "Do not modify Android native code or create an Android Studio project (out of scope for this repo)."
+    "Adding new features to the prayer times table (sorting, filtering, export).",
+    "Changing data sources or prayer time calculation logic.",
+    "Backend changes."
   ],
   "imageRequirements": {
     "required": [],

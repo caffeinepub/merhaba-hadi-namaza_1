@@ -1,13 +1,35 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
-  "existing_features": [],
+  "summary": "HadiNamaza uygulamasında mobil görünümde haftalık namaz vakitleri tablosunun yatay kaydırma sırasında sol gün/tarih sütunuyla çakışma (overlap) sorununu düzeltme odaklı çalışma.",
+  "architectural_notes": [
+    "Mobilde haftalık namaz vakitleri tablosu yatay taşmayı sayfa yerine kendi sarmalayıcısı içinde (overflow-x:auto) yönetmeli; tablo için min-width/white-space:nowrap uygulanarak sütunların kırılması engellenmeli ve gün-tarih sütunuyla çakışma önlenmeli."
+  ],
+  "known_issues": [
+    "Mobilde haftalık namaz vakitleri tablosu yatay kaydırıldığında sol gün/tarih sütunu ile diğer sütun metinleri birbirine karışıyor/çakışıyor."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-fix-the-mobile-weekly-prayer-times-table-so-that-horizontal-scrolling-does-not-cause-the-left-day-date-column-text-to-visually-overlap-merge-with-the-time-columns-the-left-column-must-remain-readable-and-visually-separated-while-scrolling",
+      "title": "Fix the mobile weekly prayer times table so that horizontal scrolling does not cause the left Day/Date column text to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-weekly-prayer-times-section-uses-consistent-scroll-sticky-column-styling-for-both-header-and-body-cells-same-z-index-layering-background-treatment-and-separator-to-prevent-any-header-body-mismatch-during-horizontal-scroll",
+      "title": "Ensure the Weekly Prayer Times section uses consistent scroll + sticky-column styling for both header and body cells (same z-index layering, background treatment, and separator) to prevent any header/body mismatch during horizontal scroll.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    }
+  ],
   "new_feature_requests": [],
-  "projectName": "No new actionable requirements (awaiting clarification of 'sıradkai')",
+  "gameProjectType": "none",
+  "projectName": "HadiNamaza",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

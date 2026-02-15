@@ -1,49 +1,38 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-14T23:30:31.447Z",
-  "summary": "BuildRequest specified no requirements and explicitly stated a non-goal of implementing new features without an explicit request. The diff adds multiple new backend features (profiles, settings, sermon cache structures, app release tracking, and authorization checks), which appear unrequested.",
+  "generatedAt": "2026-02-15T21:57:21.855Z",
+  "summary": "Weekly Prayer Times table markup was updated to add wrapper/table/sticky-column class hooks for a sticky first column in both header and body. Global CSS was also modified substantially, including theme/palette and background utilities that appear unrelated to the specific mobile table overlap fix request.",
   "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Added user profile storage and related APIs (get/save caller profile, get profile by principal) with authorization checks.",
-      "reason": "BuildRequest lists no requirements and explicitly says not to implement new features without an explicit request.",
+      "description": "Large-scale global theme/palette changes (OKLCH color tokens for background/foreground/primary/etc.) beyond the weekly table scroll/overlap fix.",
+      "reason": "BuildRequest constrained changes to fixing the weekly table mobile scroll/overlap issue only; global palette updates are unrelated to sticky column behavior.",
       "evidence": [
-        "backend/main.mo"
+        "frontend/src/index.css"
       ]
     },
     {
-      "description": "Added app settings storage and related APIs (get/save caller settings, get settings by principal) with authorization checks.",
-      "reason": "Not requested; BuildRequest includes 'Requirements: none' and a non-goal to avoid new features.",
+      "description": "Added/modified global background utilities for Islamic pattern images (pattern-bg, vivid-motif-bg).",
+      "reason": "Not requested; also violates the 'no unrelated UI changes' constraint since it changes global styling/background capabilities unrelated to the weekly table overlap bug.",
       "evidence": [
-        "backend/main.mo"
+        "frontend/src/index.css"
       ]
     },
     {
-      "description": "Introduced sermon-related types and in-memory caches (SermonData, WeeklySermon, sermonCache, cacheUrls).",
-      "reason": "Not requested; BuildRequest non-goal explicitly mentions not implementing sermon fetching/features without an explicit request.",
+      "description": "Introduced/expanded pastel prayer-time column color utilities/tokens (e.g., --prayer-imsak, .prayer-imsak-col, etc.).",
+      "reason": "While the table uses prayer-*-col classes, the BuildRequest did not ask to add/alter column color theming—only to fix sticky/scroll overlap and separation.",
       "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "description": "Added app release tracking (AppRelease type, latestAppRelease state, updateLatestAppRelease admin-only method, getLatestAppRelease).",
-      "reason": "Not requested; BuildRequest indicates no new features should be implemented.",
-      "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "description": "Added/introduced access control state initialization and included MixinAuthorization in the backend actor.",
-      "reason": "No requirement requested authorization refactors or new authorization behavior; could be a new feature/change beyond scope given 'Requirements: none'.",
-      "evidence": [
-        "backend/main.mo"
+        "frontend/src/index.css",
+        "frontend/src/features/home/WeeklyPrayerTimesSection.tsx"
       ]
     }
   ],
-  "confidence": 0.78,
+  "confidence": 0.62,
   "changed_files": [
-    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+    "frontend/src/index.css",
     "project_state.json"
   ]
 }
