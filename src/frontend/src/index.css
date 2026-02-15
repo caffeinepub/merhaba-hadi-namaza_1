@@ -100,6 +100,27 @@
 }
 
 @layer utilities {
+    /* Safe area insets for edge-to-edge WebView */
+    .safe-area-inset {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
+    .safe-area-inset-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-inset-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .safe-area-inset-x {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
     .pattern-bg {
         background-image: url('/assets/generated/islamic-pattern-bg.dim_1600x900.png');
         background-size: cover;

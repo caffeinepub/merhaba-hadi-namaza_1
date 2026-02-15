@@ -1,58 +1,72 @@
 {
   "kind": "build_request",
-  "title": "Fix weekly prayer times table overlap by making Day/Date column sticky during horizontal scroll",
+  "title": "Provide complete Android WebView wrapper spec (offline cache, native notifications, insets, Play Store version checks) and add web safe-area padding",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "text": "Expand `frontend/docs/android-webview-template.md` into a complete, “final and complete” Android Studio WebView wrapper guide that includes the full Kotlin/Gradle/manifest/resource code (as sequential, copy-pasteable files) for: (1) offline-first WebView caching using `WebSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK`, (2) a JavaScript bridge that converts web-triggered notification calls into visible native Android notifications (compatible with the existing web bridge expectations like `window.Android.showNotification(title, body)` and `window.AndroidPush.sendPrayerTimes(json)`), (3) runtime notification permission handling for Android 13+ (`POST_NOTIFICATIONS`) plus a user-facing option to open system notification settings after setup, (4) scheduled prayer-time alarms and an ongoing/persistent status-bar notification showing the next scheduled prayer time, (5) Play Store version checking and a native notification when a new version is available, and (6) edge-to-edge / WindowInsets handling so the WebView content does not render under the status bar or navigation bar.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6",
-          "msg-8"
+          "msg-1"
         ],
         "quotes": [
-          "Ben derdimi anlatamadım galiba haftalık ezan vakitleri penceresiinde vakitler sola doğru gidince tarihler altında kalıyor görüntü böyle oluncada yazılar okunmuyor",
-          "düzlet"
+          "şimdi senden android stuidoda uygulamanın  Öncelikle webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK kod ile çevrımdışı önyükelemeli çalışsın istiyorum... uygulama android tarafında push bildirim versin istiyorum... Bildirim ayarları kurulup yapınca açılması için seçenek sunulsun... sıradaki vakitte sabit bir bildirim olarak bildirim çubuğunda görüntülenebilsin... google play storede sürüm kontrolü yapılabilsin yeni sürüm gelince bildirim versin... ekran mobil cihazlarda ... taşsın istemiyorum... gerekli olan android studio dosyalarının kodlarını metin olarak sırayla gönderebilir misin?",
+          "başla"
         ]
       },
       "acceptanceCriteria": [
-        "On narrow/mobile widths, the weekly table scrolls horizontally inside its own container (not the whole page).",
-        "While horizontally scrolling, the first column (Day/Date) stays fixed on the left and never gets covered by other columns’ text.",
-        "The sticky first column has an opaque background so underlying cells do not show through.",
-        "A visible separator (border and/or shadow) remains between the sticky first column and the scrollable time columns in both light and dark mode."
+        "`frontend/docs/android-webview-template.md` contains a clear file-by-file sectioned layout (e.g., AndroidManifest.xml, MainActivity.kt, WebAppInterface.kt, FirebaseMessagingService, receivers, helpers, Gradle files, XML layouts, required resources) with complete code blocks for each file.",
+        "The doc explicitly includes the WebView caching configuration with `LOAD_CACHE_ELSE_NETWORK` and any other required WebSettings to support offline-friendly behavior.",
+        "The doc specifies a JS bridge contract that matches the existing web app typings/usages (e.g., `window.Android.showNotification(title, body)`, `window.Android.getAppVersion()`, and `window.AndroidPush.sendPrayerTimes(json)` or fallback `send(json)`).",
+        "The doc includes Android 13+ notification permission flow and a concrete “Open notification settings” intent option for the user.",
+        "The doc includes a concrete approach and code for scheduling the next prayer notification and showing an ongoing (non-dismissible) notification for the upcoming prayer time.",
+        "The doc includes code and instructions for Play Store version checking and notifying the user when an update is available.",
+        "The doc includes edge-to-edge / WindowInsets handling code ensuring the WebView content is inset-aware (status/navigation bars do not cover content)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure the Weekly Prayer Times sticky-column styling is consistent for both header and body cells (layering, background treatment, and separator), preventing any header/body mismatch or z-index issues during horizontal scroll.",
+      "text": "Add safe-area (status bar / navigation bar) padding support to the React web UI so that when hosted inside an edge-to-edge Android WebView, the app content respects device cutouts and system bars using CSS env safe-area inset variables.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-1"
         ],
         "quotes": [
-          "haftalık ezan vakitleri penceresiinde vakitler sola doğru gidince tarihler altında kalıyor"
+          "Ayrııca ekran mobil cihazlarda ne üst kısımdaki şart ve bildirim alanına taşsın ne de alt kısımda menu ve geri tuş kısmına taşsın istemiyorum."
         ]
       },
       "acceptanceCriteria": [
-        "The sticky header cell and sticky body cells share consistent `position: sticky; left: 0;` behavior and visually match (background + separator).",
-        "Z-index layering is correct so the sticky column (including header) always appears above scrollable columns, with no flicker when scrolling.",
-        "The 'today' row styling does not reduce readability of the sticky column and remains consistent while scrolling."
+        "Global CSS defines a reusable safe-area padding utility (or equivalent) using `env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`, `env(safe-area-inset-left)`, and `env(safe-area-inset-right)`.",
+        "The top-level app container applies the safe-area padding so header/content/bottom navigation never render under system UI when the WebView uses edge-to-edge.",
+        "No user-facing text is introduced in Turkish as part of this change (keep user-facing strings English for any new copy)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (shadcn components are read-only).",
-    "Do not edit any paths listed as immutable in SYSTEM_CONTEXT (compose around them instead)."
+    "Do not modify any files under `frontend/src/components/ui` (read-only UI components).",
+    "Do not edit immutable frontend hook paths listed in SYSTEM_CONTEXT (compose around them instead).",
+    "Keep all backend logic in the single Motoko actor (`backend/main.mo`) and only add a migration file if state schema changes are required (not expected for this request)."
   ],
   "nonGoals": [
-    "No changes to prayer time calculation or API fetching logic.",
-    "No new features or UI sections beyond fixing the weekly table scroll/overlap behavior."
+    "Implementing native Android/Kotlin code as compiled project artifacts inside this Internet Computer app repository (the deliverable here is documentation + web-side safe-area support).",
+    "Adding real Web Push / Service Worker push notifications to the web app (not supported in Android WebView).",
+    "Adding third-party auth providers or non-Internet-Identity authentication changes."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

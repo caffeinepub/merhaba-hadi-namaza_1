@@ -1,48 +1,46 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Weekly Prayer Times: sticky Day/Date column with proper separation on mobile horizontal scroll",
+  "title": "Android WebView wrapper documentation completion + React safe-area padding support",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Prevent the left Day/Date column from being visually covered/merged during horizontal scroll by enforcing a true sticky first column with opaque background and clear separator inside a horizontally scrollable container.",
+      "summary": "Expand the Android WebView wrapper documentation into a complete file-by-file, copy-pasteable Android Studio guide covering caching, JS bridges, notification permissions/settings, prayer alarms + persistent notification, Play Store version checks, and WindowInsets.",
       "acceptanceCriteria": [
-        "On narrow/mobile widths, the weekly table scrolls horizontally inside its own container (not the whole page).",
-        "While horizontally scrolling, the first column (Day/Date) stays fixed on the left and never gets covered by other columns’ text.",
-        "The sticky first column has an opaque background so underlying cells do not show through.",
-        "A visible separator (border and/or shadow) remains between the sticky first column and the scrollable time columns in both light and dark mode."
+        "`frontend/docs/android-webview-template.md` contains a clear file-by-file sectioned layout (e.g., AndroidManifest.xml, MainActivity.kt, WebAppInterface.kt, FirebaseMessagingService, receivers, helpers, Gradle files, XML layouts, required resources) with complete code blocks for each file.",
+        "The doc explicitly includes the WebView caching configuration with `LOAD_CACHE_ELSE_NETWORK` and any other required WebSettings to support offline-friendly behavior.",
+        "The doc specifies a JS bridge contract that matches the existing web app typings/usages (e.g., `window.Android.showNotification(title, body)`, `window.Android.getAppVersion()`, and `window.AndroidPush.sendPrayerTimes(json)` or fallback `send(json)`).",
+        "The doc includes Android 13+ notification permission flow and a concrete “Open notification settings” intent option for the user.",
+        "The doc includes a concrete approach and code for scheduling the next prayer notification and showing an ongoing (non-dismissible) notification for the upcoming prayer time.",
+        "The doc includes code and instructions for Play Store version checking and notifying the user when an update is available.",
+        "The doc includes edge-to-edge / WindowInsets handling code ensuring the WebView content is inset-aware (status/navigation bars do not cover content)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/docs/android-webview-template.md",
           "operation": "modify",
-          "description": "Harden `.weekly-prayer-table-wrapper`, `.weekly-prayer-table`, and sticky-column CSS so the table only scrolls within its wrapper and the first column is fully readable: make sticky backgrounds fully opaque (no alpha), ensure the table uses compatible border-collapsing (e.g., `border-collapse: separate` if needed), and strengthen the separator treatment (border/shadow) for both light and dark mode."
-        },
-        {
-          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
-          "operation": "modify",
-          "description": "Adjust Weekly Prayer Times table markup/classes (without editing shadcn files under `frontend/src/components/ui`) so the sticky Day/Date column is applied consistently and remains visually separated during horizontal scroll (e.g., ensure the wrapper and table class names align with the updated CSS and avoid any class combinations that cause translucent overlap)."
+          "description": "Rewrite and expand the document into a “final and complete” Android Studio WebView wrapper guide with sequential, copy-pasteable file sections (Gradle, manifest, resources, Kotlin classes) implementing: offline-first WebView caching with LOAD_CACHE_ELSE_NETWORK; a JavaScript bridge matching current web expectations (including window.Android.showNotification/title/body, window.Android.getAppVersion, and window.AndroidPush.sendPrayerTimes(json) with send(json) fallback); Android 13+ POST_NOTIFICATIONS runtime permission handling plus a user-invokable action to open system notification settings; scheduling prayer-time alarms and maintaining an ongoing notification showing the next prayer; Play Store version checking with an update-available native notification; and edge-to-edge WindowInsets handling so WebView content avoids system bars/cutouts."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Make sticky-column styling consistent between header and body (including today row) by aligning sticky positioning, z-index layering, background treatment, and separator so no header/body mismatch occurs while scrolling.",
+      "summary": "Add global safe-area padding support in the React UI using CSS env(safe-area-inset-*) variables and apply it to the app’s top-level container.",
       "acceptanceCriteria": [
-        "The sticky header cell and sticky body cells share consistent `position: sticky; left: 0;` behavior and visually match (background + separator).",
-        "Z-index layering is correct so the sticky column (including header) always appears above scrollable columns, with no flicker when scrolling.",
-        "The 'today' row styling does not reduce readability of the sticky column and remains consistent while scrolling."
+        "Global CSS defines a reusable safe-area padding utility (or equivalent) using `env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`, `env(safe-area-inset-left)`, and `env(safe-area-inset-right)`.",
+        "The top-level app container applies the safe-area padding so header/content/bottom navigation never render under system UI when the WebView uses edge-to-edge.",
+        "No user-facing text is introduced in Turkish as part of this change (keep user-facing strings English for any new copy)."
       ],
       "file_operations": [
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Unify sticky column rules for header/body by defining consistent sticky base styles (position/left/background/separator) and explicit z-index tiers (e.g., header above body) to avoid flicker and stacking issues; ensure the 'today' sticky cell background remains opaque and readable while preserving the row highlight."
+          "description": "Add a reusable global safe-area padding utility (e.g., a class) that applies padding using CSS env(safe-area-inset-top/bottom/left/right), suitable for edge-to-edge Android WebView hosting."
         },
         {
-          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure the header sticky cell and body sticky cells use the same sticky class contract (including the same separator and background logic) and that the 'today' row styling does not introduce transparency or class conflicts that could reduce sticky-column readability during horizontal scrolling."
+          "description": "Apply the new safe-area padding utility to the app’s top-level container so the sticky header, main content, and bottom navigation regions do not render under the status/navigation bars in edge-to-edge WebView. Do not introduce any new Turkish user-facing strings while making this change."
         }
       ]
     }

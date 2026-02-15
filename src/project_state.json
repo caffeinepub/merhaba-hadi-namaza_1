@@ -1,26 +1,28 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "Android WebView tabanlı uygulama için final Android Studio sürümü planlanıyor: çevrimdışı cache ile yükleme, Firebase FCM tabanlı native bildirimler (web’den gelen tetiklerin native bildirime çevrilmesi), kullanıcıya bildirim izin/ayar yönlendirmesi, zamanlanmış/sabit bildirim, Play Store sürüm kontrolüyle güncelleme bildirimi ve ekranın status/navigation bar alanlarına taşmaması (insets/safe-area).",
   "architectural_notes": [
-    "Weekly timetable table should keep the first (day/date) column fixed during horizontal scroll (e.g., CSS position: sticky; left: 0; proper background and z-index) to prevent overlap."
+    "WebView içinde Firebase Web Push/Service Worker çalışmadığı için push bildirimler Android native (FCM SDK) tarafında uygulanacak.",
+    "Web tarafındaki bildirim tetikleri Android tarafına (ör. JS bridge/intent/JSON mesaj) iletilip native Notification’a dönüştürülecek.",
+    "Bildirim izni Android 13+ için runtime POST_NOTIFICATIONS ile yönetilecek; kullanıcı ayarlara yönlendirilebilecek.",
+    "Çevrimdışı çalışma WebView cacheMode=LOAD_CACHE_ELSE_NETWORK ve uygun cache ayarlarıyla sağlanacak.",
+    "UI taşmalarını önlemek için WindowInsets/edge-to-edge uyumlu layout uygulanacak."
   ],
-  "known_issues": [
-    "Weekly prayer times view: when times are scrolled left/right, columns overlap and day/date text becomes unreadable."
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-fix-the-weekly-prayer-times-table-on-mobile-so-horizontal-scrolling-does-not-cause-the-left-day-date-column-to-visually-overlap-merge-with-the-time-columns-the-left-column-must-remain-readable-and-visually-separated-while-scrolling",
-      "title": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to visually overlap/merge with the time columns; the left column must remain readable and visually separated while scrolling.",
+      "id": "feature-expand-frontend-docs-android-webview-template-md-into-a-complete-final-and-complete-android-studio-webview-wrapper-guide-that-includes-the-full-kotlin-gradle-manifest-resource-code-as-sequential-copy-pasteable-files-for-1-offline-first-webview-caching-using-websettings-cachemode-websettings-load-cache-else-network-2-a-javascript-bridge-that-converts-web-triggered-notification-calls-into-visible-native-android-notifications-compatible-with-the-existing-web-bridge-expectations-like-window-android-shownotification-title-body-and-window-androidpush-sendprayertimes-json-3-runtime-notification-permission-handling-for-android-13-post-notifications-plus-a-user-facing-option-to-open-system-notification-settings-after-setup-4-scheduled-prayer-time-alarms-and-an-ongoing-persistent-status-bar-notification-showing-the-next-scheduled-prayer-time-5-play-store-version-checking-and-a-native-notification-when-a-new-version-is-available-and-6-edge-to-edge-windowinsets-handling-so-the-webview-content-does-not-render-under-the-status-bar-or-navigation-bar",
+      "title": "Expand `frontend/docs/android-webview-template.md` into a complete, “final and complete” Android Studio WebView wrapper guide that includes the full Kotlin/Gradle/manifest/resource code (as sequential, copy-pasteable files) for: (1) offline-first WebView caching using `WebSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK`, (2) a JavaScript bridge that converts web-triggered notification calls into visible native Android notifications (compatible with the existing web bridge expectations like `window.Android.showNotification(title, body)` and `window.AndroidPush.sendPrayerTimes(json)`), (3) runtime notification permission handling for Android 13+ (`POST_NOTIFICATIONS`) plus a user-facing option to open system notification settings after setup, (4) scheduled prayer-time alarms and an ongoing/persistent status-bar notification showing the next scheduled prayer time, (5) Play Store version checking and a native notification when a new version is available, and (6) edge-to-edge / WindowInsets handling so the WebView content does not render under the status bar or navigation bar.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-the-weekly-prayer-times-sticky-column-styling-is-consistent-for-both-header-and-body-cells-layering-background-treatment-and-separator-preventing-any-header-body-mismatch-or-z-index-issues-during-horizontal-scroll",
-      "title": "Ensure the Weekly Prayer Times sticky-column styling is consistent for both header and body cells (layering, background treatment, and separator), preventing any header/body mismatch or z-index issues during horizontal scroll.",
+      "id": "feature-add-safe-area-status-bar-navigation-bar-padding-support-to-the-react-web-ui-so-that-when-hosted-inside-an-edge-to-edge-android-webview-the-app-content-respects-device-cutouts-and-system-bars-using-css-env-safe-area-inset-variables",
+      "title": "Add safe-area (status bar / navigation bar) padding support to the React web UI so that when hosted inside an edge-to-edge Android WebView, the app content respects device cutouts and system bars using CSS env safe-area inset variables.",
       "reqIds": [
         "REQ-2"
       ],
@@ -30,12 +32,49 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Fix weekly prayer times table: day/date column overlaps with times when horizontally scrolling; make first column sticky so text remains readable",
+      "summary": "WebView çevrimdışı çalışma: WebSettings.LOAD_CACHE_ELSE_NETWORK ile cache/önbellek üzerinden ön-yüklemeli kullanım",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Android native FCM push bildirimi: FCM entegrasyonu ve web tarafındaki bildirim çağrılarını native görünür bildirimlere çevirme",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Bildirim izinleri ve ayarları: kurulum sonrası kullanıcıya bildirimleri açması için seçenek/ekran yönlendirmesi (Android 13+ POST_NOTIFICATIONS dahil)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Zamanlanmış ve sabit bildirim: sıradaki vakti bildirim çubuğunda kalıcı (ongoing) bildirim olarak gösterebilme",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Google Play Store sürüm kontrolü: yeni sürüm yayınlanınca kullanıcıya bildirim verme",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "UI safe-area/insets: içerik üstte status bar/bildirim alanına ve altta navigation/menu/geri tuş alanına taşmasın (edge-to-edge uyumu)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Final Android Studio proje teslimi: gerekli tüm dosyaların eksiksiz, sırayla metin olarak gönderilmesi",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Fix weekly prayer times table overlap by making Day/Date column sticky during horizontal scroll",
+  "gameProjectType": "none",
+  "projectName": "Hadi Namaza",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

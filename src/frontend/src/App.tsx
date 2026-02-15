@@ -26,7 +26,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('home');
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background safe-area-inset">
       {/* Enhanced decorative background with vivid motifs */}
       <div className="fixed inset-0 vivid-motif-bg opacity-15 pointer-events-none" />
       <div

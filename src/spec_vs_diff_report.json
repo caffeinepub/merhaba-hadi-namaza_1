@@ -1,54 +1,41 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T22:23:49.220Z",
-  "summary": "The diff does not provide concrete evidence that the Weekly Prayer Times table was updated to use a sticky first (Day/Date) column with proper scroll container behavior, consistent header/body styling, opaque backgrounds, and separators. The visible changes are largely global theme/style changes (palette, backgrounds, prayer-color tokens) and metadata/summaries, which go beyond the requested narrow table-overlap fix.",
+  "generatedAt": "2026-02-15T22:52:09.640Z",
+  "summary": "REQ-2 (web safe-area padding) appears implemented via new CSS utilities using env(safe-area-inset-*) and applying a safe-area class at the top-level App container. REQ-1 (complete Android WebView wrapper guide with full copy-pasteable file-by-file code) cannot be confirmed from the truncated doc content; the diff excerpt shows only introductory sections and does not provide evidence of the required complete, sequential file listings/code blocks. Several unrelated styling/theme changes and meta/tracking file edits appear added beyond the requested safe-area support and documentation expansion.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Fix the Weekly Prayer Times table on mobile so horizontal scrolling does not cause the left Day/Date column to overlap/merge with time columns; first column stays fixed, opaque, and separated while table scrolls inside its own container.",
-      "reason": "No diff evidence shows changes to the Weekly Prayer Times table markup/container (e.g., scroll wrapper with horizontal overflow) or to the specific header/body first-column cells to make them sticky with opaque background and a separator. The only concrete code shown is global CSS variable/theme changes; the table-specific utilities mentioned in the summary are not visible in the truncated diff.",
+      "requirement": "Expand `frontend/docs/android-webview-template.md` into a complete, final Android Studio WebView wrapper guide with full Kotlin/Gradle/manifest/resource code (copy-pasteable, file-by-file), including offline caching, JS bridge contracts, Android 13+ notification permission + settings intent, scheduled prayer alarms + ongoing notification, Play Store version checking + update notification, and WindowInsets handling.",
+      "reason": "The diff summary shows only the beginning of the document (overview/prerequisites/project structure header) and does not provide evidence of the required file-by-file sectioned layout with complete code blocks for the manifest, Gradle files, Kotlin classes (MainActivity/WebAppInterface/receivers/helpers/services), XML resources, permission flow code, alarm scheduling, ongoing notification, or Play Store version checking implementation details. Because the file content is truncated and the visible excerpt does not include those sections, the acceptance criteria cannot be verified as implemented.",
       "evidence": [
-        "frontend/src/index.css (truncated; no visible weekly table sticky-column rules)"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "requirement": "Ensure sticky-column styling is consistent for both header and body cells (position: sticky; left: 0; consistent background + separator), correct z-index layering, and today-row styling remains readable.",
-      "reason": "No diff evidence shows coordinated header+body sticky styling, explicit z-index layering applied to the weekly table header/body sticky cells, or handling for today-row styling. The only mention is in a generated summary file, not in verifiable code changes within the provided diff snippet.",
-      "evidence": [
-        "frontend/src/index.css (truncated; no visible header/body sticky rules)",
-        "frontend-file-summaries.txt (claims changes but is not direct code evidence)"
+        "frontend/docs/android-webview-template.md (diff excerpt ends at \"## Project Structure\")"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Global vivid OKLCH palette overhaul and addition of many new CSS color tokens (including prayer-time pastel tokens) unrelated to the weekly table overlap fix.",
-      "reason": "BuildRequest explicitly limits scope to fixing weekly table scroll/overlap behavior and lists no new UI/theme changes; the diff shows extensive global theme token changes.",
+      "description": "Large-scale visual/theme/styling changes (\"vivid motifs\" background layers, palette/token changes) beyond adding safe-area padding support.",
+      "reason": "REQ-2 only asked for safe-area padding utilities and applying them to the app container; the diff shows additional decorative backgrounds and extensive color/token changes that are not requested by the BuildRequest.",
       "evidence": [
-        "frontend/src/index.css"
+        "frontend/src/App.tsx (adds vivid motif fixed background layers/comments)",
+        "frontend/src/index.css (extensive OKLCH palette/token definitions; not limited to safe-area utilities)"
       ]
     },
     {
-      "description": "Addition of global background pattern utilities (e.g., pattern-bg, vivid-motif-bg) unrelated to the weekly table sticky-column behavior.",
-      "reason": "Not requested; constitutes new styling utilities beyond the stated non-goals.",
+      "description": "Modification/addition of project tracking/state files not requested (e.g., `project_state.json`, `frontend-file-summaries.txt`).",
+      "reason": "The BuildRequest only requests a documentation expansion and safe-area padding support; it does not request adding/updating repository meta/state summary files.",
       "evidence": [
-        "frontend/src/index.css"
-      ]
-    },
-    {
-      "description": "Modification/maintenance of meta documentation/state files (frontend-file-summaries.txt, project_state.json) unrelated to implementing the sticky Day/Date column behavior.",
-      "reason": "Not requested by the BuildRequest; these changes do not implement the UI behavior fix.",
-      "evidence": [
-        "frontend-file-summaries.txt",
-        "project_state.json"
+        "project_state.json",
+        "frontend-file-summaries.txt"
       ]
     }
   ],
   "confidence": 0.66,
   "changed_files": [
     "frontend-file-summaries.txt",
+    "frontend/docs/android-webview-template.md",
+    "frontend/src/App.tsx",
     "frontend/src/index.css",
     "project_state.json"
   ]

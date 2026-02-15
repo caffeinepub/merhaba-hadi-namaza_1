@@ -1,12 +1,16 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the Weekly Prayer Times table on mobile so the Day/Date column remains readable and visually separated during horizontal scrolling.
+**Goal:** Provide a “final and complete” Android Studio WebView wrapper guide (as documentation) covering offline-first caching, native notifications via JS bridge, prayer-time scheduling with persistent notification, Play Store update checks, and edge-to-edge insets handling; and update the React web UI to respect safe-area insets when embedded in an edge-to-edge Android WebView.
 
 **Planned changes:**
-- Make the weekly table horizontally scrollable within its own container on narrow/mobile widths (avoid scrolling the whole page).
-- Implement a sticky first column (Day/Date) for both header and body cells using consistent sticky positioning, opaque background, and correct z-index layering.
-- Add a persistent visual separator (border and/or shadow) between the sticky Day/Date column and the scrollable time columns, supporting both light and dark mode.
-- Ensure “today” row styling remains readable and does not cause overlap/contrast issues in the sticky column while scrolling.
+- Expand `frontend/docs/android-webview-template.md` into a complete, file-by-file Android WebView wrapper guide with sequential, copy-pasteable Kotlin/Gradle/manifest/resource code covering:
+  - Offline-first WebView caching (`WebSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK`) and related WebSettings for offline-friendly behavior
+  - JavaScript bridge contracts compatible with existing web expectations (e.g., `window.Android.showNotification(title, body)`, `window.Android.getAppVersion()`, `window.AndroidPush.sendPrayerTimes(json)` / fallback)
+  - Android 13+ runtime notification permission flow (`POST_NOTIFICATIONS`) and an option to open system notification settings
+  - Scheduling prayer-time alarms and an ongoing (non-dismissible) status-bar notification for the next prayer time
+  - Play Store version checking and a native notification when an update is available
+  - Edge-to-edge / WindowInsets handling to keep WebView content inset-aware (not under status/navigation bars)
+- Add global safe-area padding support to the React UI using CSS `env(safe-area-inset-*)` variables and apply it to the top-level app container so content does not render under system UI in edge-to-edge WebView.
 
-**User-visible outcome:** On mobile, users can scroll the weekly prayer times table horizontally without the time columns overlapping the Day/Date column; the left column stays fixed, readable, and clearly separated.
+**User-visible outcome:** The repo includes a complete Android WebView wrapper documentation template that can be copied into Android Studio to produce an offline-capable, notification-enabled, inset-safe wrapper; and the web app UI will respect safe-area insets when run inside an edge-to-edge Android WebView.
