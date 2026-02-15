@@ -47,6 +47,9 @@ actor {
   let appSettings = Map.empty<Principal, AppSettings>();
 
   public query ({ caller }) func getCallerAppSettings() : async ?AppSettings {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can access settings");
+    };
     appSettings.get(caller);
   };
 

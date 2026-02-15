@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { sendNextPrayerToAndroid, sendNextPrayerWithTimeString } from '@/utils/androidBridge';
 
+interface PrayerTimes {
+  fajr: string;
+  sunrise: string;
+  dhuhr: string;
+  asr: string;
+  maghrib: string;
+  isha: string;
+}
+
 interface NextPrayer {
   name: string;
   time: string;
@@ -8,12 +17,26 @@ interface NextPrayer {
 
 interface NextPrayerCountdownResult {
   nextPrayer: NextPrayer | null;
+  nextPrayerMillis: number | null;
   timeRemaining: string;
 }
 
-export function useNextPrayerCountdown(adjustedTimes: any): NextPrayerCountdownResult {
+/**
+ * React hook computing next prayer from adjusted times with live countdown.
+ * 
+ * This hook can be called from parent components (like HomeTab) to provide
+ * a single source of truth for next prayer computation.
+ * 
+ * Updates every minute and sends legacy bridge calls for backward compatibility.
+ * Exposes nextPrayerMillis for AndroidPush integration.
+ * 
+ * @param adjustedTimes - Prayer times with offsets applied
+ * @returns Object with nextPrayer, nextPrayerMillis, and timeRemaining
+ */
+export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextPrayerCountdownResult {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [nextPrayer, setNextPrayer] = useState<NextPrayer | null>(null);
+  const [nextPrayerMillis, setNextPrayerMillis] = useState<number | null>(null);
   
   // Track last sent prayer to avoid excessive bridge calls
   const lastSentTimestampRef = useRef<{ name: string; timestamp: number } | null>(null);
@@ -22,6 +45,7 @@ export function useNextPrayerCountdown(adjustedTimes: any): NextPrayerCountdownR
   useEffect(() => {
     if (!adjustedTimes) {
       setNextPrayer(null);
+      setNextPrayerMillis(null);
       setTimeRemaining('');
       return;
     }
@@ -40,86 +64,72 @@ export function useNextPrayerCountdown(adjustedTimes: any): NextPrayerCountdownR
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
       // Find next prayer
-      let found: NextPrayer | null = null;
+      let foundNext: NextPrayer | null = null;
+      let nextTimestamp = 0;
+
       for (const prayer of prayers) {
         const [hours, minutes] = prayer.time.split(':').map(Number);
         const prayerMinutes = hours * 60 + minutes;
 
         if (prayerMinutes > currentMinutes) {
-          found = prayer;
+          foundNext = prayer;
+          const nextDate = new Date(now);
+          nextDate.setHours(hours, minutes, 0, 0);
+          nextTimestamp = nextDate.getTime();
           break;
         }
       }
 
       // If no prayer found today, use first prayer of tomorrow
-      if (!found) {
-        found = prayers[0];
+      if (!foundNext) {
+        foundNext = prayers[0];
+        const [hours, minutes] = foundNext.time.split(':').map(Number);
+        const nextDate = new Date(now);
+        nextDate.setDate(nextDate.getDate() + 1);
+        nextDate.setHours(hours, minutes, 0, 0);
+        nextTimestamp = nextDate.getTime();
       }
 
-      setNextPrayer(found);
+      setNextPrayer(foundNext);
+      setNextPrayerMillis(nextTimestamp);
 
-      // Calculate time remaining and compute timestamp
-      if (found) {
-        const [hours, minutes] = found.time.split(':').map(Number);
-        let prayerMinutes = hours * 60 + minutes;
+      // Calculate time remaining
+      const diff = nextTimestamp - now.getTime();
+      const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
+      const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-        // Compute the actual timestamp for the next occurrence
-        const nextPrayerDate = new Date();
-        nextPrayerDate.setHours(hours, minutes, 0, 0);
+      if (hoursLeft > 0) {
+        setTimeRemaining(`${hoursLeft} sa ${minutesLeft} dk`);
+      } else {
+        setTimeRemaining(`${minutesLeft} dk`);
+      }
 
-        // If prayer is tomorrow, add 24 hours
-        if (prayerMinutes <= currentMinutes) {
-          prayerMinutes += 24 * 60;
-          nextPrayerDate.setDate(nextPrayerDate.getDate() + 1);
+      // Send legacy bridge updates only when next prayer changes
+      if (foundNext) {
+        // Legacy timestamp-based update
+        const lastSent = lastSentTimestampRef.current;
+        if (!lastSent || lastSent.name !== foundNext.name || lastSent.timestamp !== nextTimestamp) {
+          sendNextPrayerToAndroid(foundNext.name, nextTimestamp);
+          lastSentTimestampRef.current = { name: foundNext.name, timestamp: nextTimestamp };
         }
 
-        const nextPrayerTimestamp = nextPrayerDate.getTime();
-
-        // Send to Android bridge (legacy timestamp-based) only if changed
-        const lastSentTimestamp = lastSentTimestampRef.current;
-        if (
-          !lastSentTimestamp ||
-          lastSentTimestamp.name !== found.name ||
-          lastSentTimestamp.timestamp !== nextPrayerTimestamp
-        ) {
-          const success = sendNextPrayerToAndroid(found.name, nextPrayerTimestamp);
-          if (success) {
-            lastSentTimestampRef.current = { name: found.name, timestamp: nextPrayerTimestamp };
-          }
-        }
-
-        // Send to AndroidPrayer interface (new time string-based) only if changed
+        // New time-string-based update
         const lastSentTimeString = lastSentTimeStringRef.current;
-        if (
-          !lastSentTimeString ||
-          lastSentTimeString.name !== found.name ||
-          lastSentTimeString.time !== found.time
-        ) {
-          const success = sendNextPrayerWithTimeString(found.name, found.time);
-          if (success) {
-            lastSentTimeStringRef.current = { name: found.name, time: found.time };
-          }
-        }
-
-        // Calculate display string
-        const diffMinutes = prayerMinutes - currentMinutes;
-        const hoursLeft = Math.floor(diffMinutes / 60);
-        const minutesLeft = diffMinutes % 60;
-
-        if (hoursLeft > 0) {
-          setTimeRemaining(`${hoursLeft} saat ${minutesLeft} dk kaldı`);
-        } else {
-          setTimeRemaining(`${minutesLeft} dk kaldı`);
+        if (!lastSentTimeString || lastSentTimeString.name !== foundNext.name || lastSentTimeString.time !== foundNext.time) {
+          sendNextPrayerWithTimeString(foundNext.name, foundNext.time);
+          lastSentTimeStringRef.current = { name: foundNext.name, time: foundNext.time };
         }
       }
     };
 
+    // Initial update
     updateCountdown();
-    const interval = setInterval(updateCountdown, 60000); // Update every minute
+
+    // Update every minute
+    const interval = setInterval(updateCountdown, 60000);
 
     return () => clearInterval(interval);
   }, [adjustedTimes]);
 
-  return { nextPrayer, timeRemaining };
+  return { nextPrayer, nextPrayerMillis, timeRemaining };
 }
-

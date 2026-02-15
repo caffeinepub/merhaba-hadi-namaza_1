@@ -15,6 +15,8 @@ import { useWeather } from '../weather/useWeather';
 import { applyOffsetToPrayerTimes, applyOffsetToWeeklyPrayerTimes } from '../prayer/timeOffset';
 import { computeKerahatWindows, mergeTimesWithKerahat } from '../prayer/kerahatTimes';
 import { useAndroidWidgetUpdates } from './useAndroidWidgetUpdates';
+import { useNextPrayerCountdown } from './useNextPrayerCountdown';
+import { useAndroidPushPrayerTimes } from './useAndroidPushPrayerTimes';
 import { MapPin, Sunrise, Sun, Sunset, Moon, Cloud, AlertCircle } from 'lucide-react';
 
 export function HomeTab() {
@@ -32,9 +34,21 @@ export function HomeTab() {
     ? applyOffsetToWeeklyPrayerTimes(weeklyPrayerTimes, settings.offsetMinutes)
     : [];
 
-  // Send widget updates when adjusted times are available, including city name
+  // Compute next prayer countdown (single source of truth)
+  const { nextPrayer, nextPrayerMillis, timeRemaining } = useNextPrayerCountdown(adjustedTimes);
+
+  // Send legacy widget updates (existing behavior)
   const cityName = settings.location?.displayName;
   useAndroidWidgetUpdates(adjustedTimes, adjustedWeeklyTimes, cityName);
+
+  // Send expanded AndroidPush payload with all required fields
+  useAndroidPushPrayerTimes(
+    adjustedTimes,
+    adjustedWeeklyTimes,
+    nextPrayer?.name ?? null,
+    nextPrayerMillis,
+    timeRemaining
+  );
 
   const prayerList = adjustedTimes
     ? [
@@ -90,7 +104,8 @@ export function HomeTab() {
       {/* Next prayer countdown with ornamental frame */}
       <MotifFrame variant="ornamental" className="px-4">
         <NextPrayerCountdown
-          adjustedTimes={adjustedTimes}
+          nextPrayer={nextPrayer}
+          timeRemaining={timeRemaining}
           isLoading={prayerLoading}
           error={prayerError}
         />
@@ -144,7 +159,7 @@ export function HomeTab() {
                 return (
                   <div
                     key={item.name}
-                    className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-muted/50 to-muted/30 border border-border/50"
+                    className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-accent/5 transition-colors border"
                   >
                     <div className="flex items-center gap-3">
                       <Icon className="h-5 w-5 text-primary" />
@@ -159,58 +174,19 @@ export function HomeTab() {
         </Card>
       </div>
 
+      {/* Prayer time cards section */}
+      <PrayerTimeCardsSection
+        adjustedTimes={adjustedTimes}
+        isLoading={prayerLoading}
+        error={prayerError}
+      />
+
       {/* Weekly prayer times section */}
-      <MotifFrame variant="divider">
-        <WeeklyPrayerTimesSection
-          weeklyData={adjustedWeeklyTimes}
-          isLoading={weeklyLoading}
-          error={weeklyError}
-        />
-      </MotifFrame>
-
-      {/* Prayer time cards section with divider */}
-      <MotifFrame variant="divider">
-        <PrayerTimeCardsSection
-          adjustedTimes={adjustedTimes}
-          isLoading={prayerLoading}
-          error={prayerError}
-        />
-      </MotifFrame>
-
-      {/* Weather details with ornamental frame */}
-      {weather && (
-        <MotifFrame variant="ornamental" className="px-4">
-          <Card className="border-2">
-            <CardContent className="pt-6 space-y-4">
-              <div className="text-center py-2">
-                <p className="text-4xl font-bold">{Math.round(weather.temperature)}°C</p>
-                <p className="text-base text-muted-foreground mt-1">
-                  {weather.weatherCode === 0 ? 'Açık' : weather.weatherCode <= 3 ? 'Parçalı Bulutlu' : weather.weatherCode <= 48 ? 'Sisli' : weather.weatherCode <= 67 ? 'Yağmurlu' : weather.weatherCode <= 77 ? 'Karlı' : weather.weatherCode <= 82 ? 'Sağanak Yağışlı' : weather.weatherCode <= 86 ? 'Kar Yağışlı' : 'Fırtınalı'}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 border border-border/50">
-                  <Cloud className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Rüzgar</p>
-                    <p className="font-semibold">{Math.round(weather.windSpeed)} km/s</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 border border-border/50">
-                  <Cloud className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Nem</p>
-                    <p className="font-semibold">{weather.humidity}%</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </MotifFrame>
-      )}
+      <WeeklyPrayerTimesSection
+        weeklyData={adjustedWeeklyTimes}
+        isLoading={weeklyLoading}
+        error={weeklyError}
+      />
     </div>
   );
 }
-

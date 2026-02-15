@@ -1,17 +1,21 @@
 import React from 'react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Clock } from 'lucide-react';
-import { useNextPrayerCountdown } from './useNextPrayerCountdown';
 
 interface NextPrayerCountdownProps {
-  adjustedTimes: any;
+  nextPrayer: { name: string; time: string } | null;
+  timeRemaining: string;
   isLoading: boolean;
   error: any;
 }
 
-export function NextPrayerCountdown({ adjustedTimes, isLoading, error }: NextPrayerCountdownProps) {
-  const { nextPrayer, timeRemaining } = useNextPrayerCountdown(adjustedTimes);
-
+/**
+ * Presentational component displaying next prayer countdown.
+ * 
+ * Receives computed nextPrayer and timeRemaining from parent (HomeTab)
+ * to ensure single source of truth and prevent duplicate bridge sends.
+ */
+export function NextPrayerCountdown({ nextPrayer, timeRemaining, isLoading, error }: NextPrayerCountdownProps) {
   if (isLoading) {
     return (
       <Card className="bg-gradient-to-br from-primary/20 to-accent/10 border-2 border-primary/30">
@@ -48,3 +52,4 @@ export function NextPrayerCountdown({ adjustedTimes, isLoading, error }: NextPra
     </Card>
   );
 }
+

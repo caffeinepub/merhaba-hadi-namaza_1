@@ -1,36 +1,49 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T17:34:31.170Z",
-  "summary": "Implemented new AndroidPrayer TypeScript typings and added React-side bridge calls for next prayer, daily prayers, and city updates with guarded/try-catch patterns. However, the diff evidence is insufficient to confirm that the public bridge script actually exposes/forwards the required window.AndroidPrayer.* methods, and the daily-prayers sender implementation is truncated and appears to check window.Android rather than window.AndroidPrayer.",
-  "missing_requirements": [
+  "generatedAt": "2026-02-14T23:30:31.447Z",
+  "summary": "BuildRequest specified no requirements and explicitly stated a non-goal of implementing new features without an explicit request. The diff adds multiple new backend features (profiles, settings, sermon cache structures, app release tracking, and authorization checks), which appear unrequested.",
+  "missing_requirements": [],
+  "hallucinated_features": [
     {
-      "id": "REQ-3",
-      "requirement": "frontend/public/android-widget-bridge.js exposes (or forwards to) window.AndroidPrayer.updateNextPrayer(name, time) when available, without removing existing legacy widget bridge behavior.",
-      "reason": "The diff shows legacy functions (updateNextPrayerWidget/updateDailyPrayersWidget) calling window.Android.* methods, but the provided truncated content does not show any code that creates/forwards a window.AndroidPrayer object with updateNextPrayer/updateDailyPrayers/updateCity. Therefore it cannot be verified that the AndroidPrayer interface is exposed as required.",
+      "description": "Added user profile storage and related APIs (get/save caller profile, get profile by principal) with authorization checks.",
+      "reason": "BuildRequest lists no requirements and explicitly says not to implement new features without an explicit request.",
       "evidence": [
-        "frontend/public/android-widget-bridge.js (truncated; shows legacy updateNextPrayerWidget/updateDailyPrayersWidget using window.Android.updateNextPrayer/updateDailyPrayers, but no visible window.AndroidPrayer wiring)"
+        "backend/main.mo"
       ]
     },
     {
-      "id": "REQ-2",
-      "requirement": "Provide guarded calls for sending daily prayer times via window.AndroidPrayer.* (only when AndroidPrayer exists) and ensure they do not break normal browsers.",
-      "reason": "The sendDailyPrayersToAndroid helper implementation is truncated, and the visible portion appears to start with a guard checking window.Android (legacy) rather than window.AndroidPrayer, so it is not verifiable that daily-prayer sending uses the required AndroidPrayer interface with proper guarding.",
+      "description": "Added app settings storage and related APIs (get/save caller settings, get settings by principal) with authorization checks.",
+      "reason": "Not requested; BuildRequest includes 'Requirements: none' and a non-goal to avoid new features.",
       "evidence": [
-        "frontend/src/utils/androidBridge.ts (truncated at sendDailyPrayersToAndroid; visible code starts checking `window.Android` rather than `window.AndroidPrayer`)"
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Introduced sermon-related types and in-memory caches (SermonData, WeeklySermon, sermonCache, cacheUrls).",
+      "reason": "Not requested; BuildRequest non-goal explicitly mentions not implementing sermon fetching/features without an explicit request.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Added app release tracking (AppRelease type, latestAppRelease state, updateLatestAppRelease admin-only method, getLatestAppRelease).",
+      "reason": "Not requested; BuildRequest indicates no new features should be implemented.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Added/introduced access control state initialization and included MixinAuthorization in the backend actor.",
+      "reason": "No requirement requested authorization refactors or new authorization behavior; could be a new feature/change beyond scope given 'Requirements: none'.",
+      "evidence": [
+        "backend/main.mo"
       ]
     }
   ],
-  "hallucinated_features": [],
-  "confidence": 0.56,
+  "confidence": 0.78,
   "changed_files": [
-    "frontend-file-summaries.txt",
-    "frontend/public/android-widget-bridge.js",
-    "frontend/src/androidWidgetBridge.d.ts",
-    "frontend/src/features/home/HomeTab.tsx",
-    "frontend/src/features/home/useAndroidWidgetUpdates.ts",
-    "frontend/src/features/home/useNextPrayerCountdown.ts",
-    "frontend/src/utils/androidBridge.ts",
+    "backend/main.mo",
     "project_state.json"
   ]
 }

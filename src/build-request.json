@@ -1,79 +1,16 @@
 {
   "kind": "build_request",
-  "title": "Send prayer times from WebView to Android via JavaScriptInterface for widgets",
+  "title": "No new actionable requirements (awaiting clarification of 'sıradkai')",
   "priority": "normal",
-  "requirements": [
-    {
-      "id": "REQ-1",
-      "text": "When prayer times and location are available in the web app, send the following data to the Android WebView layer so Android widgets can display real-time values: next prayer name, next prayer time, daily prayer times (imsak/fajr, gunes/sunrise, ogle/dhuhr, ikindi/asr, aksam/maghrib, yatsi/isha), and city/location display name.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Web tarafının Android uygulamasına namaz vakitleri verisini göndermesini istiyorum.",
-          "Sonraki namaz adı (nextPrayerName)",
-          "Sonraki namaz saati (nextPrayerTime)",
-          "Günlük namaz vakitleri (imsak, gunes, ogle, ikindi, aksam, yatsi)",
-          "Şehir bilgisi"
-        ]
-      },
-      "acceptanceCriteria": [
-        "With a location selected and prayer times loaded, the app triggers Android bridge calls containing next prayer name/time, all daily prayer times, and city/location display name.",
-        "The payload values match what the app is currently showing (including any configured offsets).",
-        "No bridge calls are attempted before prayer times are loaded (no errors in console due to undefined times)."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Implement the Android-only JavaScriptInterface calls so they execute only inside Android WebView and do not break normal browsers. Specifically, add a guarded call path that invokes `window.AndroidPrayer.updateNextPrayer(name, time)` when (and only when) the `AndroidPrayer` interface exists, and provide similarly guarded calls for sending daily prayer times and city information.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Web uygulamasına, namaz vakitleri yüklendiğinde aşağıdaki Android interface çağrısını yapan JavaScript kodunu eklemen: window.AndroidPrayer.updateNextPrayer(name, time)",
-          "Ama bu çağrı yalnızca Android ortamında çalışmalı.",
-          "Web normal browser’da çalışmaya devam etmeli",
-          "Android WebView içinde çalışıyorsa veri Android’e gönderilmeli"
-        ]
-      },
-      "acceptanceCriteria": [
-        "In a normal desktop/mobile browser where `window.AndroidPrayer` is not present, the app continues to work with no runtime errors and no failed bridge calls.",
-        "In Android WebView where `window.AndroidPrayer.updateNextPrayer` is present, the app calls it with the computed next prayer name and time.",
-        "All Android bridge interactions are wrapped in safe checks/try-catch so unexpected native-side errors cannot crash the React app."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Update the existing Android widget bridge layer (loaded via `frontend/index.html` from `frontend/public/android-widget-bridge.js`) and TypeScript global typings so the project supports the `window.AndroidPrayer.*` interface expected by the Android app while maintaining backward compatibility with existing `window.Android.*` bridge methods already used by the web app.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "JavaScript → Android JavascriptInterface üzerinden gönderilecek."
-        ]
-      },
-      "acceptanceCriteria": [
-        "`frontend/public/android-widget-bridge.js` exposes (or forwards to) `window.AndroidPrayer.updateNextPrayer(name, time)` when available, without removing existing `window.updateNextPrayerWidget`, `window.updateDailyPrayersWidget`, and `window.updateWeeklyPrayersWidget` behavior.",
-        "TypeScript compilation succeeds with updated `frontend/src/androidWidgetBridge.d.ts` typings for any newly introduced `window.AndroidPrayer` surface used by the app.",
-        "Existing widget update behavior (daily/weekly/next-prayer) continues to function in environments where only `window.Android.*` methods exist."
-      ]
-    }
-  ],
+  "requirements": [],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
-    "Backend must remain a single Motoko actor in backend/main.mo; no additional backend services.",
-    "Use English for any user-facing text introduced by this change (e.g., new labels, error text)."
+    "Use English for any user-facing text in the build request.",
+    "Backend must remain a single Motoko actor (all logic in backend/main.mo).",
+    "Do not edit files under frontend/src/components/ui or any paths listed as immutable: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
   ],
   "nonGoals": [
-    "Do not implement or modify Android (Kotlin) code, widget code, or SharedPreferences storage logic in this build request.",
-    "Do not add push notifications or Play Store in-app update logic (Android-native features) as part of this request.",
-    "Do not change prayer time calculation sources/APIs beyond what is required to forward already-computed values to Android."
+    "Do not implement any new features (e.g., widgets, notifications, sermon fetching) without an explicit user request.",
+    "Do not modify Android native code or create an Android Studio project (out of scope for this repo)."
   ],
   "imageRequirements": {
     "required": [],

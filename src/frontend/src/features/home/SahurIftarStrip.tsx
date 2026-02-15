@@ -38,7 +38,7 @@ export function SahurIftarStrip({ adjustedTimes, isLoading, error }: SahurIftarS
               <Clock className="h-5 w-5 text-primary" />
             </div>
             <div className="text-center">
-              <p className="text-xs text-muted-foreground font-medium">Time left</p>
+              <p className="text-xs text-muted-foreground font-medium">Kalan süre</p>
               <p className="text-base font-bold">{countdown.targetLabel}</p>
               <p className="text-lg font-bold tabular-nums text-primary">{countdown.timeRemaining}</p>
             </div>

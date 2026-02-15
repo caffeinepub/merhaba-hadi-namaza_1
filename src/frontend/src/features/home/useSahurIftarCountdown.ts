@@ -37,13 +37,13 @@ export function useSahurIftarCountdown(
       // Otherwise, target is next sahur (fajr)
       if (currentMinutes >= fajrMinutesOfDay && currentMinutes < maghribMinutesOfDay) {
         // Target is today's iftar
-        targetLabel = 'to Iftar';
+        targetLabel = 'İftara';
         targetMinutes = maghribMinutesOfDay;
         targetDate = new Date();
         targetDate.setHours(maghribHours, maghribMinutes, 0, 0);
       } else {
         // Target is next sahur (tomorrow if after maghrib or before fajr)
-        targetLabel = 'to Sahur';
+        targetLabel = 'Sahura';
         if (currentMinutes >= maghribMinutesOfDay) {
           // After maghrib, target is tomorrow's fajr
           targetMinutes = fajrMinutesOfDay + 24 * 60;
@@ -65,9 +65,9 @@ export function useSahurIftarCountdown(
 
       let timeRemaining: string;
       if (hoursLeft > 0) {
-        timeRemaining = `${hoursLeft}h ${minutesLeft}m`;
+        timeRemaining = `${hoursLeft} sa ${minutesLeft} dk`;
       } else {
-        timeRemaining = `${minutesLeft}m`;
+        timeRemaining = `${minutesLeft} dk`;
       }
 
       setCountdown({

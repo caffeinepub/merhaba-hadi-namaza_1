@@ -174,6 +174,112 @@ export function sendCityToAndroid(cityName: string): boolean {
 }
 
 /**
+ * Sends expanded prayer-times payload to AndroidPush interface for SharedPreferences
+ * storage, alarm scheduling, and widget updates.
+ * 
+ * Attempts primary method `sendPrayerTimes` first, then falls back to alternative
+ * method names (e.g., `send`) if available, ensuring maximum compatibility with
+ * different Android bridge implementations.
+ * 
+ * @param payload - Object containing next prayer info, countdown, daily prayers, and weekly prayers
+ * @returns true if the bridge call succeeded, false otherwise
+ * 
+ * @example
+ * ```typescript
+ * sendPrayerTimesToAndroidPush({
+ *   nextPrayer: "İkindi",
+ *   nextPrayerMillis: 1739550000000,
+ *   nextPrayerTime: "16:12",
+ *   timeRemaining: "1 saat 23 dakika",
+ *   dailyPrayers: [
+ *     "İmsak: 06:24",
+ *     "Güneş: 07:49",
+ *     "Öğle: 13:19",
+ *     "İkindi: 16:12",
+ *     "Akşam: 18:40",
+ *     "Yatsı: 20:00"
+ *   ],
+ *   weeklyPrayers: [
+ *     "14 Şubat Cumartesi | İmsak: 06:24, Güneş: 07:49, Öğle: 13:19, İkindi: 16:12, Akşam: 18:40, Yatsı: 20:00",
+ *     "15 Şubat Pazar | İmsak: 06:23, Güneş: 07:48, Öğle: 13:19, İkindi: 16:13, Akşam: 18:41, Yatsı: 20:01"
+ *   ]
+ * });
+ * ```
+ */
+export function sendPrayerTimesToAndroidPush(payload: {
+  nextPrayer: string;
+  nextPrayerMillis: number;
+  nextPrayerTime: string;
+  timeRemaining: string;
+  dailyPrayers: string[];
+  weeklyPrayers: string[];
+}): boolean {
+  // Validate payload structure
+  if (!payload || typeof payload !== 'object') {
+    console.warn('[AndroidBridge] Invalid payload object');
+    return false;
+  }
+
+  // Validate required fields
+  if (!payload.nextPrayer || typeof payload.nextPrayer !== 'string') {
+    console.warn('[AndroidBridge] Invalid nextPrayer:', payload.nextPrayer);
+    return false;
+  }
+
+  if (typeof payload.nextPrayerMillis !== 'number' || payload.nextPrayerMillis <= 0) {
+    console.warn('[AndroidBridge] Invalid nextPrayerMillis:', payload.nextPrayerMillis);
+    return false;
+  }
+
+  // Validate nextPrayerTime is non-empty and in HH:MM format
+  if (!payload.nextPrayerTime || typeof payload.nextPrayerTime !== 'string' || !/^\d{2}:\d{2}$/.test(payload.nextPrayerTime)) {
+    console.warn('[AndroidBridge] Invalid nextPrayerTime:', payload.nextPrayerTime, '(expected non-empty HH:MM)');
+    return false;
+  }
+
+  if (!payload.timeRemaining || typeof payload.timeRemaining !== 'string') {
+    console.warn('[AndroidBridge] Invalid timeRemaining:', payload.timeRemaining);
+    return false;
+  }
+
+  if (!Array.isArray(payload.dailyPrayers) || payload.dailyPrayers.length === 0) {
+    console.warn('[AndroidBridge] Invalid dailyPrayers: must be a non-empty array');
+    return false;
+  }
+
+  if (!Array.isArray(payload.weeklyPrayers) || payload.weeklyPrayers.length === 0) {
+    console.warn('[AndroidBridge] Invalid weeklyPrayers: must be a non-empty array');
+    return false;
+  }
+
+  try {
+    // Stringify payload once
+    const jsonPayload = JSON.stringify(payload);
+
+    // Check if AndroidPush interface is available
+    if (typeof window !== 'undefined' && window.AndroidPush) {
+      // Try primary method: sendPrayerTimes
+      if (typeof window.AndroidPush.sendPrayerTimes === 'function') {
+        window.AndroidPush.sendPrayerTimes(jsonPayload);
+        return true;
+      }
+
+      // Fallback: try alternative method name 'send'
+      if (typeof window.AndroidPush.send === 'function') {
+        window.AndroidPush.send(jsonPayload);
+        return true;
+      }
+    }
+
+    // Bridge not available - running in browser
+    return false;
+  } catch (error) {
+    console.error('[AndroidBridge] Error sending prayer times to AndroidPush:', error);
+    return false;
+  }
+}
+
+/**
  * Checks if the Android bridge for next prayer updates is supported.
  * 
  * @returns true if the updateNextPrayer bridge method is available, false otherwise
@@ -206,3 +312,20 @@ export function isAndroidPrayerInterfaceSupported(): boolean {
   }
 }
 
+/**
+ * Checks if the AndroidPush interface is supported.
+ * 
+ * @returns true if the AndroidPush interface is available, false otherwise
+ */
+export function isAndroidPushInterfaceSupported(): boolean {
+  try {
+    return (
+      typeof window !== 'undefined' &&
+      window.AndroidPush !== undefined &&
+      (typeof window.AndroidPush.sendPrayerTimes === 'function' ||
+       typeof window.AndroidPush.send === 'function')
+    );
+  } catch {
+    return false;
+  }
+}
