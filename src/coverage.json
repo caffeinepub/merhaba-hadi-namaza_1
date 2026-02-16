@@ -1,37 +1,48 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T22:52:09.643Z",
+  "generatedAt": "2026-02-16T01:45:29.644Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Expand `frontend/docs/android-webview-template.md` into a complete, “final and complete” Android Studio WebView wrapper guide that includes the full Kotlin/Gradle/manifest/resource code (as sequential, copy-pasteable files) for: (1) offline-first WebView caching using `WebSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK`, (2) a JavaScript bridge that converts web-triggered notification calls into visible native Android notifications (compatible with the existing web bridge expectations like `window.Android.showNotification(title, body)` and `window.AndroidPush.sendPrayerTimes(json)`), (3) runtime notification permission handling for Android 13+ (`POST_NOTIFICATIONS`) plus a user-facing option to open system notification settings after setup, (4) scheduled prayer-time alarms and an ongoing/persistent status-bar notification showing the next scheduled prayer time, (5) Play Store version checking and a native notification when a new version is available, and (6) edge-to-edge / WindowInsets handling so the WebView content does not render under the status bar or navigation bar.",
+        "id": "REQ-3",
+        "summary": "Update the web-to-AndroidPush payload so `dailyPrayers` and `weeklyPrayers` are JSON arrays of objects (not strings), where each element is exactly `{ \"name\": string, \"time\": string, \"timeMillis\": number }`, and ensure the payload is sent via `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` without causing Android-side `JSONObject`/`JSONArray` parsing crashes.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/docs/android-webview-template.md"
+          "frontend/src/features/home/useAndroidPushPrayerTimes.ts"
         ],
         "matchedFiles": [
-          "frontend/docs/android-webview-template.md"
+          "frontend/src/features/home/useAndroidPushPrayerTimes.ts"
         ]
       },
       {
-        "id": "REQ-2",
-        "summary": "Add safe-area (status bar / navigation bar) padding support to the React web UI so that when hosted inside an edge-to-edge Android WebView, the app content respects device cutouts and system bars using CSS env safe-area inset variables.",
+        "id": "REQ-4",
+        "summary": "Update the AndroidPush TypeScript declarations and web bridge validation to match the new schema where `dailyPrayers` and `weeklyPrayers` are arrays of objects `{name,time,timeMillis}` (not formatted strings), and keep backward-compatible bridge method fallback behavior (`sendPrayerTimes` then `send`).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/App.tsx"
+          "frontend/src/androidPushBridge.d.ts",
+          "frontend/src/utils/androidBridge.ts"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/App.tsx"
+          "frontend/src/androidPushBridge.d.ts",
+          "frontend/src/utils/androidBridge.ts"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Add developer-facing documentation that includes (1) an example JavaScript snippet that builds the correct `jsonData` structure (including daily + weekly arrays of `{name,time,timeMillis}`) and calls `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))`, and (2) an example Kotlin snippet showing how Android should parse the JSON (`JSONObject` -> `JSONArray` -> `JSONObject`), store/retrieve it from SharedPreferences, compute the next upcoming prayer using `timeMillis`, and periodically refresh a persistent notification while the app UI is not open.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/docs/android-webview-template.md"
+        ],
+        "matchedFiles": [
+          "frontend/docs/android-webview-template.md"
         ]
       }
     ]
@@ -42,8 +53,9 @@
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/docs/android-webview-template.md",
-    "frontend/src/App.tsx",
-    "frontend/src/index.css",
+    "frontend/src/androidPushBridge.d.ts",
+    "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
+    "frontend/src/utils/androidBridge.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

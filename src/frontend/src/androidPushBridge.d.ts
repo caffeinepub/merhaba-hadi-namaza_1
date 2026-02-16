@@ -6,6 +6,12 @@
  * alarm scheduling, and widget updates.
  */
 
+interface PrayerTimeEntry {
+  name: string;
+  time: string;
+  timeMillis: number;
+}
+
 interface AndroidPushInterface {
   /**
    * Primary method: Sends expanded prayer-times data to Android for SharedPreferences storage,
@@ -16,14 +22,16 @@ interface AndroidPushInterface {
    * - nextPrayerMillis: number (epoch timestamp in milliseconds)
    * - nextPrayerTime: string (HH:MM format, e.g., "16:12")
    * - timeRemaining: string (countdown string, e.g., "1 saat 23 dakika")
-   * - dailyPrayers: string[] (formatted strings like "İmsak: 06:24")
-   * - weeklyPrayers: string[] (formatted strings with all prayer times per day)
+   * - dailyPrayers: array of objects { name: string, time: string, timeMillis: number }
+   * - weeklyPrayers: array of objects { name: string, time: string, timeMillis: number }
    * 
    * Android will:
    * 1. Store the JSON in SharedPreferences
-   * 2. Schedule an alarm for nextPrayerMillis
-   * 3. Display notifications with prayer name and countdown
-   * 4. Update widgets with daily and weekly prayer times
+   * 2. Parse dailyPrayers and weeklyPrayers as JSONArray of JSONObject
+   * 3. Schedule alarms for upcoming prayers using timeMillis
+   * 4. Display notifications with prayer name and countdown
+   * 5. Update widgets with daily and weekly prayer times
+   * 6. Update persistent notification by finding next prayer from arrays
    * 
    * Example payload:
    * ```json
@@ -33,16 +41,22 @@ interface AndroidPushInterface {
    *   "nextPrayerTime": "16:12",
    *   "timeRemaining": "1 saat 23 dakika",
    *   "dailyPrayers": [
-   *     "İmsak: 06:24",
-   *     "Güneş: 07:49",
-   *     "Öğle: 13:19",
-   *     "İkindi: 16:12",
-   *     "Akşam: 18:40",
-   *     "Yatsı: 20:00"
+   *     { "name": "İmsak", "time": "06:24", "timeMillis": 1739500000000 },
+   *     { "name": "Güneş", "time": "07:49", "timeMillis": 1739505000000 },
+   *     { "name": "Öğle", "time": "13:19", "timeMillis": 1739525000000 },
+   *     { "name": "İkindi", "time": "16:12", "timeMillis": 1739550000000 },
+   *     { "name": "Akşam", "time": "18:40", "timeMillis": 1739560000000 },
+   *     { "name": "Yatsı", "time": "20:00", "timeMillis": 1739565000000 }
    *   ],
    *   "weeklyPrayers": [
-   *     "14 Şubat Cumartesi | İmsak: 06:24, Güneş: 07:49, Öğle: 13:19, İkindi: 16:12, Akşam: 18:40, Yatsı: 20:00",
-   *     "15 Şubat Pazar | İmsak: 06:23, Güneş: 07:48, Öğle: 13:19, İkindi: 16:13, Akşam: 18:41, Yatsı: 20:01"
+   *     { "name": "İmsak", "time": "06:24", "timeMillis": 1739500000000 },
+   *     { "name": "Güneş", "time": "07:49", "timeMillis": 1739505000000 },
+   *     { "name": "Öğle", "time": "13:19", "timeMillis": 1739525000000 },
+   *     { "name": "İkindi", "time": "16:12", "timeMillis": 1739550000000 },
+   *     { "name": "Akşam", "time": "18:40", "timeMillis": 1739560000000 },
+   *     { "name": "Yatsı", "time": "20:00", "timeMillis": 1739565000000 },
+   *     { "name": "İmsak", "time": "06:23", "timeMillis": 1739586000000 },
+   *     ...
    *   ]
    * }
    * ```

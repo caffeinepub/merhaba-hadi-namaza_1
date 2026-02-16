@@ -1,16 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Provide a “final and complete” Android Studio WebView wrapper guide (as documentation) covering offline-first caching, native notifications via JS bridge, prayer-time scheduling with persistent notification, Play Store update checks, and edge-to-edge insets handling; and update the React web UI to respect safe-area insets when embedded in an edge-to-edge Android WebView.
+**Goal:** Fix the AndroidPush prayer-times payload schema so Android can parse `dailyPrayers` and `weeklyPrayers` without crashes, and document correct web + Android parsing/notification update patterns.
 
 **Planned changes:**
-- Expand `frontend/docs/android-webview-template.md` into a complete, file-by-file Android WebView wrapper guide with sequential, copy-pasteable Kotlin/Gradle/manifest/resource code covering:
-  - Offline-first WebView caching (`WebSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK`) and related WebSettings for offline-friendly behavior
-  - JavaScript bridge contracts compatible with existing web expectations (e.g., `window.Android.showNotification(title, body)`, `window.Android.getAppVersion()`, `window.AndroidPush.sendPrayerTimes(json)` / fallback)
-  - Android 13+ runtime notification permission flow (`POST_NOTIFICATIONS`) and an option to open system notification settings
-  - Scheduling prayer-time alarms and an ongoing (non-dismissible) status-bar notification for the next prayer time
-  - Play Store version checking and a native notification when an update is available
-  - Edge-to-edge / WindowInsets handling to keep WebView content inset-aware (not under status/navigation bars)
-- Add global safe-area padding support to the React UI using CSS `env(safe-area-inset-*)` variables and apply it to the top-level app container so content does not render under system UI in edge-to-edge WebView.
+- Update `frontend/src/features/home/useAndroidPushPrayerTimes.ts` to build `dailyPrayers` and `weeklyPrayers` as arrays of `{ name, time, timeMillis }` objects (not string arrays) and send via `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` with safe failure behavior on invalid/missing data.
+- Update `frontend/src/androidPushBridge.d.ts` and `frontend/src/utils/androidBridge.ts` validation/types to match the new schema and keep the `sendPrayerTimes` then `send` fallback, without throwing in non-Android browsers.
+- Add/extend developer documentation under `frontend/docs/` with copy-pasteable JavaScript (payload construction + sending) and Kotlin (SharedPreferences storage, `JSONObject`/`JSONArray` parsing, next-prayer selection using `timeMillis`, periodic persistent-notification refresh) examples in English.
 
-**User-visible outcome:** The repo includes a complete Android WebView wrapper documentation template that can be copied into Android Studio to produce an offline-capable, notification-enabled, inset-safe wrapper; and the web app UI will respect safe-area insets when run inside an edge-to-edge Android WebView.
+**User-visible outcome:** Prayer times are delivered to the Android app via the WebView bridge in a schema Android can parse reliably, and developers have clear examples for generating, parsing, storing, and using the payload to update ongoing notifications.

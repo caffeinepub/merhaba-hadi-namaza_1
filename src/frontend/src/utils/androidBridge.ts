@@ -192,16 +192,17 @@ export function sendCityToAndroid(cityName: string): boolean {
  *   nextPrayerTime: "16:12",
  *   timeRemaining: "1 saat 23 dakika",
  *   dailyPrayers: [
- *     "İmsak: 06:24",
- *     "Güneş: 07:49",
- *     "Öğle: 13:19",
- *     "İkindi: 16:12",
- *     "Akşam: 18:40",
- *     "Yatsı: 20:00"
+ *     { name: "İmsak", time: "06:24", timeMillis: 1739500000000 },
+ *     { name: "Güneş", time: "07:49", timeMillis: 1739505000000 },
+ *     { name: "Öğle", time: "13:19", timeMillis: 1739525000000 },
+ *     { name: "İkindi", time: "16:12", timeMillis: 1739550000000 },
+ *     { name: "Akşam", time: "18:40", timeMillis: 1739560000000 },
+ *     { name: "Yatsı", time: "20:00", timeMillis: 1739565000000 }
  *   ],
  *   weeklyPrayers: [
- *     "14 Şubat Cumartesi | İmsak: 06:24, Güneş: 07:49, Öğle: 13:19, İkindi: 16:12, Akşam: 18:40, Yatsı: 20:00",
- *     "15 Şubat Pazar | İmsak: 06:23, Güneş: 07:48, Öğle: 13:19, İkindi: 16:13, Akşam: 18:41, Yatsı: 20:01"
+ *     { name: "İmsak", time: "06:24", timeMillis: 1739500000000 },
+ *     { name: "Güneş", time: "07:49", timeMillis: 1739505000000 },
+ *     ...
  *   ]
  * });
  * ```
@@ -211,8 +212,8 @@ export function sendPrayerTimesToAndroidPush(payload: {
   nextPrayerMillis: number;
   nextPrayerTime: string;
   timeRemaining: string;
-  dailyPrayers: string[];
-  weeklyPrayers: string[];
+  dailyPrayers: Array<{ name: string; time: string; timeMillis: number }>;
+  weeklyPrayers: Array<{ name: string; time: string; timeMillis: number }>;
 }): boolean {
   // Validate payload structure
   if (!payload || typeof payload !== 'object') {
@@ -250,6 +251,46 @@ export function sendPrayerTimesToAndroidPush(payload: {
   if (!Array.isArray(payload.weeklyPrayers) || payload.weeklyPrayers.length === 0) {
     console.warn('[AndroidBridge] Invalid weeklyPrayers: must be a non-empty array');
     return false;
+  }
+
+  // Validate each dailyPrayers entry
+  for (const entry of payload.dailyPrayers) {
+    if (!entry || typeof entry !== 'object') {
+      console.warn('[AndroidBridge] Invalid dailyPrayers entry: not an object', entry);
+      return false;
+    }
+    if (!entry.name || typeof entry.name !== 'string') {
+      console.warn('[AndroidBridge] Invalid dailyPrayers entry: missing or invalid name', entry);
+      return false;
+    }
+    if (!entry.time || typeof entry.time !== 'string' || !/^\d{2}:\d{2}$/.test(entry.time)) {
+      console.warn('[AndroidBridge] Invalid dailyPrayers entry: time must be HH:MM', entry);
+      return false;
+    }
+    if (typeof entry.timeMillis !== 'number' || entry.timeMillis <= 0) {
+      console.warn('[AndroidBridge] Invalid dailyPrayers entry: timeMillis must be positive number', entry);
+      return false;
+    }
+  }
+
+  // Validate each weeklyPrayers entry
+  for (const entry of payload.weeklyPrayers) {
+    if (!entry || typeof entry !== 'object') {
+      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: not an object', entry);
+      return false;
+    }
+    if (!entry.name || typeof entry.name !== 'string') {
+      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: missing or invalid name', entry);
+      return false;
+    }
+    if (!entry.time || typeof entry.time !== 'string' || !/^\d{2}:\d{2}$/.test(entry.time)) {
+      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: time must be HH:MM', entry);
+      return false;
+    }
+    if (typeof entry.timeMillis !== 'number' || entry.timeMillis <= 0) {
+      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: timeMillis must be positive number', entry);
+      return false;
+    }
   }
 
   try {

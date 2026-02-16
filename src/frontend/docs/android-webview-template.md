@@ -23,5 +23,21 @@ This template creates a native Android app that:
 - Kotlin 1.9+
 - Firebase Cloud Messaging (FCM) configured in your project
 
-## Project Structure
+## AndroidPush JavaScript Bridge Integration
+
+### Overview
+
+The web app sends prayer times data to Android via the `window.AndroidPush` JavaScript interface. This section provides complete examples for both web (JavaScript/TypeScript) and Android (Kotlin) sides.
+
+### Web Side: Sending Prayer Times
+
+The web app computes prayer times and sends them as a JSON payload containing:
+- **nextPrayer**: Name of the next prayer (e.g., "İmsak", "Öğle", "İkindi")
+- **nextPrayerMillis**: Epoch timestamp in milliseconds for the next prayer
+- **nextPrayerTime**: HH:MM time string for the next prayer
+- **timeRemaining**: Countdown string (e.g., "1 saat 23 dakika")
+- **dailyPrayers**: Array of objects with `{ name, time, timeMillis }` for today's 6 prayers
+- **weeklyPrayers**: Array of objects with `{ name, time, timeMillis }` for the next 7 days (42 entries total)
+
+#### Example JavaScript/TypeScript Code
 

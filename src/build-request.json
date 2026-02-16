@@ -1,59 +1,82 @@
 {
   "kind": "build_request",
-  "title": "Provide complete Android WebView wrapper spec (offline cache, native notifications, insets, Play Store version checks) and add web safe-area padding",
+  "title": "Fix AndroidPush prayer-times payload schema (dailyPrayers/weeklyPrayers as JSON objects) and document Android parsing + periodic notification updates",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Expand `frontend/docs/android-webview-template.md` into a complete, “final and complete” Android Studio WebView wrapper guide that includes the full Kotlin/Gradle/manifest/resource code (as sequential, copy-pasteable files) for: (1) offline-first WebView caching using `WebSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK`, (2) a JavaScript bridge that converts web-triggered notification calls into visible native Android notifications (compatible with the existing web bridge expectations like `window.Android.showNotification(title, body)` and `window.AndroidPush.sendPrayerTimes(json)`), (3) runtime notification permission handling for Android 13+ (`POST_NOTIFICATIONS`) plus a user-facing option to open system notification settings after setup, (4) scheduled prayer-time alarms and an ongoing/persistent status-bar notification showing the next scheduled prayer time, (5) Play Store version checking and a native notification when a new version is available, and (6) edge-to-edge / WindowInsets handling so the WebView content does not render under the status bar or navigation bar.",
+      "id": "REQ-3",
+      "text": "Update the web-to-AndroidPush payload so `dailyPrayers` and `weeklyPrayers` are JSON arrays of objects (not strings), where each element is exactly `{ \"name\": string, \"time\": string, \"timeMillis\": number }`, and ensure the payload is sent via `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` without causing Android-side `JSONObject`/`JSONArray` parsing crashes.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "şimdi senden android stuidoda uygulamanın  Öncelikle webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK kod ile çevrımdışı önyükelemeli çalışsın istiyorum... uygulama android tarafında push bildirim versin istiyorum... Bildirim ayarları kurulup yapınca açılması için seçenek sunulsun... sıradaki vakitte sabit bir bildirim olarak bildirim çubuğunda görüntülenebilsin... google play storede sürüm kontrolü yapılabilsin yeni sürüm gelince bildirim versin... ekran mobil cihazlarda ... taşsın istemiyorum... gerekli olan android studio dosyalarının kodlarını metin olarak sırayla gönderebilir misin?",
-          "başla"
+          "Android tarafında PersistentNotificationService, JSON içindeki `dailyPrayers` ve `weeklyPrayers` alanlarını bekliyor.",
+          "Her eleman `{ \"name\": \"...\", \"time\": \"...\", \"timeMillis\": ... }` formatında bir JSON nesnesi olmalı.",
+          "Çökme sebebi: web tarafı düz string gönderiyor, Android ise JSONObject bekliyor.",
+          "Web tarafında `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` çağrısında `jsonData` içine hem günlük hem haftalık vakitleri JSON nesneleri halinde koy."
         ]
       },
       "acceptanceCriteria": [
-        "`frontend/docs/android-webview-template.md` contains a clear file-by-file sectioned layout (e.g., AndroidManifest.xml, MainActivity.kt, WebAppInterface.kt, FirebaseMessagingService, receivers, helpers, Gradle files, XML layouts, required resources) with complete code blocks for each file.",
-        "The doc explicitly includes the WebView caching configuration with `LOAD_CACHE_ELSE_NETWORK` and any other required WebSettings to support offline-friendly behavior.",
-        "The doc specifies a JS bridge contract that matches the existing web app typings/usages (e.g., `window.Android.showNotification(title, body)`, `window.Android.getAppVersion()`, and `window.AndroidPush.sendPrayerTimes(json)` or fallback `send(json)`).",
-        "The doc includes Android 13+ notification permission flow and a concrete “Open notification settings” intent option for the user.",
-        "The doc includes a concrete approach and code for scheduling the next prayer notification and showing an ongoing (non-dismissible) notification for the upcoming prayer time.",
-        "The doc includes code and instructions for Play Store version checking and notifying the user when an update is available.",
-        "The doc includes edge-to-edge / WindowInsets handling code ensuring the WebView content is inset-aware (status/navigation bars do not cover content)."
+        "`frontend/src/features/home/useAndroidPushPrayerTimes.ts` no longer constructs `dailyPrayers: string[]` and `weeklyPrayers: string[]`; both are built as arrays of objects with keys `name`, `time`, `timeMillis`.",
+        "For daily payload: `dailyPrayers` contains today's prayer entries as `{name,time,timeMillis}` objects, with `time` in HH:MM and `timeMillis` representing the same local-day timestamp in milliseconds.",
+        "For weekly payload: `weeklyPrayers` contains upcoming prayer entries for the next 7 days as `{name,time,timeMillis}` objects (or another explicitly documented ordering), and every entry includes valid `timeMillis` > 0.",
+        "`sendPrayerTimesToAndroidPush(...)` is called with the new schema and still sends a single JSON string to `AndroidPush.sendPrayerTimes` (or fallback `AndroidPush.send`).",
+        "If required data to compute `timeMillis` is missing/invalid, the hook does not send malformed payloads (fails safely without throwing)."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Add safe-area (status bar / navigation bar) padding support to the React web UI so that when hosted inside an edge-to-edge Android WebView, the app content respects device cutouts and system bars using CSS env safe-area inset variables.",
+      "id": "REQ-4",
+      "text": "Update the AndroidPush TypeScript declarations and web bridge validation to match the new schema where `dailyPrayers` and `weeklyPrayers` are arrays of objects `{name,time,timeMillis}` (not formatted strings), and keep backward-compatible bridge method fallback behavior (`sendPrayerTimes` then `send`).",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "Ayrııca ekran mobil cihazlarda ne üst kısımdaki şart ve bildirim alanına taşsın ne de alt kısımda menu ve geri tuş kısmına taşsın istemiyorum."
+          "Android tarafında PersistentNotificationService, JSON içindeki `dailyPrayers` ve `weeklyPrayers` alanlarını bekliyor.",
+          "Her eleman `{ \"name\": \"...\", \"time\": \"...\", \"timeMillis\": ... }` formatında bir JSON nesnesi olmalı."
         ]
       },
       "acceptanceCriteria": [
-        "Global CSS defines a reusable safe-area padding utility (or equivalent) using `env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`, `env(safe-area-inset-left)`, and `env(safe-area-inset-right)`.",
-        "The top-level app container applies the safe-area padding so header/content/bottom navigation never render under system UI when the WebView uses edge-to-edge.",
-        "No user-facing text is introduced in Turkish as part of this change (keep user-facing strings English for any new copy)."
+        "`frontend/src/androidPushBridge.d.ts` documentation and types describe `dailyPrayers` and `weeklyPrayers` as arrays of `{ name: string; time: string; timeMillis: number }`.",
+        "`frontend/src/utils/androidBridge.ts` validates that `dailyPrayers` and `weeklyPrayers` are arrays of objects with `name` (string), `time` (HH:MM string), and `timeMillis` (number > 0) before sending.",
+        "Bridge sending still attempts `window.AndroidPush.sendPrayerTimes(jsonPayload)` first and falls back to `window.AndroidPush.send(jsonPayload)` if needed.",
+        "No runtime exceptions are thrown from the validation layer when running in a non-Android browser environment."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add developer-facing documentation that includes (1) an example JavaScript snippet that builds the correct `jsonData` structure (including daily + weekly arrays of `{name,time,timeMillis}`) and calls `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))`, and (2) an example Kotlin snippet showing how Android should parse the JSON (`JSONObject` -> `JSONArray` -> `JSONObject`), store/retrieve it from SharedPreferences, compute the next upcoming prayer using `timeMillis`, and periodically refresh a persistent notification while the app UI is not open.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Bana hem web tarafı için doğru JSON örneğini hem de Android tarafında nasıl parse edileceğini göster.",
+          "Çıktı: - Web tarafı için örnek JavaScript kodu ... - Android tarafı için Kotlin kodu (JSONArray içinden JSONObject okuyarak sıradaki vakti bulup bildirimi güncelleyen).",
+          "Android tarafı bu JSON’u SharedPreferences’a kaydedip servis içinde periyodik olarak bildirimi güncellesin."
+        ]
+      },
+      "acceptanceCriteria": [
+        "`frontend/docs/android-webview-template.md` (or a new markdown doc under `frontend/docs/`) contains an explicit example payload JSON showing `dailyPrayers` and `weeklyPrayers` as arrays of objects with `name`, `time`, `timeMillis`.",
+        "The documentation includes a copy-pasteable JavaScript example that demonstrates computing/setting `timeMillis` per prayer and sending it through `AndroidPush.sendPrayerTimes`.",
+        "The documentation includes a copy-pasteable Kotlin example that: reads the JSON string from SharedPreferences; parses `dailyPrayers` and/or `weeklyPrayers` via `JSONArray` and `getJSONObject(i)`; selects the next prayer by smallest `timeMillis` greater than `System.currentTimeMillis()`; and shows a periodic update loop approach for updating an ongoing notification.",
+        "All documentation text intended for developers is written in English."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under `frontend/src/components/ui` (read-only UI components).",
-    "Do not edit immutable frontend hook paths listed in SYSTEM_CONTEXT (compose around them instead).",
-    "Keep all backend logic in the single Motoko actor (`backend/main.mo`) and only add a migration file if state schema changes are required (not expected for this request)."
+    "Do not add any backend (Motoko) endpoints or URL-based fetching for prayer times; the integration must remain WebView JavaScript bridge based (AndroidPush).",
+    "Do not modify any files under `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`, or `frontend/src/components/ui` (immutable paths).",
+    "Keep the AndroidPush bridge method name behavior compatible with existing Android implementations by preserving the `sendPrayerTimes` then `send` fallback."
   ],
   "nonGoals": [
-    "Implementing native Android/Kotlin code as compiled project artifacts inside this Internet Computer app repository (the deliverable here is documentation + web-side safe-area support).",
-    "Adding real Web Push / Service Worker push notifications to the web app (not supported in Android WebView).",
-    "Adding third-party auth providers or non-Internet-Identity authentication changes."
+    "Implement or ship Android Studio/Kotlin source code inside this repository (only provide documentation/code samples).",
+    "Add new user-facing UI features unrelated to the AndroidPush payload schema fix.",
+    "Add real-time/background web execution; the web app will not be responsible for running timers when the app is closed."
   ],
   "imageRequirements": {
     "required": [],
