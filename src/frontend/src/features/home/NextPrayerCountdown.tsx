@@ -10,9 +10,9 @@ interface NextPrayerCountdownProps {
 }
 
 /**
- * Presentational component displaying next prayer countdown.
+ * Presentational component displaying next prayer countdown with seconds-inclusive time remaining.
  * 
- * Receives computed nextPrayer and timeRemaining from parent (HomeTab)
+ * Receives computed nextPrayer and timeRemaining (mm:ss or HH:mm:ss format) from parent (HomeTab)
  * to ensure single source of truth and prevent duplicate bridge sends.
  */
 export function NextPrayerCountdown({ nextPrayer, timeRemaining, isLoading, error }: NextPrayerCountdownProps) {
@@ -45,7 +45,7 @@ export function NextPrayerCountdown({ nextPrayer, timeRemaining, isLoading, erro
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold tabular-nums">{nextPrayer.time}</p>
-            <p className="text-sm text-muted-foreground font-medium">{timeRemaining}</p>
+            <p className="text-sm text-muted-foreground font-medium tabular-nums">{timeRemaining}</p>
           </div>
         </div>
       </CardContent>

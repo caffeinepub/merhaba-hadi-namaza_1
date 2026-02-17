@@ -21,7 +21,7 @@ interface AndroidPushInterface {
    * - nextPrayer: string (prayer name, e.g., "İmsak", "Öğle", "İkindi", "Akşam", "Yatsı")
    * - nextPrayerMillis: number (epoch timestamp in milliseconds)
    * - nextPrayerTime: string (HH:MM format, e.g., "16:12")
-   * - timeRemaining: string (countdown string, e.g., "1 saat 23 dakika")
+   * - timeRemaining: string (countdown string in mm:ss or HH:mm:ss format, e.g., "04:09" or "01:04:09")
    * - dailyPrayers: array of objects { name: string, time: string, timeMillis: number }
    * - weeklyPrayers: array of objects { name: string, time: string, timeMillis: number }
    * 
@@ -39,7 +39,7 @@ interface AndroidPushInterface {
    *   "nextPrayer": "İkindi",
    *   "nextPrayerMillis": 1739550000000,
    *   "nextPrayerTime": "16:12",
-   *   "timeRemaining": "1 saat 23 dakika",
+   *   "timeRemaining": "01:23:45",
    *   "dailyPrayers": [
    *     { "name": "İmsak", "time": "06:24", "timeMillis": 1739500000000 },
    *     { "name": "Güneş", "time": "07:49", "timeMillis": 1739505000000 },

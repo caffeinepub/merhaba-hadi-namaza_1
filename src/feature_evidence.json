@@ -2,12 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-persist-the-user-selected-location-in-a-more-durable-client-side-store-than-localstorage-to-survive-android-webview-storage-cleanup-and-use-it-as-the-app-s-canonical-saved-location-until-the-user-changes-it",
-      "featureTitle": "Persist the user-selected location in a more durable client-side store than localStorage (to survive Android WebView storage cleanup) and use it as the app’s canonical saved location until the user changes it.",
+      "featureId": "feature-update-the-next-prayer-countdown-logic-so-the-remaining-time-is-computed-and-updated-every-second-instead-of-every-minute-and-formatted-with-seconds-for-display-as-mm-ss-and-as-hh-mm-ss-when-the-remaining-time-is-1-hour-or-more",
+      "featureTitle": "Update the next-prayer countdown logic so the remaining time is computed and updated every second (instead of every minute) and formatted with seconds for display as mm:ss (and as HH:mm:ss when the remaining time is 1 hour or more).",
       "files": [
-        "frontend/src/features/settings/durableLocationStorage.ts",
-        "frontend/src/features/settings/localSettingsStorage.ts",
-        "frontend/src/features/settings/useAppSettings.ts"
+        "frontend/src/features/home/NextPrayerCountdown.tsx",
+        "frontend/src/features/home/formatRemainingTime.ts",
+        "frontend/src/features/home/useNextPrayerCountdown.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -24,11 +24,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-app-settings-load-save-flow-so-location-changes-are-written-to-durable-storage-and-localstorage-before-any-ui-close-navigation-actions-that-depend-on-the-saved-location-e-g-closing-the-location-picker-dialog",
-      "featureTitle": "Update the app settings load/save flow so location changes are written to durable storage and localStorage before any UI close/navigation actions that depend on the saved location (e.g., closing the location picker dialog).",
+      "featureId": "feature-ensure-the-androidpush-payload-field-timeremaining-receives-the-same-seconds-inclusive-countdown-string-so-the-android-persistent-notification-can-display-seconds-based-countdown-mm-ss-hh-mm-ss",
+      "featureTitle": "Ensure the AndroidPush payload field `timeRemaining` receives the same seconds-inclusive countdown string so the Android persistent notification can display seconds-based countdown (mm:ss / HH:mm:ss).",
       "files": [
-        "frontend/src/features/location/LocationSetupSection.tsx",
-        "frontend/src/features/settings/useAppSettings.ts"
+        "frontend/src/androidPushBridge.d.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -45,11 +44,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-all-location-selection-entry-points-intended-to-affect-the-default-app-location-update-the-same-persisted-app-settings-location-field-and-never-reset-it-to-null-default-on-mount-or-when-switching-tabs-including-flows-that-offer-save-as-default-vs-temporary",
-      "featureTitle": "Ensure all location selection entry points intended to affect the default app location update the same persisted app settings `location` field and never reset it to null/default on mount or when switching tabs (including flows that offer “save as default” vs “temporary”).",
+      "featureId": "feature-keep-existing-bridge-update-behavior-for-next-prayer-identity-name-and-timestamp-time-string-so-that-android-bridge-calls-that-should-only-happen-on-next-prayer-changes-are-not-spammed-by-the-new-per-second-countdown-updates",
+      "featureTitle": "Keep existing bridge update behavior for next-prayer identity (name and timestamp/time-string) so that Android bridge calls that should only happen on next-prayer changes are not spammed by the new per-second countdown updates.",
       "files": [
-        "frontend/src/features/settings/localSettingsStorage.ts",
-        "frontend/src/features/settings/useAppSettings.ts"
+        "frontend/src/features/home/useNextPrayerCountdown.ts"
       ],
       "components": [
         "authorization@4.0.0",

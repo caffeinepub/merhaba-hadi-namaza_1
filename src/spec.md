@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Make the user-selected location persist reliably across app restarts (including cases where Android WebView clears localStorage).
+**Goal:** Show a seconds-based next-prayer countdown (mm:ss / HH:mm:ss) in the app and Android persistent notification, without spamming next-prayer bridge updates.
 
 **Planned changes:**
-- Store the selected default location in a more durable client-side storage than localStorage and treat it as the canonical saved location until the user changes it.
-- Update settings load/restore logic to prefer the durable store when localStorage is missing/cleared, and fall back to the current behavior when both are empty.
-- Update location save flows so changes are written to durable storage and localStorage before closing dialogs/navigation that depends on the saved location.
-- Ensure all “set default location” entry points update the same persisted `settings.location`, while “temporary” location choices do not overwrite the default and no component resets the default location to null unless the user explicitly clears it.
+- Update the next-prayer countdown hook to recompute remaining time every second and format it as zero-padded mm:ss (< 1 hour) or HH:mm:ss (>= 1 hour), based on `nextPrayerMillis` and current time.
+- Ensure `sendPrayerTimesToAndroidPush` includes a `timeRemaining` string using the same seconds-inclusive format, and that updates propagate through `useAndroidPushPrayerTimes`.
+- Keep existing behavior so `sendNextPrayerToAndroid` and `sendNextPrayerWithTimeString` only fire when the next prayer (or its scheduled time) changes, not every second.
 
-**User-visible outcome:** After choosing a location, the app continues to show that same location after closing and reopening; if localStorage is cleared, the app automatically restores the saved location from durable storage, and the location picker only closes after the save completes.
+**User-visible outcome:** The persistent next-prayer countdown updates smoothly every second with seconds shown (mm:ss or HH:mm:ss), including in the Android persistent notification, while next-prayer identity updates remain non-spammy.

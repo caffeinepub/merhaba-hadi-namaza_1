@@ -1,70 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Make the selected location persist reliably (not cleared over time)",
+  "title": "Show seconds in persistent next-prayer countdown (mm:ss)",
   "projectName": "Hadi Namaza",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Persist the user-selected location in a more durable client-side store than localStorage (to survive Android WebView storage cleanup) and use it as the app’s canonical saved location until the user changes it.",
+      "text": "Update the next-prayer countdown logic so the remaining time is computed and updated every second (instead of every minute) and formatted with seconds for display as mm:ss (and as HH:mm:ss when the remaining time is 1 hour or more).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "recent-messages"
         ],
         "quotes": [
-          "ekle seçilen konum silinmesin"
+          "Uygulamada kalıcı bildirim kısmında kalan vakit gözüküyor ancak geri sayım sadece dakikaya kadar var ben saniyeleri de saysın istiyorum"
         ]
       },
       "acceptanceCriteria": [
-        "After selecting a location, the app still shows the same selected location after closing and reopening the app.",
-        "If localStorage is empty/cleared but the durable store still has the saved location, the app restores and uses that location automatically.",
-        "If both stores are empty, the app behaves as today (location is null and user is prompted to select one)."
+        "When the next-prayer time is in the future, the countdown value changes once per second in the UI state produced by the countdown hook.",
+        "For remaining durations under 1 hour, the displayed remaining time uses a zero-padded mm:ss format (e.g., 04:09).",
+        "For remaining durations of 1 hour or more, the displayed remaining time uses a zero-padded HH:mm:ss format (e.g., 01:04:09).",
+        "The calculation uses the existing nextPrayerMillis target time and the current time, so seconds count down smoothly without skipping minutes."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update the app settings load/save flow so location changes are written to durable storage and localStorage before any UI close/navigation actions that depend on the saved location (e.g., closing the location picker dialog).",
+      "text": "Ensure the AndroidPush payload field `timeRemaining` receives the same seconds-inclusive countdown string so the Android persistent notification can display seconds-based countdown (mm:ss / HH:mm:ss).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "recent-messages"
         ],
         "quotes": [
-          "ekle seçilen konum silinmesin"
+          "kalıcı bildirim kısmında kalan vakit gözüküyor ancak geri sayım sadece dakikaya kadar var ben saniyeleri de saysın istiyorum"
         ]
       },
       "acceptanceCriteria": [
-        "When a user selects a location in the location picker, the dialog closes only after the save completes successfully.",
-        "On immediate app refresh/reopen after selecting a location, the same location is loaded and displayed."
+        "The JSON payload sent via `sendPrayerTimesToAndroidPush` includes `timeRemaining` in mm:ss (or HH:mm:ss) format matching the app countdown output.",
+        "While the countdown is running, updates to `timeRemaining` can be observed propagating through the `useAndroidPushPrayerTimes` hook (i.e., no stale minute-only formatting remains)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Ensure all location selection entry points intended to affect the default app location update the same persisted app settings `location` field and never reset it to null/default on mount or when switching tabs (including flows that offer “save as default” vs “temporary”).",
+      "text": "Keep existing bridge update behavior for next-prayer identity (name and timestamp/time-string) so that Android bridge calls that should only happen on next-prayer changes are not spammed by the new per-second countdown updates.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "recent-messages"
         ],
         "quotes": [
-          "ekle seçilen konum silinmesin"
+          "başla"
         ]
       },
       "acceptanceCriteria": [
-        "Choosing “save as default” in any location search flow updates the same persisted `settings.location` used by Home/Prayer Times/Weather.",
-        "Temporary location choices do not overwrite the persisted default location.",
-        "No component sets `settings.location` to null unless the user explicitly performs a clear/reset action."
+        "`sendNextPrayerToAndroid` and `sendNextPrayerWithTimeString` are still invoked only when the next prayer (or its scheduled time) changes, not every second.",
+        "No new per-second calls are added to the legacy next-prayer widget bridge functions beyond what is required for `timeRemaining` updates through AndroidPush payloads."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui (compose instead).",
-    "Keep all backend logic in the existing single Motoko actor (backend/main.mo); only add backend changes if strictly necessary for this persistence fix."
+    "Do not modify any files under the immutable frontend paths listed in SYSTEM_CONTEXT.",
+    "Do not introduce or depend on changes to the native Android app code; implement the change by adjusting the web app countdown formatting/update cadence and the existing AndroidPush payload field(s)."
   ],
   "nonGoals": [
-    "Fixing prayer-time notifications/alarm delivery on Android.",
-    "Adding new authentication methods beyond Internet Identity."
+    "Changing prayer time calculation logic or offsets.",
+    "Adding new notification types or changing notification copy content.",
+    "Updating the Sahur/Iftar countdown behavior (only the persistent next-prayer countdown is in scope)."
   ],
   "imageRequirements": {
     "required": [],

@@ -2,33 +2,29 @@
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
   "summary": "New project",
-  "architectural_notes": [
-    "Do not rely solely on WebView localStorage for location persistence; store selected location in a more durable store (e.g., IndexedDB/native storage bridge) and load it at app start."
-  ],
-  "known_issues": [
-    "Selected location is lost after some time; user must reselect location when reopening the app."
-  ],
-  "isFixRequest": true,
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-persist-the-user-selected-location-in-a-more-durable-client-side-store-than-localstorage-to-survive-android-webview-storage-cleanup-and-use-it-as-the-app-s-canonical-saved-location-until-the-user-changes-it",
-      "title": "Persist the user-selected location in a more durable client-side store than localStorage (to survive Android WebView storage cleanup) and use it as the app’s canonical saved location until the user changes it.",
+      "id": "feature-update-the-next-prayer-countdown-logic-so-the-remaining-time-is-computed-and-updated-every-second-instead-of-every-minute-and-formatted-with-seconds-for-display-as-mm-ss-and-as-hh-mm-ss-when-the-remaining-time-is-1-hour-or-more",
+      "title": "Update the next-prayer countdown logic so the remaining time is computed and updated every second (instead of every minute) and formatted with seconds for display as mm:ss (and as HH:mm:ss when the remaining time is 1 hour or more).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-app-settings-load-save-flow-so-location-changes-are-written-to-durable-storage-and-localstorage-before-any-ui-close-navigation-actions-that-depend-on-the-saved-location-e-g-closing-the-location-picker-dialog",
-      "title": "Update the app settings load/save flow so location changes are written to durable storage and localStorage before any UI close/navigation actions that depend on the saved location (e.g., closing the location picker dialog).",
+      "id": "feature-ensure-the-androidpush-payload-field-timeremaining-receives-the-same-seconds-inclusive-countdown-string-so-the-android-persistent-notification-can-display-seconds-based-countdown-mm-ss-hh-mm-ss",
+      "title": "Ensure the AndroidPush payload field `timeRemaining` receives the same seconds-inclusive countdown string so the Android persistent notification can display seconds-based countdown (mm:ss / HH:mm:ss).",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-all-location-selection-entry-points-intended-to-affect-the-default-app-location-update-the-same-persisted-app-settings-location-field-and-never-reset-it-to-null-default-on-mount-or-when-switching-tabs-including-flows-that-offer-save-as-default-vs-temporary",
-      "title": "Ensure all location selection entry points intended to affect the default app location update the same persisted app settings `location` field and never reset it to null/default on mount or when switching tabs (including flows that offer “save as default” vs “temporary”).",
+      "id": "feature-keep-existing-bridge-update-behavior-for-next-prayer-identity-name-and-timestamp-time-string-so-that-android-bridge-calls-that-should-only-happen-on-next-prayer-changes-are-not-spammed-by-the-new-per-second-countdown-updates",
+      "title": "Keep existing bridge update behavior for next-prayer identity (name and timestamp/time-string) so that Android bridge calls that should only happen on next-prayer changes are not spammed by the new per-second countdown updates.",
       "reqIds": [
         "REQ-3"
       ],
@@ -38,7 +34,7 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Persist selected location so it does not get cleared over time; auto-load it on app launch",
+      "summary": "Kalıcı bildirimdeki kalan vakit geri sayımı dakika yerine saniyeleri de gösterecek şekilde güncellensin (mm:ss).",
       "reqIds": [],
       "status": "pending"
     }

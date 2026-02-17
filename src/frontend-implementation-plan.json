@@ -1,77 +1,72 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Durable persisted location for Android WebView resilience",
+  "title": "Seconds-inclusive next-prayer countdown (mm:ss) + AndroidPush payload sync",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Persist the user-selected location in a durable client-side store (IndexedDB) and treat it as the canonical saved location with localStorage as a secondary cache.",
+      "summary": "Update next-prayer countdown to recompute every second and format remaining time as mm:ss (or HH:mm:ss when >= 1 hour) using nextPrayerMillis.",
       "acceptanceCriteria": [
-        "After selecting a location, the app still shows the same selected location after closing and reopening the app.",
-        "If localStorage is empty/cleared but the durable store still has the saved location, the app restores and uses that location automatically.",
-        "If both stores are empty, the app behaves as today (location is null and user is prompted to select one)."
+        "When the next-prayer time is in the future, the countdown value changes once per second in the UI state produced by the countdown hook.",
+        "For remaining durations under 1 hour, the displayed remaining time uses a zero-padded mm:ss format (e.g., 04:09).",
+        "For remaining durations of 1 hour or more, the displayed remaining time uses a zero-padded HH:mm:ss format (e.g., 01:04:09).",
+        "The calculation uses the existing nextPrayerMillis target time and the current time, so seconds count down smoothly without skipping minutes."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/settings/durableLocationStorage.ts",
+          "path": "frontend/src/features/home/formatRemainingTime.ts",
           "operation": "create",
-          "description": "Add an IndexedDB-backed durable storage helper dedicated to persisting/restoring/clearing the saved Location (e.g., get/set/clear), to survive Android WebView localStorage cleanup."
+          "description": "Add a small helper to format a remaining duration (computed from nextPrayerMillis - now) into zero-padded mm:ss (under 1 hour) or HH:mm:ss (1 hour or more), clamping negative values to 00:00 / 00:00:00 as needed."
         },
         {
-          "path": "frontend/src/features/settings/localSettingsStorage.ts",
+          "path": "frontend/src/features/home/useNextPrayerCountdown.ts",
           "operation": "modify",
-          "description": "Refactor local settings load/save helpers to support an async load path that can restore `settings.location` from the new durable IndexedDB store when localStorage is missing/cleared, while keeping current localStorage behavior as a fallback/secondary cache."
+          "description": "Change countdown cadence from once-per-minute to once-per-second; compute remaining time from nextPrayerMillis and Date.now() each tick; replace minute-only/Turkish text remaining string with seconds-inclusive formatted value from formatRemainingTime; keep nextPrayer and nextPrayerMillis computation behavior intact."
         },
         {
-          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "path": "frontend/src/features/home/NextPrayerCountdown.tsx",
           "operation": "modify",
-          "description": "Update settings loading to await the async settings loader (including durable location restoration) and update settings saving so `location` changes are written to the durable store and localStorage, keeping the returned `settings.location` as the canonical saved value."
+          "description": "Ensure the UI continues to display the new seconds-inclusive timeRemaining string without truncation and preserves numeric alignment (e.g., keep tabular-nums styling for stable per-second rendering)."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Ensure location save completes (durable + localStorage) before UI closes or navigates in flows that depend on the saved location.",
+      "summary": "Propagate the same seconds-inclusive countdown string into AndroidPush payload timeRemaining so the persistent notification can show mm:ss / HH:mm:ss.",
       "acceptanceCriteria": [
-        "When a user selects a location in the location picker, the dialog closes only after the save completes successfully.",
-        "On immediate app refresh/reopen after selecting a location, the same location is loaded and displayed."
+        "The JSON payload sent via `sendPrayerTimesToAndroidPush` includes `timeRemaining` in mm:ss (or HH:mm:ss) format matching the app countdown output.",
+        "While the countdown is running, updates to `timeRemaining` can be observed propagating through the `useAndroidPushPrayerTimes` hook (i.e., no stale minute-only formatting remains)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "path": "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
           "operation": "modify",
-          "description": "Guarantee the mutation promise only resolves after durable storage write and localStorage write complete successfully, so callers can safely close dialogs/navigation only after `await saveSettings(...)` resolves."
+          "description": "Confirm the payload composition continues to pass through the hook-provided timeRemaining value verbatim (now seconds-inclusive) and that deduplication does not retain any legacy minute-only formatting; keep payload field name `timeRemaining` unchanged."
         },
         {
-          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "path": "frontend/src/androidPushBridge.d.ts",
           "operation": "modify",
-          "description": "Harden the location selection handler so the optional `onLocationSelected()` (which closes the dialog) only runs after the awaited save resolves, and ensure errors keep the dialog open and do not clear the user’s selection prematurely."
+          "description": "Update interface documentation for AndroidPush payload field `timeRemaining` to reflect seconds-inclusive formats (mm:ss / HH:mm:ss) used by the web app countdown."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Unify all default-location update entry points to write the same persisted `settings.location`, keep temporary choices separate, and prevent accidental resets to null unless explicitly requested.",
+      "summary": "Prevent spamming legacy next-prayer bridge calls by keeping identity/timestamp bridge updates only on next-prayer changes, while allowing per-second countdown updates via AndroidPush payloads.",
       "acceptanceCriteria": [
-        "Choosing “save as default” in any location search flow updates the same persisted `settings.location` used by Home/Prayer Times/Weather.",
-        "Temporary location choices do not overwrite the persisted default location.",
-        "No component sets `settings.location` to null unless the user explicitly performs a clear/reset action."
+        "`sendNextPrayerToAndroid` and `sendNextPrayerWithTimeString` are still invoked only when the next prayer (or its scheduled time) changes, not every second.",
+        "No new per-second calls are added to the legacy next-prayer widget bridge functions beyond what is required for `timeRemaining` updates through AndroidPush payloads."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/nearbymosque/NearbyMosqueTab.tsx",
+          "path": "frontend/src/features/home/useNextPrayerCountdown.ts",
           "operation": "modify",
-          "description": "Ensure the “save as default” branch persists via `saveSettings({ location })` (thereby writing durable + localStorage) while the temporary branch only updates `tempLocation`, and confirm no implicit logic clears the persisted location when clearing the temporary selection."
+          "description": "Preserve and validate the existing dedup guards (lastSentTimestampRef / lastSentTimeStringRef) so sendNextPrayerToAndroid and sendNextPrayerWithTimeString fire only when nextPrayer identity or its scheduled time changes, even though the countdown tick runs every second."
         },
         {
-          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "path": "frontend/src/features/home/HomeTab.tsx",
           "operation": "modify",
-          "description": "Ensure the settings update flow never writes `location: null` unless explicitly asked (no implicit nulling during merges/migrations) and keep the default `settings.location` stable across mounts/tab switches by relying on the persisted stores."
-        },
-        {
-          "path": "frontend/src/features/settings/localSettingsStorage.ts",
-          "operation": "modify",
-          "description": "Adjust settings merge/migration behavior so `location` is not overwritten to null/default when a durable location exists, and optionally backfill durable storage from localStorage when localStorage contains a location but durable storage is empty."
+          "description": "Verify wiring remains: useNextPrayerCountdown provides per-second timeRemaining to the UI and to useAndroidPushPrayerTimes, without adding any new per-second invocations of legacy widget bridge helpers in HomeTab."
         }
       ]
     }

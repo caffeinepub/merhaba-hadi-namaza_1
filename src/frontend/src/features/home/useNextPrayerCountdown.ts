@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { sendNextPrayerToAndroid, sendNextPrayerWithTimeString } from '@/utils/androidBridge';
+import { formatRemainingTime } from './formatRemainingTime';
 
 interface PrayerTimes {
   fajr: string;
@@ -22,16 +23,16 @@ interface NextPrayerCountdownResult {
 }
 
 /**
- * React hook computing next prayer from adjusted times with live countdown.
+ * React hook computing next prayer from adjusted times with live per-second countdown.
  * 
  * This hook can be called from parent components (like HomeTab) to provide
  * a single source of truth for next prayer computation.
  * 
- * Updates every minute and sends legacy bridge calls for backward compatibility.
- * Exposes nextPrayerMillis for AndroidPush integration.
+ * Updates every second and sends legacy bridge calls only when next prayer changes.
+ * Exposes nextPrayerMillis and seconds-inclusive timeRemaining for AndroidPush integration.
  * 
  * @param adjustedTimes - Prayer times with offsets applied
- * @returns Object with nextPrayer, nextPrayerMillis, and timeRemaining
+ * @returns Object with nextPrayer, nextPrayerMillis, and timeRemaining (mm:ss or HH:mm:ss)
  */
 export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextPrayerCountdownResult {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
@@ -93,16 +94,9 @@ export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextP
       setNextPrayer(foundNext);
       setNextPrayerMillis(nextTimestamp);
 
-      // Calculate time remaining
-      const diff = nextTimestamp - now.getTime();
-      const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
-      const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-      if (hoursLeft > 0) {
-        setTimeRemaining(`${hoursLeft} sa ${minutesLeft} dk`);
-      } else {
-        setTimeRemaining(`${minutesLeft} dk`);
-      }
+      // Calculate time remaining using formatRemainingTime helper
+      const remainingMillis = nextTimestamp - now.getTime();
+      setTimeRemaining(formatRemainingTime(remainingMillis));
 
       // Send legacy bridge updates only when next prayer changes
       if (foundNext) {
@@ -125,8 +119,8 @@ export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextP
     // Initial update
     updateCountdown();
 
-    // Update every minute
-    const interval = setInterval(updateCountdown, 60000);
+    // Update every second for smooth countdown
+    const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
   }, [adjustedTimes]);
