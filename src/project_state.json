@@ -1,39 +1,36 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Android-Web entegrasyonunda web tarafının ürettiği JSON’un Android PersistentNotificationService tarafından doğru parse edilmesi, SharedPreferences’a kaydedilmesi ve servisin periyodik olarak bildirimi güncellemesi hedefleniyor. Mevcut sorun: web düz string gönderiyor, Android JSONObject/JSONArray beklediği için çöküyor.",
+  "summary": "New project",
   "architectural_notes": [
-    "Android tarafı JSON şeması: root JSON içinde dailyPrayers ve weeklyPrayers alanları bulunur; her biri JSONArray olup elemanları {\"name\":string,\"time\":string,\"timeMillis\":number} formatında JSONObject olmalıdır.",
-    "Web -> Android veri aktarımı WebView JS bridge üzerinden tek bir JSON string ile yapılır: window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData)).",
-    "Android, son alınan JSON’u SharedPreferences’ta saklayıp Foreground Service içinde okuyarak bildirimi günceller; WebView kapalıyken web tarafı veri gönderemez."
+    "Do not rely solely on WebView localStorage for location persistence; store selected location in a more durable store (e.g., IndexedDB/native storage bridge) and load it at app start."
   ],
   "known_issues": [
-    "Web tarafı dailyPrayers/weeklyPrayers içinde düz string gönderdiğinde Android JSONObject/JSONArray beklediği için parse sırasında çökme yaşanıyor.",
-    "Bildirim geri sayımı yalnızca uygulama açılınca güncelleniyor; arka planda periyodik güncelleme mekanizması yok."
+    "Selected location is lost after some time; user must reselect location when reopening the app."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-update-the-web-to-androidpush-payload-so-dailyprayers-and-weeklyprayers-are-json-arrays-of-objects-not-strings-where-each-element-is-exactly-name-string-time-string-timemillis-number-and-ensure-the-payload-is-sent-via-window-androidpush-sendprayertimes-json-stringify-jsondata-without-causing-android-side-jsonobject-jsonarray-parsing-crashes",
-      "title": "Update the web-to-AndroidPush payload so `dailyPrayers` and `weeklyPrayers` are JSON arrays of objects (not strings), where each element is exactly `{ \"name\": string, \"time\": string, \"timeMillis\": number }`, and ensure the payload is sent via `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` without causing Android-side `JSONObject`/`JSONArray` parsing crashes.",
+      "id": "feature-persist-the-user-selected-location-in-a-more-durable-client-side-store-than-localstorage-to-survive-android-webview-storage-cleanup-and-use-it-as-the-app-s-canonical-saved-location-until-the-user-changes-it",
+      "title": "Persist the user-selected location in a more durable client-side store than localStorage (to survive Android WebView storage cleanup) and use it as the app’s canonical saved location until the user changes it.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-settings-load-save-flow-so-location-changes-are-written-to-durable-storage-and-localstorage-before-any-ui-close-navigation-actions-that-depend-on-the-saved-location-e-g-closing-the-location-picker-dialog",
+      "title": "Update the app settings load/save flow so location changes are written to durable storage and localStorage before any UI close/navigation actions that depend on the saved location (e.g., closing the location picker dialog).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-all-location-selection-entry-points-intended-to-affect-the-default-app-location-update-the-same-persisted-app-settings-location-field-and-never-reset-it-to-null-default-on-mount-or-when-switching-tabs-including-flows-that-offer-save-as-default-vs-temporary",
+      "title": "Ensure all location selection entry points intended to affect the default app location update the same persisted app settings `location` field and never reset it to null/default on mount or when switching tabs (including flows that offer “save as default” vs “temporary”).",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-androidpush-typescript-declarations-and-web-bridge-validation-to-match-the-new-schema-where-dailyprayers-and-weeklyprayers-are-arrays-of-objects-name-time-timemillis-not-formatted-strings-and-keep-backward-compatible-bridge-method-fallback-behavior-sendprayertimes-then-send",
-      "title": "Update the AndroidPush TypeScript declarations and web bridge validation to match the new schema where `dailyPrayers` and `weeklyPrayers` are arrays of objects `{name,time,timeMillis}` (not formatted strings), and keep backward-compatible bridge method fallback behavior (`sendPrayerTimes` then `send`).",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-developer-facing-documentation-that-includes-1-an-example-javascript-snippet-that-builds-the-correct-jsondata-structure-including-daily-weekly-arrays-of-name-time-timemillis-and-calls-window-androidpush-sendprayertimes-json-stringify-jsondata-and-2-an-example-kotlin-snippet-showing-how-android-should-parse-the-json-jsonobject-jsonarray-jsonobject-store-retrieve-it-from-sharedpreferences-compute-the-next-upcoming-prayer-using-timemillis-and-periodically-refresh-a-persistent-notification-while-the-app-ui-is-not-open",
-      "title": "Add developer-facing documentation that includes (1) an example JavaScript snippet that builds the correct `jsonData` structure (including daily + weekly arrays of `{name,time,timeMillis}`) and calls `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))`, and (2) an example Kotlin snippet showing how Android should parse the JSON (`JSONObject` -> `JSONArray` -> `JSONObject`), store/retrieve it from SharedPreferences, compute the next upcoming prayer using `timeMillis`, and periodically refresh a persistent notification while the app UI is not open.",
-      "reqIds": [
-        "REQ-5"
       ],
       "version": 1
     }
@@ -41,31 +38,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Web tarafında dailyPrayers ve weeklyPrayers alanlarını her elemanı {name,time,timeMillis} olan JSON nesneleri (JSONArray of JSONObject) şeklinde üretip window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData)) ile göndermek",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Android tarafında gelen JSON string’ini SharedPreferences’a kaydetmek ve servis içinde okuyup parse etmek (dailyPrayers/weeklyPrayers -> JSONArray -> JSONObject)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "PersistentNotificationService içinde periyodik döngü/zamanlayıcı ile sıradaki vakti hesaplayıp bildirimi uygulama açık değilken de güncellemek",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Android tarafında JSON şema uyumsuzluğundan kaynaklı çökme durumunu önlemek için güvenli parse/validasyon ve hata toleransı eklemek",
+      "summary": "Persist selected location so it does not get cleared over time; auto-load it on app launch",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "Fix AndroidPush prayer-times payload schema (dailyPrayers/weeklyPrayers as JSON objects) and document Android parsing + periodic notification updates",
+  "projectName": "Hadi Namaza",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

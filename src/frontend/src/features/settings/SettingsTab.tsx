@@ -1,84 +1,89 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Label } from '../../components/ui/label';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { useAppSettings } from './useAppSettings';
-import { AdminAppReleaseAdvancedSection } from './AdminAppReleaseAdvancedSection';
-import { Bell, Clock } from 'lucide-react';
+import { Settings, Bell, Clock } from 'lucide-react';
 
 export function SettingsTab() {
   const { settings, saveSettings, isSaving } = useAppSettings();
-  const [offsetInput, setOffsetInput] = React.useState(settings.offsetMinutes.toString());
-  const [notificationSettings, setNotificationSettings] = React.useState(settings.notificationLeadTimes);
+  const [offsetMinutes, setOffsetMinutes] = useState(settings.offsetMinutes.toString());
+  const [notificationLeadTimes, setNotificationLeadTimes] = useState(settings.notificationLeadTimes);
 
   const handleSaveOffset = async () => {
-    const newOffset = parseInt(offsetInput, 10) || 0;
-    await saveSettings({
-      ...settings,
-      offsetMinutes: newOffset
-    });
-  };
-
-  const handleNotificationChange = (prayer: string, value: string) => {
-    const minutes = Math.max(1, Math.min(45, parseInt(value, 10) || 1));
-    setNotificationSettings({
-      ...notificationSettings,
-      [prayer]: minutes
-    });
+    const minutes = parseInt(offsetMinutes, 10);
+    if (isNaN(minutes)) {
+      alert('Lütfen geçerli bir sayı girin');
+      return;
+    }
+    try {
+      await saveSettings({ offsetMinutes: minutes });
+      alert('Ayarlar kaydedildi');
+    } catch (error) {
+      console.error('Failed to save offset:', error);
+      alert('Ayarlar kaydedilemedi');
+    }
   };
 
   const handleSaveNotifications = async () => {
-    await saveSettings({
-      ...settings,
-      notificationLeadTimes: notificationSettings
-    });
+    try {
+      await saveSettings({ notificationLeadTimes });
+      alert('Bildirim ayarları kaydedildi');
+    } catch (error) {
+      console.error('Failed to save notification settings:', error);
+      alert('Bildirim ayarları kaydedilemedi');
+    }
   };
 
-  const prayers = [
-    { key: 'fajr', label: 'İmsak' },
-    { key: 'sunrise', label: 'Güneş' },
-    { key: 'dhuhr', label: 'Öğle' },
-    { key: 'asr', label: 'İkindi' },
-    { key: 'maghrib', label: 'Akşam' },
-    { key: 'isha', label: 'Yatsı' }
-  ];
+  const handleNotificationTimeChange = (prayer: keyof typeof notificationLeadTimes, value: string) => {
+    const minutes = parseInt(value, 10);
+    if (!isNaN(minutes) && minutes >= 0) {
+      setNotificationLeadTimes(prev => ({
+        ...prev,
+        [prayer]: minutes
+      }));
+    }
+  };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 pb-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
-            Saat Düzeltmesi
+            <Settings className="h-5 w-5" />
+            Genel Ayarlar
           </CardTitle>
           <CardDescription>
-            Diyanet'e göre dakika farkı (+ veya -)
+            Uygulama ayarlarınızı buradan yönetebilirsiniz
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="offset">Dakika Farkı</Label>
-            <div className="flex gap-2">
-              <Input
-                id="offset"
-                type="number"
-                value={offsetInput}
-                onChange={(e) => setOffsetInput(e.target.value)}
-                placeholder="0"
-                className="max-w-[120px]"
-              />
-              <Button
-                onClick={handleSaveOffset}
-                disabled={isSaving}
-                size="sm"
-              >
-                Kaydet
-              </Button>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="offset">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Namaz Vakti Düzeltmesi (dakika)
+                </div>
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Pozitif değer vakitleri ileri, negatif değer geri alır
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  id="offset"
+                  type="number"
+                  value={offsetMinutes}
+                  onChange={(e) => setOffsetMinutes(e.target.value)}
+                  placeholder="0"
+                  className="max-w-xs"
+                />
+                <Button onClick={handleSaveOffset} disabled={isSaving}>
+                  {isSaving ? 'Kaydediliyor...' : 'Kaydet'}
+                </Button>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Şu anki düzeltme: {settings.offsetMinutes > 0 ? '+' : ''}{settings.offsetMinutes} dakika
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -90,40 +95,40 @@ export function SettingsTab() {
             Bildirim Ayarları
           </CardTitle>
           <CardDescription>
-            Her vakit için kaç dakika önce bildirim almak istediğinizi ayarlayın (1-45 dakika)
+            Her namaz vakti için bildirim zamanını ayarlayın
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {prayers.map((prayer) => (
-            <div key={prayer.key} className="flex items-center justify-between gap-4">
-              <Label htmlFor={`notification-${prayer.key}`} className="min-w-[80px]">
-                {prayer.label}
-              </Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id={`notification-${prayer.key}`}
-                  type="number"
-                  min="1"
-                  max="45"
-                  value={notificationSettings[prayer.key]}
-                  onChange={(e) => handleNotificationChange(prayer.key, e.target.value)}
-                  className="w-20"
-                />
-                <span className="text-sm text-muted-foreground">dk önce</span>
+          <div className="space-y-4">
+            {Object.entries(notificationLeadTimes).map(([prayer, minutes]) => (
+              <div key={prayer} className="flex items-center justify-between gap-4">
+                <Label htmlFor={`notification-${prayer}`} className="capitalize min-w-[100px]">
+                  {prayer === 'fajr' && 'İmsak'}
+                  {prayer === 'sunrise' && 'Güneş'}
+                  {prayer === 'dhuhr' && 'Öğle'}
+                  {prayer === 'asr' && 'İkindi'}
+                  {prayer === 'maghrib' && 'Akşam'}
+                  {prayer === 'isha' && 'Yatsı'}
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id={`notification-${prayer}`}
+                    type="number"
+                    min="0"
+                    value={minutes}
+                    onChange={(e) => handleNotificationTimeChange(prayer as keyof typeof notificationLeadTimes, e.target.value)}
+                    className="w-20"
+                  />
+                  <span className="text-sm text-muted-foreground">dk önce</span>
+                </div>
               </div>
-            </div>
-          ))}
-          <Button
-            onClick={handleSaveNotifications}
-            disabled={isSaving}
-            className="w-full"
-          >
-            Bildirimleri Kaydet
+            ))}
+          </div>
+          <Button onClick={handleSaveNotifications} disabled={isSaving} className="w-full">
+            {isSaving ? 'Kaydediliyor...' : 'Bildirim Ayarlarını Kaydet'}
           </Button>
         </CardContent>
       </Card>
-
-      <AdminAppReleaseAdvancedSection />
     </div>
   );
 }

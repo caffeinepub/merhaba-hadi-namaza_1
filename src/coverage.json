@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T01:45:29.644Z",
+  "generatedAt": "2026-02-17T19:58:52.936Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,38 +11,45 @@
     "implemented": 3,
     "items": [
       {
+        "id": "REQ-1",
+        "summary": "Persist the user-selected location in a more durable client-side store than localStorage (to survive Android WebView storage cleanup) and use it as the app’s canonical saved location until the user changes it.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/settings/durableLocationStorage.ts",
+          "frontend/src/features/settings/localSettingsStorage.ts",
+          "frontend/src/features/settings/useAppSettings.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/settings/durableLocationStorage.ts",
+          "frontend/src/features/settings/localSettingsStorage.ts",
+          "frontend/src/features/settings/useAppSettings.ts"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Update the app settings load/save flow so location changes are written to durable storage and localStorage before any UI close/navigation actions that depend on the saved location (e.g., closing the location picker dialog).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/settings/useAppSettings.ts",
+          "frontend/src/features/location/LocationSetupSection.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/settings/useAppSettings.ts",
+          "frontend/src/features/location/LocationSetupSection.tsx"
+        ]
+      },
+      {
         "id": "REQ-3",
-        "summary": "Update the web-to-AndroidPush payload so `dailyPrayers` and `weeklyPrayers` are JSON arrays of objects (not strings), where each element is exactly `{ \"name\": string, \"time\": string, \"timeMillis\": number }`, and ensure the payload is sent via `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` without causing Android-side `JSONObject`/`JSONArray` parsing crashes.",
+        "summary": "Ensure all location selection entry points intended to affect the default app location update the same persisted app settings `location` field and never reset it to null/default on mount or when switching tabs (including flows that offer “save as default” vs “temporary”).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/home/useAndroidPushPrayerTimes.ts"
+          "frontend/src/features/nearbymosque/NearbyMosqueTab.tsx",
+          "frontend/src/features/settings/useAppSettings.ts",
+          "frontend/src/features/settings/localSettingsStorage.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/home/useAndroidPushPrayerTimes.ts"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Update the AndroidPush TypeScript declarations and web bridge validation to match the new schema where `dailyPrayers` and `weeklyPrayers` are arrays of objects `{name,time,timeMillis}` (not formatted strings), and keep backward-compatible bridge method fallback behavior (`sendPrayerTimes` then `send`).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/androidPushBridge.d.ts",
-          "frontend/src/utils/androidBridge.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/androidPushBridge.d.ts",
-          "frontend/src/utils/androidBridge.ts"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add developer-facing documentation that includes (1) an example JavaScript snippet that builds the correct `jsonData` structure (including daily + weekly arrays of `{name,time,timeMillis}`) and calls `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))`, and (2) an example Kotlin snippet showing how Android should parse the JSON (`JSONObject` -> `JSONArray` -> `JSONObject`), store/retrieve it from SharedPreferences, compute the next upcoming prayer using `timeMillis`, and periodically refresh a persistent notification while the app UI is not open.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/docs/android-webview-template.md"
-        ],
-        "matchedFiles": [
-          "frontend/docs/android-webview-template.md"
+          "frontend/src/features/settings/useAppSettings.ts",
+          "frontend/src/features/settings/localSettingsStorage.ts"
         ]
       }
     ]
@@ -52,10 +59,10 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/docs/android-webview-template.md",
-    "frontend/src/androidPushBridge.d.ts",
-    "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
-    "frontend/src/utils/androidBridge.ts",
+    "frontend/src/features/location/LocationSetupSection.tsx",
+    "frontend/src/features/settings/durableLocationStorage.ts",
+    "frontend/src/features/settings/localSettingsStorage.ts",
+    "frontend/src/features/settings/useAppSettings.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

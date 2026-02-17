@@ -41,7 +41,7 @@ export function useAppSettings() {
   const query = useQuery<AppSettingsModel>({
     queryKey: ['appSettings'],
     queryFn: async () => {
-      const settings = loadLocalSettings();
+      const settings = await loadLocalSettings();
       return { ...DEFAULT_SETTINGS, ...settings };
     },
     staleTime: Infinity,
@@ -52,7 +52,7 @@ export function useAppSettings() {
     mutationFn: async (updates: Partial<AppSettingsModel>) => {
       const currentSettings = query.data || DEFAULT_SETTINGS;
       const newSettings: LocalSettings = { ...currentSettings, ...updates };
-      saveLocalSettings(newSettings);
+      await saveLocalSettings(newSettings);
       return newSettings;
     },
     onSuccess: (newSettings) => {
@@ -64,14 +64,14 @@ export function useAppSettings() {
   const settingsData = query.data || DEFAULT_SETTINGS;
 
   return {
-    // New API
+    // New API with awaitable save
     data: settingsData,
     isLoading: query.isLoading,
-    updateSettings: mutation.mutate,
+    updateSettings: mutation.mutateAsync,
     isUpdating: mutation.isPending,
-    // Legacy API for backward compatibility
+    // Legacy API for backward compatibility - now also awaitable
     settings: settingsData,
-    saveSettings: mutation.mutate,
+    saveSettings: mutation.mutateAsync,
     isSaving: mutation.isPending
   };
 }

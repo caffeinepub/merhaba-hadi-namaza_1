@@ -1,57 +1,28 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T01:45:29.639Z",
-  "summary": "REQ-3 appears partially implemented by changing `dailyPrayers` to an array of `{name,time,timeMillis}` objects and starting similar construction for `weeklyPrayers`, but the weekly construction and final sending behavior are truncated so full compliance can’t be confirmed. REQ-4 validation/sending behavior in `androidBridge.ts` is not evidenced in the truncated diff (the shown parts are about other bridge helpers). REQ-5 documentation file exists and describes the new schema, but the required copy‑pasteable JavaScript and Kotlin snippets are not visible in the truncated portion, so completion can’t be verified. The diff also includes additional Android-bridge behaviors (widget bridge delegation / AndroidPrayer helpers) and broad Android WebView template content that were not requested by the BuildRequest.",
+  "generatedAt": "2026-02-17T19:58:52.932Z",
+  "summary": "REQ-1 and REQ-2 appear implemented via adding an IndexedDB-backed durable location store and updating the settings load/save + location selection flow to await persistence before closing. REQ-3 cannot be confirmed from the provided diff summary because only one location-selection entry point (LocationSetupSection) is shown and there is no evidence covering other flows that may set/reset settings.location (e.g., temporary vs default selection, tab switching, or mount behavior).",
   "missing_requirements": [
     {
       "id": "REQ-3",
-      "requirement": "Weekly payload: `weeklyPrayers` contains upcoming prayer entries for the next 7 days as `{name,time,timeMillis}` objects and every entry includes valid `timeMillis` > 0; also fail safely (do not send malformed payloads) if required data is missing/invalid; and send via `sendPrayerTimesToAndroidPush(...)` as a single JSON string to `AndroidPush.sendPrayerTimes` with fallback to `send`.",
-      "reason": "The hook shows construction of `dailyPrayers` and begins building `weeklyPrayers`, but the `weeklyPrayers` timeMillis computation and the actual `sendPrayerTimesToAndroidPush(...)` call (and any filtering/guarding against `timeMillis<=0`) are not visible due to truncation, so the AC items cannot be confirmed from the provided evidence.",
+      "requirement": "Ensure all location selection entry points intended to affect the default app location update the same persisted app settings `location` field and never reset it to null/default on mount or when switching tabs (including flows that offer “save as default” vs “temporary”).",
+      "reason": "The diff summary only shows changes in LocationSetupSection and the settings storage/hook. There is no evidence in the provided changes that other location selection entry points (if any) were audited/updated to consistently write to the same persisted settings.location field, to preserve temporary-vs-default semantics, or to prevent unintended resets to null on mount/tab switching.",
       "evidence": [
-        "frontend/src/features/home/useAndroidPushPrayerTimes.ts (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "requirement": "`frontend/src/utils/androidBridge.ts` validates `dailyPrayers` and `weeklyPrayers` as arrays of objects with `name` (string), `time` (HH:MM), and `timeMillis` (number > 0) before sending; attempts `window.AndroidPush.sendPrayerTimes(...)` then falls back to `window.AndroidPush.send(...)`; no runtime exceptions in non-Android environments.",
-      "reason": "The shown portion of `androidBridge.ts` does not include the `AndroidPush` prayer-times sender/validator (or any validation of `dailyPrayers`/`weeklyPrayers`), and the relevant sending/fallback behavior is not evidenced in the truncated excerpt.",
-      "evidence": [
-        "frontend/src/utils/androidBridge.ts (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "requirement": "Developer documentation includes (1) a copy-pasteable JavaScript snippet building `jsonData` with `dailyPrayers` and `weeklyPrayers` arrays of `{name,time,timeMillis}` and calling `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))`, and (2) a copy-pasteable Kotlin snippet parsing via `JSONObject` -> `JSONArray` -> `JSONObject`, storing/retrieving from SharedPreferences, selecting next prayer by smallest `timeMillis` > `System.currentTimeMillis()`, and showing a periodic notification refresh approach.",
-      "reason": "The doc file exists and describes the schema, but the diff is truncated right after the 'Example JavaScript/TypeScript Code' heading; the required JavaScript and Kotlin code blocks are not visible, so their presence/completeness cannot be verified.",
-      "evidence": [
-        "frontend/docs/android-webview-template.md (truncated)"
+        "frontend/src/features/location/LocationSetupSection.tsx",
+        "frontend/src/features/settings/localSettingsStorage.ts",
+        "frontend/src/features/settings/useAppSettings.ts"
       ]
     }
   ],
-  "hallucinated_features": [
-    {
-      "description": "Android bridge behavior changes unrelated to AndroidPush prayer-times payload schema/validation, including delegating next-prayer updates to a global `updateNextPrayerWidget` function and adding/maintaining `AndroidPrayer` interface helpers (`sendNextPrayerWithTimeString`, `sendDailyPrayersToAndroid`).",
-      "reason": "BuildRequest focuses on AndroidPush payload schema (dailyPrayers/weeklyPrayers), AndroidPush TS declarations/validation, and developer documentation. The shown additions/changes are about other bridge APIs and widget delegation not requested.",
-      "evidence": [
-        "frontend/src/utils/androidBridge.ts (truncated)"
-      ]
-    },
-    {
-      "description": "Documentation expanded into a broad 'complete Android Studio WebView wrapper template' including topics like offline caching, edge-to-edge insets handling, AlarmManager exact alarms, Play Store version checking with update notifications, Android 13+ notification permissions, and Firebase Cloud Messaging prerequisites.",
-      "reason": "REQ-5 asks specifically for AndroidPush parsing/storage/next-prayer selection/periodic persistent-notification update examples. The additional template scope is not requested and could be considered out-of-scope documentation content.",
-      "evidence": [
-        "frontend/docs/android-webview-template.md"
-      ]
-    }
-  ],
-  "confidence": 0.56,
+  "hallucinated_features": [],
+  "confidence": 0.66,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/docs/android-webview-template.md",
-    "frontend/src/androidPushBridge.d.ts",
-    "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
-    "frontend/src/utils/androidBridge.ts",
+    "frontend/src/features/location/LocationSetupSection.tsx",
+    "frontend/src/features/settings/durableLocationStorage.ts",
+    "frontend/src/features/settings/localSettingsStorage.ts",
+    "frontend/src/features/settings/useAppSettings.ts",
     "project_state.json"
   ]
 }

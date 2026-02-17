@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the AndroidPush prayer-times payload schema so Android can parse `dailyPrayers` and `weeklyPrayers` without crashes, and document correct web + Android parsing/notification update patterns.
+**Goal:** Make the user-selected location persist reliably across app restarts (including cases where Android WebView clears localStorage).
 
 **Planned changes:**
-- Update `frontend/src/features/home/useAndroidPushPrayerTimes.ts` to build `dailyPrayers` and `weeklyPrayers` as arrays of `{ name, time, timeMillis }` objects (not string arrays) and send via `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` with safe failure behavior on invalid/missing data.
-- Update `frontend/src/androidPushBridge.d.ts` and `frontend/src/utils/androidBridge.ts` validation/types to match the new schema and keep the `sendPrayerTimes` then `send` fallback, without throwing in non-Android browsers.
-- Add/extend developer documentation under `frontend/docs/` with copy-pasteable JavaScript (payload construction + sending) and Kotlin (SharedPreferences storage, `JSONObject`/`JSONArray` parsing, next-prayer selection using `timeMillis`, periodic persistent-notification refresh) examples in English.
+- Store the selected default location in a more durable client-side storage than localStorage and treat it as the canonical saved location until the user changes it.
+- Update settings load/restore logic to prefer the durable store when localStorage is missing/cleared, and fall back to the current behavior when both are empty.
+- Update location save flows so changes are written to durable storage and localStorage before closing dialogs/navigation that depends on the saved location.
+- Ensure all “set default location” entry points update the same persisted `settings.location`, while “temporary” location choices do not overwrite the default and no component resets the default location to null unless the user explicitly clears it.
 
-**User-visible outcome:** Prayer times are delivered to the Android app via the WebView bridge in a schema Android can parse reliably, and developers have clear examples for generating, parsing, storing, and using the payload to update ongoing notifications.
+**User-visible outcome:** After choosing a location, the app continues to show that same location after closing and reopening; if localStorage is cleared, the app automatically restores the saved location from durable storage, and the location picker only closes after the save completes.

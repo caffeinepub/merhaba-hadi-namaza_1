@@ -114,7 +114,7 @@ function App() {
               qibla: <QiblaFinderTab />,
               ramazan: <RamazanKosesiTab />,
               religiousdays: <ReligiousDaysTab />,
-              nearbymosque: <NearbyMosqueTab onNavigateToSettings={() => setActiveTab('settings')} />,
+              nearbymosque: <NearbyMosqueTab />,
               fastingtracker: <FastingTrackerTab />,
               prayertracker: <PrayerTrackerTab />,
               quranreading: <QuranOgreniyorumTab />

@@ -1,62 +1,77 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "AndroidPush prayer-times payload schema fix (objects + timeMillis) and developer documentation",
+  "title": "Durable persisted location for Android WebView resilience",
   "requirements": [
     {
-      "id": "REQ-3",
-      "summary": "Change AndroidPush prayer-times payload so dailyPrayers/weeklyPrayers are arrays of {name,time,timeMillis} objects and safely send as a single JSON string.",
+      "id": "REQ-1",
+      "summary": "Persist the user-selected location in a durable client-side store (IndexedDB) and treat it as the canonical saved location with localStorage as a secondary cache.",
       "acceptanceCriteria": [
-        "`frontend/src/features/home/useAndroidPushPrayerTimes.ts` no longer constructs `dailyPrayers: string[]` and `weeklyPrayers: string[]`; both are built as arrays of objects with keys `name`, `time`, `timeMillis`.",
-        "For daily payload: `dailyPrayers` contains today's prayer entries as `{name,time,timeMillis}` objects, with `time` in HH:MM and `timeMillis` representing the same local-day timestamp in milliseconds.",
-        "For weekly payload: `weeklyPrayers` contains upcoming prayer entries for the next 7 days as `{name,time,timeMillis}` objects (or another explicitly documented ordering), and every entry includes valid `timeMillis` > 0.",
-        "`sendPrayerTimesToAndroidPush(...)` is called with the new schema and still sends a single JSON string to `AndroidPush.sendPrayerTimes` (or fallback `AndroidPush.send`).",
-        "If required data to compute `timeMillis` is missing/invalid, the hook does not send malformed payloads (fails safely without throwing)."
+        "After selecting a location, the app still shows the same selected location after closing and reopening the app.",
+        "If localStorage is empty/cleared but the durable store still has the saved location, the app restores and uses that location automatically.",
+        "If both stores are empty, the app behaves as today (location is null and user is prompted to select one)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
-          "operation": "modify",
-          "description": "Replace dailyPrayers/weeklyPrayers construction from formatted strings to arrays of objects `{ name: string, time: string, timeMillis: number }`. Compute `timeMillis` by parsing HH:MM and combining with the correct local date: (a) for daily: today’s local date; (b) for weekly: each `DailyPrayerTimes` entry’s represented day (using its position in the 7-day array, aligned to local-day offsets from today). Build weeklyPrayers as a flat, upcoming list of individual prayer entries over the next 7 days (documented ordering, preferably chronological by `timeMillis`). Ensure safe failure: if any required time parsing/date math is invalid, do not send and do not throw."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Update AndroidPush TypeScript declarations and Android bridge validation/sending to match the new object-array schema with sendPrayerTimes→send fallback.",
-      "acceptanceCriteria": [
-        "`frontend/src/androidPushBridge.d.ts` documentation and types describe `dailyPrayers` and `weeklyPrayers` as arrays of `{ name: string; time: string; timeMillis: number }`.",
-        "`frontend/src/utils/androidBridge.ts` validates that `dailyPrayers` and `weeklyPrayers` are arrays of objects with `name` (string), `time` (HH:MM string), and `timeMillis` (number > 0) before sending.",
-        "Bridge sending still attempts `window.AndroidPush.sendPrayerTimes(jsonPayload)` first and falls back to `window.AndroidPush.send(jsonPayload)` if needed.",
-        "No runtime exceptions are thrown from the validation layer when running in a non-Android browser environment."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/androidPushBridge.d.ts",
-          "operation": "modify",
-          "description": "Update the declared payload documentation/schema for AndroidPush so `dailyPrayers` and `weeklyPrayers` are arrays of objects `{ name: string; time: string; timeMillis: number }` (not string arrays). Adjust the inline JSON example accordingly and keep the sendPrayerTimes and send method definitions."
+          "path": "frontend/src/features/settings/durableLocationStorage.ts",
+          "operation": "create",
+          "description": "Add an IndexedDB-backed durable storage helper dedicated to persisting/restoring/clearing the saved Location (e.g., get/set/clear), to survive Android WebView localStorage cleanup."
         },
         {
-          "path": "frontend/src/utils/androidBridge.ts",
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
           "operation": "modify",
-          "description": "Update `sendPrayerTimesToAndroidPush` payload typing and runtime validation to require `dailyPrayers` and `weeklyPrayers` as arrays of `{name,time,timeMillis}` objects. Add guarded validation helpers that verify each item’s field types and that `time` matches HH:MM and `timeMillis > 0`, while never throwing in non-Android environments. Preserve bridge behavior: attempt `window.AndroidPush.sendPrayerTimes(jsonPayload)` first, then fall back to `window.AndroidPush.send(jsonPayload)`."
+          "description": "Refactor local settings load/save helpers to support an async load path that can restore `settings.location` from the new durable IndexedDB store when localStorage is missing/cleared, while keeping current localStorage behavior as a fallback/secondary cache."
+        },
+        {
+          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "operation": "modify",
+          "description": "Update settings loading to await the async settings loader (including durable location restoration) and update settings saving so `location` changes are written to the durable store and localStorage, keeping the returned `settings.location` as the canonical saved value."
         }
       ]
     },
     {
-      "id": "REQ-5",
-      "summary": "Add developer documentation with copy-pasteable JavaScript payload example and Kotlin parsing/SharedPreferences/periodic persistent notification update example.",
+      "id": "REQ-2",
+      "summary": "Ensure location save completes (durable + localStorage) before UI closes or navigates in flows that depend on the saved location.",
       "acceptanceCriteria": [
-        "`frontend/docs/android-webview-template.md` (or a new markdown doc under `frontend/docs/`) contains an explicit example payload JSON showing `dailyPrayers` and `weeklyPrayers` as arrays of objects with `name`, `time`, `timeMillis`.",
-        "The documentation includes a copy-pasteable JavaScript example that demonstrates computing/setting `timeMillis` per prayer and sending it through `AndroidPush.sendPrayerTimes`.",
-        "The documentation includes a copy-pasteable Kotlin example that: reads the JSON string from SharedPreferences; parses `dailyPrayers` and/or `weeklyPrayers` via `JSONArray` and `getJSONObject(i)`; selects the next prayer by smallest `timeMillis` greater than `System.currentTimeMillis()`; and shows a periodic update loop approach for updating an ongoing notification.",
-        "All documentation text intended for developers is written in English."
+        "When a user selects a location in the location picker, the dialog closes only after the save completes successfully.",
+        "On immediate app refresh/reopen after selecting a location, the same location is loaded and displayed."
       ],
       "file_operations": [
         {
-          "path": "frontend/docs/android-webview-template.md",
+          "path": "frontend/src/features/settings/useAppSettings.ts",
           "operation": "modify",
-          "description": "Add/extend an AndroidPush section documenting the updated payload schema. Include: (1) an explicit example JSON payload with `dailyPrayers` and `weeklyPrayers` as arrays of `{name,time,timeMillis}` objects; (2) a copy-pasteable JavaScript snippet that builds `jsonData` (including computing `timeMillis` from local date + HH:MM) and calls `window.AndroidPush.sendPrayerTimes(JSON.stringify(jsonData))` with sendPrayerTimes→send fallback notes; (3) a copy-pasteable Kotlin snippet demonstrating parsing via `JSONObject`→`JSONArray`→`getJSONObject(i)`, storing/retrieving from SharedPreferences, selecting the next prayer using `timeMillis`, and a periodic refresh approach for an ongoing/persistent notification while the UI is not open. Ensure all new developer text is in English."
+          "description": "Guarantee the mutation promise only resolves after durable storage write and localStorage write complete successfully, so callers can safely close dialogs/navigation only after `await saveSettings(...)` resolves."
+        },
+        {
+          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "operation": "modify",
+          "description": "Harden the location selection handler so the optional `onLocationSelected()` (which closes the dialog) only runs after the awaited save resolves, and ensure errors keep the dialog open and do not clear the user’s selection prematurely."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Unify all default-location update entry points to write the same persisted `settings.location`, keep temporary choices separate, and prevent accidental resets to null unless explicitly requested.",
+      "acceptanceCriteria": [
+        "Choosing “save as default” in any location search flow updates the same persisted `settings.location` used by Home/Prayer Times/Weather.",
+        "Temporary location choices do not overwrite the persisted default location.",
+        "No component sets `settings.location` to null unless the user explicitly performs a clear/reset action."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/nearbymosque/NearbyMosqueTab.tsx",
+          "operation": "modify",
+          "description": "Ensure the “save as default” branch persists via `saveSettings({ location })` (thereby writing durable + localStorage) while the temporary branch only updates `tempLocation`, and confirm no implicit logic clears the persisted location when clearing the temporary selection."
+        },
+        {
+          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "operation": "modify",
+          "description": "Ensure the settings update flow never writes `location: null` unless explicitly asked (no implicit nulling during merges/migrations) and keep the default `settings.location` stable across mounts/tab switches by relying on the persisted stores."
+        },
+        {
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
+          "operation": "modify",
+          "description": "Adjust settings merge/migration behavior so `location` is not overwritten to null/default when a durable location exists, and optionally backfill durable storage from localStorage when localStorage contains a location but durable storage is empty."
         }
       ]
     }
