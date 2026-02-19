@@ -99,6 +99,33 @@
     }
 }
 
+@layer components {
+    /* Responsive typography utilities */
+    .heading-1 {
+        @apply text-2xl sm:text-3xl md:text-4xl font-bold;
+    }
+    
+    .heading-2 {
+        @apply text-xl sm:text-2xl md:text-3xl font-semibold;
+    }
+    
+    .heading-3 {
+        @apply text-lg sm:text-xl md:text-2xl font-semibold;
+    }
+    
+    .body-text {
+        @apply text-sm sm:text-base md:text-lg;
+    }
+    
+    .arabic-text {
+        @apply text-base sm:text-lg md:text-xl leading-relaxed sm:leading-loose;
+    }
+    
+    .arabic-text-large {
+        @apply text-xl sm:text-2xl md:text-3xl leading-relaxed sm:leading-loose;
+    }
+}
+
 @layer utilities {
     /* Safe area insets for edge-to-edge WebView */
     .safe-area-inset {

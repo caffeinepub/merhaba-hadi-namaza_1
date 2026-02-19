@@ -32,6 +32,7 @@ export interface LocalSettings {
 }
 
 const STORAGE_KEY = 'merhaba-hadi-namaza-settings';
+const MANUAL_LOCATION_KEY = 'prayer-times-manual-location';
 const STORAGE_VERSION = 10;
 
 interface StoredData {
@@ -55,6 +56,46 @@ const DEFAULT_PRAYER_KAZA_COUNTERS: PrayerKazaCounters = {
   maghrib: 0,
   isha: 0
 };
+
+/**
+ * Save manual location to localStorage for mobile persistence
+ */
+export function saveManualLocationToLocalStorage(location: Location): void {
+  try {
+    const locationData = JSON.stringify(location);
+    localStorage.setItem(MANUAL_LOCATION_KEY, locationData);
+  } catch (error) {
+    console.warn('Failed to save manual location to localStorage:', error);
+  }
+}
+
+/**
+ * Get manual location from localStorage
+ */
+export function getManualLocationFromLocalStorage(): Location | null {
+  try {
+    const stored = localStorage.getItem(MANUAL_LOCATION_KEY);
+    if (!stored) return null;
+
+    const location = JSON.parse(stored) as Location;
+    
+    // Validate required fields
+    if (
+      !location ||
+      typeof location.displayName !== 'string' ||
+      typeof location.latitude !== 'number' ||
+      typeof location.longitude !== 'number'
+    ) {
+      console.warn('Invalid manual location data in localStorage');
+      return null;
+    }
+
+    return location;
+  } catch (error) {
+    console.warn('Failed to load manual location from localStorage:', error);
+    return null;
+  }
+}
 
 export async function loadLocalSettings(): Promise<LocalSettings> {
   try {
@@ -84,6 +125,16 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
     } else {
       const data: StoredData = JSON.parse(stored);
       settings = migrateSettings(data);
+    }
+
+    // Check for manual location in localStorage first
+    if (!settings.location) {
+      const manualLocation = getManualLocationFromLocalStorage();
+      if (manualLocation) {
+        settings.location = manualLocation;
+        // Backfill main settings with manual location
+        saveLocalSettingsSync(settings);
+      }
     }
 
     // Restore location from durable storage if localStorage is empty
@@ -397,16 +448,14 @@ function saveLocalSettingsSync(settings: LocalSettings): void {
 }
 
 export async function saveLocalSettings(settings: LocalSettings): Promise<void> {
-  try {
-    // Save to localStorage
-    saveLocalSettingsSync(settings);
-
-    // Save location to durable storage
-    if (settings.location) {
+  saveLocalSettingsSync(settings);
+  
+  // Also persist location to durable storage
+  if (settings.location) {
+    try {
       await setDurableLocation(settings.location);
+    } catch (error) {
+      console.error('Failed to save location to durable storage:', error);
     }
-  } catch (error) {
-    console.error('Failed to save settings:', error);
-    throw error;
   }
 }

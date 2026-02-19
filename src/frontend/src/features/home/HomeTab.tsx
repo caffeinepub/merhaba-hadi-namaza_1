@@ -61,24 +61,24 @@ export function HomeTab() {
   };
 
   return (
-    <div className="space-y-6 pb-6">
+    <div className="space-y-4 sm:space-y-6 pb-6">
       <MotifFrame>
         <Card className="border-2 shadow-lg">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 sm:pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                 Konum
               </CardTitle>
               <Dialog open={locationDialogOpen} onOpenChange={setLocationDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-[48px] px-3 sm:px-4 text-sm sm:text-base">
                     {hasLocation ? 'Değiştir' : 'Seç'}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Konum Seçimi</DialogTitle>
+                    <DialogTitle className="text-lg sm:text-xl">Konum Seçimi</DialogTitle>
                   </DialogHeader>
                   <LocationSetupSection onLocationSelected={handleLocationSelected} />
                 </DialogContent>
@@ -87,9 +87,9 @@ export function HomeTab() {
           </CardHeader>
           <CardContent>
             {hasLocation ? (
-              <p className="text-lg font-medium">{settings.location?.displayName}</p>
+              <p className="text-base sm:text-lg font-medium">{settings.location?.displayName}</p>
             ) : (
-              <p className="text-muted-foreground">Konum seçilmedi</p>
+              <p className="text-sm sm:text-base text-muted-foreground">Konum seçilmedi</p>
             )}
           </CardContent>
         </Card>

@@ -27,8 +27,14 @@ interface MobileTabsNavProps {
 }
 
 export function MobileTabsNav({ children, value, onValueChange }: MobileTabsNavProps) {
+  const handleTabChange = (newValue: string) => {
+    if (onValueChange) {
+      onValueChange(newValue);
+    }
+  };
+
   return (
-    <Tabs value={value} onValueChange={onValueChange} defaultValue="home" className="w-full">
+    <Tabs value={value} onValueChange={handleTabChange} defaultValue="home" className="w-full">
       <div className="relative">
         {/* Tile pattern background for tab bar */}
         <div
@@ -39,92 +45,57 @@ export function MobileTabsNav({ children, value, onValueChange }: MobileTabsNavP
             backgroundRepeat: 'repeat'
           }}
         />
-        <TabsList className="relative grid w-full grid-cols-5 gap-0.5 h-auto p-1 border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
-          <TabsTrigger value="home" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
-            <Home className="h-4 w-4" />
-            <span className="text-[9px] leading-tight hidden sm:inline">Ana Sayfa</span>
+        <TabsList className="relative grid w-full grid-cols-5 gap-0.5 sm:gap-1 h-auto p-1 border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
+          <TabsTrigger 
+            value="home" 
+            className="flex-col gap-0.5 sm:gap-1 px-1 sm:px-2 py-2 sm:py-3 h-auto min-h-[60px] sm:min-h-[70px] data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:border-primary/40 border-2 border-transparent transition-all"
+          >
+            <Home className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="text-xs sm:text-sm font-medium">Ana Sayfa</span>
           </TabsTrigger>
-          <TabsTrigger value="esmaulhusna" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
-            <BookOpen className="h-4 w-4" />
-            <span className="text-[9px] leading-tight hidden sm:inline">Esmaül Hüsna</span>
+          <TabsTrigger 
+            value="esmaulhusna" 
+            className="flex-col gap-0.5 sm:gap-1 px-1 sm:px-2 py-2 sm:py-3 h-auto min-h-[60px] sm:min-h-[70px] data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:border-primary/40 border-2 border-transparent transition-all"
+          >
+            <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="text-xs sm:text-sm font-medium">Esmaül Hüsna</span>
           </TabsTrigger>
-          <TabsTrigger value="ramazan" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
-            <Moon className="h-4 w-4" />
-            <span className="text-[9px] leading-tight hidden sm:inline">Ramazan</span>
+          <TabsTrigger 
+            value="zikirmatik" 
+            className="flex-col gap-0.5 sm:gap-1 px-1 sm:px-2 py-2 sm:py-3 h-auto min-h-[60px] sm:min-h-[70px] data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:border-primary/40 border-2 border-transparent transition-all"
+          >
+            <CircleDot className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="text-xs sm:text-sm font-medium">Zikirmatik</span>
           </TabsTrigger>
-          <TabsTrigger value="zikirmatik" className="flex-col gap-1 px-0.5 py-2 h-auto data-[state=active]:bg-primary/20 data-[state=active]:border data-[state=active]:border-primary/30">
-            <CircleDot className="h-4 w-4" />
-            <span className="text-[9px] leading-tight hidden sm:inline">Zikir</span>
+          <TabsTrigger 
+            value="ramazan" 
+            className="flex-col gap-0.5 sm:gap-1 px-1 sm:px-2 py-2 sm:py-3 h-auto min-h-[60px] sm:min-h-[70px] data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:border-primary/40 border-2 border-transparent transition-all"
+          >
+            <Moon className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="text-xs sm:text-sm font-medium">Ramazan</span>
           </TabsTrigger>
-          <div className="flex items-center justify-center">
-            <TabsOverflowMenu onSelectTab={(tab) => onValueChange?.(tab)} />
-          </div>
+          <TabsOverflowMenu onSelectTab={handleTabChange} />
         </TabsList>
       </div>
 
-      <TabsContent value="home" className="mt-4">
-        {children.home}
-      </TabsContent>
-
-      <TabsContent value="settings" className="mt-4">
-        {children.settings}
-      </TabsContent>
-
-      <TabsContent value="adhkar" className="mt-4">
-        {children.adhkar}
-      </TabsContent>
-
-      <TabsContent value="duaguide" className="mt-4">
-        {children.duaguide}
-      </TabsContent>
-
-      <TabsContent value="tasbihat" className="mt-4">
-        {children.tasbihat}
-      </TabsContent>
-
-      <TabsContent value="esmaulhusna" className="mt-4">
-        {children.esmaulhusna}
-      </TabsContent>
-
-      <TabsContent value="zikirmatik" className="mt-4">
-        {children.zikirmatik}
-      </TabsContent>
-
-      <TabsContent value="hatim" className="mt-4">
-        {children.hatim}
-      </TabsContent>
-
-      <TabsContent value="namazogretici" className="mt-4">
-        {children.namazogretici}
-      </TabsContent>
-
-      <TabsContent value="qibla" className="mt-4">
-        {children.qibla}
-      </TabsContent>
-
-      <TabsContent value="ramazan" className="mt-4">
-        {children.ramazan}
-      </TabsContent>
-
-      <TabsContent value="religiousdays" className="mt-4">
-        {children.religiousdays}
-      </TabsContent>
-
-      <TabsContent value="nearbymosque" className="mt-4">
-        {children.nearbymosque}
-      </TabsContent>
-
-      <TabsContent value="fastingtracker" className="mt-4">
-        {children.fastingtracker}
-      </TabsContent>
-
-      <TabsContent value="prayertracker" className="mt-4">
-        {children.prayertracker}
-      </TabsContent>
-
-      <TabsContent value="quranreading" className="mt-4">
-        {children.quranreading}
-      </TabsContent>
+      <div className="mt-4 sm:mt-6">
+        <TabsContent value="home">{children.home}</TabsContent>
+        <TabsContent value="settings">{children.settings}</TabsContent>
+        <TabsContent value="esmaulhusna">{children.esmaulhusna}</TabsContent>
+        <TabsContent value="zikirmatik">{children.zikirmatik}</TabsContent>
+        <TabsContent value="namazogretici">{children.namazogretici}</TabsContent>
+        <TabsContent value="qibla">{children.qibla}</TabsContent>
+        <TabsContent value="ramazan">{children.ramazan}</TabsContent>
+        <TabsContent value="hatim">{children.hatim}</TabsContent>
+        <TabsContent value="adhkar">{children.adhkar}</TabsContent>
+        <TabsContent value="duaguide">{children.duaguide}</TabsContent>
+        <TabsContent value="tasbihat">{children.tasbihat}</TabsContent>
+        <TabsContent value="religiousdays">{children.religiousdays}</TabsContent>
+        <TabsContent value="nearbymosque">{children.nearbymosque}</TabsContent>
+        <TabsContent value="fastingtracker">{children.fastingtracker}</TabsContent>
+        <TabsContent value="prayertracker">{children.prayertracker}</TabsContent>
+        <TabsContent value="quranreading">{children.quranreading}</TabsContent>
+      </div>
     </Tabs>
   );
 }

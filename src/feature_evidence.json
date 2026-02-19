@@ -2,12 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-next-prayer-countdown-logic-so-the-remaining-time-is-computed-and-updated-every-second-instead-of-every-minute-and-formatted-with-seconds-for-display-as-mm-ss-and-as-hh-mm-ss-when-the-remaining-time-is-1-hour-or-more",
-      "featureTitle": "Update the next-prayer countdown logic so the remaining time is computed and updated every second (instead of every minute) and formatted with seconds for display as mm:ss (and as HH:mm:ss when the remaining time is 1 hour or more).",
+      "featureId": "feature-make-the-location-selection-modal-displaying-konum-de-i-tir-header-with-location-like-gebze-kocaeli-i-li-t-rkiye-responsive-and-appropriately-sized-for-mobile-devices",
+      "featureTitle": "Make the location selection modal (displaying 'Konum Değiştir' header with location like 'Gebze, Kocaeli İli, Türkiye') responsive and appropriately sized for mobile devices",
       "files": [
-        "frontend/src/features/home/NextPrayerCountdown.tsx",
-        "frontend/src/features/home/formatRemainingTime.ts",
-        "frontend/src/features/home/useNextPrayerCountdown.ts"
+        "frontend/src/features/location/LocationSetupSection.tsx",
+        "frontend/src/features/nearbymosque/NearbyMosqueLocationSearch.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -24,10 +23,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-androidpush-payload-field-timeremaining-receives-the-same-seconds-inclusive-countdown-string-so-the-android-persistent-notification-can-display-seconds-based-countdown-mm-ss-hh-mm-ss",
-      "featureTitle": "Ensure the AndroidPush payload field `timeRemaining` receives the same seconds-inclusive countdown string so the Android persistent notification can display seconds-based countdown (mm:ss / HH:mm:ss).",
+      "featureId": "feature-implement-responsive-layouts-for-all-application-screens-using-tailwind-css-breakpoints-sm-md-lg-xl-to-optimize-for-mobile-phones-tablets-and-desktop-computers",
+      "featureTitle": "Implement responsive layouts for all application screens using Tailwind CSS breakpoints (sm, md, lg, xl) to optimize for mobile phones, tablets, and desktop computers",
       "files": [
-        "frontend/src/androidPushBridge.d.ts"
+        "frontend/src/App.tsx",
+        "frontend/src/components/HeaderFlourish.tsx",
+        "frontend/src/components/MobileTabsNav.tsx",
+        "frontend/src/features/home/HomeTab.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -44,10 +46,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-keep-existing-bridge-update-behavior-for-next-prayer-identity-name-and-timestamp-time-string-so-that-android-bridge-calls-that-should-only-happen-on-next-prayer-changes-are-not-spammed-by-the-new-per-second-countdown-updates",
-      "featureTitle": "Keep existing bridge update behavior for next-prayer identity (name and timestamp/time-string) so that Android bridge calls that should only happen on next-prayer changes are not spammed by the new per-second countdown updates.",
+      "featureId": "feature-make-typography-text-sizes-line-heights-responsive-across-all-components-and-screens-using-tailwind-s-responsive-text-utilities",
+      "featureTitle": "Make typography (text sizes, line heights) responsive across all components and screens using Tailwind's responsive text utilities",
       "files": [
-        "frontend/src/features/home/useNextPrayerCountdown.ts"
+        "frontend/src/index.css"
       ],
       "components": [
         "authorization@4.0.0",
@@ -60,6 +62,113 @@
       ],
       "testIds": [
         "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-make-all-buttons-input-fields-and-interactive-elements-responsive-with-appropriate-sizing-and-touch-targets-for-mobile-devices",
+      "featureTitle": "Make all buttons, input fields, and interactive elements responsive with appropriate sizing and touch targets for mobile devices",
+      "files": [
+        "frontend/src/features/location/LocationSetupSection.tsx",
+        "frontend/src/features/settings/SettingsTab.tsx",
+        "frontend/src/features/zikirmatik/ZikirmatikTab.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-adjust-spacing-padding-margins-gaps-across-all-components-to-be-responsive-and-appropriate-for-each-breakpoint",
+      "featureTitle": "Adjust spacing (padding, margins, gaps) across all components to be responsive and appropriate for each breakpoint",
+      "files": [
+        "frontend/src/features/esmaulhusna/EsmaulHusnaTab.tsx",
+        "frontend/src/features/home/PrayerTimeCardsSection.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-make-the-prayer-times-display-section-including-daily-prayer-times-weekly-schedule-countdown-timers-responsive-for-all-device-sizes",
+      "featureTitle": "Make the prayer times display section (including daily prayer times, weekly schedule, countdown timers) responsive for all device sizes",
+      "files": [
+        "frontend/src/features/home/NextPrayerCountdown.tsx",
+        "frontend/src/features/home/PrayerTimeCardsSection.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-make-the-tab-navigation-mobiletabsnav-and-overflow-menu-responsive-with-appropriate-sizing-and-touch-targets",
+      "featureTitle": "Make the tab navigation (MobileTabsNav) and overflow menu responsive with appropriate sizing and touch targets",
+      "files": [
+        "frontend/src/components/MobileTabsNav.tsx",
+        "frontend/src/components/TabsOverflowMenu.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-make-all-modal-dialogs-and-cards-prayer-cards-esmaul-husna-cards-settings-dialogs-responsive-across-breakpoints",
+      "featureTitle": "Make all modal dialogs and cards (prayer cards, esmaul husna cards, settings dialogs) responsive across breakpoints",
+      "files": [
+        "frontend/src/features/esmaulhusna/EsmaulHusnaTab.tsx",
+        "frontend/src/features/home/PrayerTimeCardsSection.tsx",
+        "frontend/src/features/settings/SettingsTab.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
       ],
       "confidence": "high"
     }

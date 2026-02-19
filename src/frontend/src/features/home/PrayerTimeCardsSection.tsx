@@ -109,7 +109,7 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4">
         {cardConfigs.map((config) => {
           const Icon = config.icon;
           const cardContent = getCardContent(config.type);
@@ -117,7 +117,7 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
           return (
             <div key={config.type} className="relative">
               {/* Subtle corner ornaments on cards */}
-              <div className="absolute -top-2 -left-2 w-8 h-8 opacity-20 pointer-events-none z-10">
+              <div className="absolute -top-1 -left-1 sm:-top-2 sm:-left-2 w-6 h-6 sm:w-8 sm:h-8 opacity-20 pointer-events-none z-10">
                 <img
                   src="/assets/generated/islamic-corner-ornament.dim_512x512.png"
                   alt=""
@@ -128,14 +128,14 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
                 className={`${config.bgGradient} border-2 ${config.borderColor} cursor-pointer hover:scale-[1.02] transition-transform shadow-md relative`}
                 onClick={() => handleCardClick(config.type)}
               >
-                <CardContent className="pt-4 pb-4 px-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-background/50">
-                      <Icon className={`h-4 w-4 ${config.iconColor}`} />
+                <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-3 space-y-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <div className="p-1 sm:p-1.5 rounded-md bg-background/50">
+                      <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${config.iconColor}`} />
                     </div>
-                    <h3 className="font-semibold text-sm leading-tight">{config.title}</h3>
+                    <h3 className="font-semibold text-xs sm:text-sm leading-tight">{config.title}</h3>
                   </div>
-                  <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                  <p className="text-xs leading-relaxed text-muted-foreground line-clamp-3">
                     {cardContent.turkish}
                   </p>
                 </CardContent>
@@ -146,30 +146,30 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+        <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[80vh]">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg md:text-xl">
               {selectedConfig && (
                 <>
-                  <selectedConfig.icon className={`h-5 w-5 ${selectedConfig.iconColor}`} />
+                  <selectedConfig.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selectedConfig.iconColor}`} />
                   {selectedConfig.title}
                 </>
               )}
             </DialogTitle>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-4">
+          <ScrollArea className="max-h-[60vh] pr-3 sm:pr-4">
             {selectedContent && (
-              <div className="space-y-4">
-                <div className="text-center py-4">
-                  <p className="text-2xl font-arabic leading-loose" dir="rtl">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="text-center py-3 sm:py-4">
+                  <p className="text-xl sm:text-2xl md:text-3xl font-arabic leading-loose" dir="rtl">
                     {selectedContent.arabic}
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-base leading-relaxed">
+                  <p className="text-sm sm:text-base leading-relaxed">
                     {selectedContent.turkish}
                   </p>
-                  <p className="text-sm text-muted-foreground italic">
+                  <p className="text-xs sm:text-sm text-muted-foreground italic">
                     {selectedContent.reference}
                   </p>
                 </div>
