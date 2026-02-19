@@ -2,11 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-make-the-location-selection-modal-displaying-konum-de-i-tir-header-with-location-like-gebze-kocaeli-i-li-t-rkiye-responsive-and-appropriately-sized-for-mobile-devices",
-      "featureTitle": "Make the location selection modal (displaying 'Konum Değiştir' header with location like 'Gebze, Kocaeli İli, Türkiye') responsive and appropriately sized for mobile devices",
+      "featureId": "feature-ensure-manually-selected-location-data-persists-in-localstorage-even-after-cache-clearing-on-mobile-devices-the-location-storage-must-survive-browser-cache-data-clearing-and-app-closure-reopening-scenarios",
+      "featureTitle": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices. The location storage must survive browser cache/data clearing and app closure/reopening scenarios.",
       "files": [
+        "frontend/src/App.tsx",
         "frontend/src/features/location/LocationSetupSection.tsx",
-        "frontend/src/features/nearbymosque/NearbyMosqueLocationSearch.tsx"
+        "frontend/src/features/settings/durableLocationStorage.ts",
+        "frontend/src/features/settings/localSettingsStorage.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -23,13 +25,12 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-responsive-layouts-for-all-application-screens-using-tailwind-css-breakpoints-sm-md-lg-xl-to-optimize-for-mobile-phones-tablets-and-desktop-computers",
-      "featureTitle": "Implement responsive layouts for all application screens using Tailwind CSS breakpoints (sm, md, lg, xl) to optimize for mobile phones, tablets, and desktop computers",
+      "featureId": "feature-prevent-app-from-crashing-or-becoming-non-functional-when-cache-is-cleared-if-location-data-is-unavailable-display-the-location-selection-prompt-instead-of-breaking-the-application",
+      "featureTitle": "Prevent app from crashing or becoming non-functional when cache is cleared. If location data is unavailable, display the location selection prompt instead of breaking the application.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/HeaderFlourish.tsx",
-        "frontend/src/components/MobileTabsNav.tsx",
-        "frontend/src/features/home/HomeTab.tsx"
+        "frontend/src/features/home/HomeTab.tsx",
+        "frontend/src/features/prayer/PrayerTimesSection.tsx",
+        "frontend/src/features/weather/WeatherSection.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -46,10 +47,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-make-typography-text-sizes-line-heights-responsive-across-all-components-and-screens-using-tailwind-s-responsive-text-utilities",
-      "featureTitle": "Make typography (text sizes, line heights) responsive across all components and screens using Tailwind's responsive text utilities",
+      "featureId": "feature-add-fallback-mechanism-to-provide-a-default-location-if-localstorage-is-completely-cleared-and-no-location-has-been-selected-use-a-sensible-default-location-for-turkey-e-g-istanbul-coordinates-to-ensure-basic-functionality",
+      "featureTitle": "Add fallback mechanism to provide a default location if localStorage is completely cleared and no location has been selected. Use a sensible default location for Turkey (e.g., Istanbul coordinates) to ensure basic functionality.",
       "files": [
-        "frontend/src/index.css"
+        "frontend/src/App.tsx",
+        "frontend/src/features/home/HomeTab.tsx",
+        "frontend/src/features/location/types.ts",
+        "frontend/src/features/settings/localSettingsStorage.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -62,113 +66,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-all-buttons-input-fields-and-interactive-elements-responsive-with-appropriate-sizing-and-touch-targets-for-mobile-devices",
-      "featureTitle": "Make all buttons, input fields, and interactive elements responsive with appropriate sizing and touch targets for mobile devices",
-      "files": [
-        "frontend/src/features/location/LocationSetupSection.tsx",
-        "frontend/src/features/settings/SettingsTab.tsx",
-        "frontend/src/features/zikirmatik/ZikirmatikTab.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-adjust-spacing-padding-margins-gaps-across-all-components-to-be-responsive-and-appropriate-for-each-breakpoint",
-      "featureTitle": "Adjust spacing (padding, margins, gaps) across all components to be responsive and appropriate for each breakpoint",
-      "files": [
-        "frontend/src/features/esmaulhusna/EsmaulHusnaTab.tsx",
-        "frontend/src/features/home/PrayerTimeCardsSection.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-the-prayer-times-display-section-including-daily-prayer-times-weekly-schedule-countdown-timers-responsive-for-all-device-sizes",
-      "featureTitle": "Make the prayer times display section (including daily prayer times, weekly schedule, countdown timers) responsive for all device sizes",
-      "files": [
-        "frontend/src/features/home/NextPrayerCountdown.tsx",
-        "frontend/src/features/home/PrayerTimeCardsSection.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-the-tab-navigation-mobiletabsnav-and-overflow-menu-responsive-with-appropriate-sizing-and-touch-targets",
-      "featureTitle": "Make the tab navigation (MobileTabsNav) and overflow menu responsive with appropriate sizing and touch targets",
-      "files": [
-        "frontend/src/components/MobileTabsNav.tsx",
-        "frontend/src/components/TabsOverflowMenu.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-all-modal-dialogs-and-cards-prayer-cards-esmaul-husna-cards-settings-dialogs-responsive-across-breakpoints",
-      "featureTitle": "Make all modal dialogs and cards (prayer cards, esmaul husna cards, settings dialogs) responsive across breakpoints",
-      "files": [
-        "frontend/src/features/esmaulhusna/EsmaulHusnaTab.tsx",
-        "frontend/src/features/home/PrayerTimeCardsSection.tsx",
-        "frontend/src/features/settings/SettingsTab.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
       ],
       "confidence": "high"
     }

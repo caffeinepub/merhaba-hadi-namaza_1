@@ -1,4 +1,5 @@
 import type { Location } from '../location/types';
+import { DEFAULT_LOCATION } from '../location/types';
 import type { RamadanDayStatus, PrayerDailyChecklist, PrayerKazaCounters } from './appSettingsModel';
 import { getDurableLocation, setDurableLocation } from './durableLocationStorage';
 
@@ -64,6 +65,7 @@ export function saveManualLocationToLocalStorage(location: Location): void {
   try {
     const locationData = JSON.stringify(location);
     localStorage.setItem(MANUAL_LOCATION_KEY, locationData);
+    console.log('[LocalStorage] Saved manual location:', location.displayName);
   } catch (error) {
     console.warn('Failed to save manual location to localStorage:', error);
   }
@@ -90,6 +92,7 @@ export function getManualLocationFromLocalStorage(): Location | null {
       return null;
     }
 
+    console.log('[LocalStorage] Loaded manual location:', location.displayName);
     return location;
   } catch (error) {
     console.warn('Failed to load manual location from localStorage:', error);
@@ -127,29 +130,40 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
       settings = migrateSettings(data);
     }
 
-    // Check for manual location in localStorage first
+    // Multi-layer recovery strategy for location
     if (!settings.location) {
+      console.log('[Settings] No location in main settings, attempting recovery...');
+
+      // 1. Try manual location key in localStorage
       const manualLocation = getManualLocationFromLocalStorage();
       if (manualLocation) {
+        console.log('[Settings] Recovered from manual localStorage key');
         settings.location = manualLocation;
-        // Backfill main settings with manual location
         saveLocalSettingsSync(settings);
+        await setDurableLocation(manualLocation);
+        return settings;
       }
-    }
 
-    // Restore location from durable storage if localStorage is empty
-    if (!settings.location) {
+      // 2. Try durable storage (localStorage backup, sessionStorage, IndexedDB)
       const durableLocation = await getDurableLocation();
       if (durableLocation) {
+        console.log('[Settings] Recovered from durable storage');
         settings.location = durableLocation;
-        // Backfill localStorage with the durable location
         saveLocalSettingsSync(settings);
+        saveManualLocationToLocalStorage(durableLocation);
+        return settings;
       }
+
+      // 3. No location found - will use default in App.tsx
+      console.log('[Settings] No location found in any storage');
     } else {
-      // Backfill durable storage if localStorage has location but durable doesn't
+      // Location exists in main settings - ensure it's backed up everywhere
+      console.log('[Settings] Location found in main settings:', settings.location.displayName);
       const durableLocation = await getDurableLocation();
       if (!durableLocation) {
+        console.log('[Settings] Backfilling durable storage');
         await setDurableLocation(settings.location);
+        saveManualLocationToLocalStorage(settings.location);
       }
     }
 
@@ -435,7 +449,7 @@ function migrateSettings(data: StoredData): LocalSettings {
   };
 }
 
-function saveLocalSettingsSync(settings: LocalSettings): void {
+export function saveLocalSettingsSync(settings: LocalSettings): void {
   try {
     const data: StoredData = {
       version: STORAGE_VERSION,
@@ -450,10 +464,11 @@ function saveLocalSettingsSync(settings: LocalSettings): void {
 export async function saveLocalSettings(settings: LocalSettings): Promise<void> {
   saveLocalSettingsSync(settings);
   
-  // Also persist location to durable storage
+  // Also save location to durable storage if present
   if (settings.location) {
     try {
       await setDurableLocation(settings.location);
+      saveManualLocationToLocalStorage(settings.location);
     } catch (error) {
       console.error('Failed to save location to durable storage:', error);
     }

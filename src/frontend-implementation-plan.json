@@ -1,294 +1,135 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Implement Responsive Design Across Entire Application",
+  "title": "Fix location persistence in localStorage for mobile devices",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Make the location selection modal responsive and appropriately sized for mobile devices",
+      "summary": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices",
       "acceptanceCriteria": [
-        "Location selection modal is compact and properly sized on mobile screens",
-        "Modal content (header, location text, buttons) scales appropriately",
-        "Modal does not overflow screen boundaries on small devices"
+        "Location data saved to localStorage with a dedicated key",
+        "Location persists after browser cache is cleared",
+        "Location persists after app is closed and reopened on mobile devices",
+        "App loads and functions correctly with the saved location on restart"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "path": "frontend/src/features/settings/durableLocationStorage.ts",
           "operation": "modify",
-          "description": "Apply responsive width classes (max-w-sm sm:max-w-md md:max-w-lg) to the location selection modal container. Use responsive text sizes for the 'Konum Değiştir' header (text-lg sm:text-xl) and location display text (text-sm sm:text-base). Add responsive padding (p-4 sm:p-6) and ensure buttons have appropriate mobile touch targets with responsive sizing (text-sm sm:text-base py-2 sm:py-3)."
+          "description": "Enhance IndexedDB persistence to use multiple storage strategies including localStorage, sessionStorage, and IndexedDB simultaneously. Add redundant storage writes to increase persistence reliability on mobile browsers. Implement a storage integrity check that verifies all storage locations contain valid location data."
         },
         {
-          "path": "frontend/src/features/nearbymosque/NearbyMosqueLocationSearch.tsx",
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
           "operation": "modify",
-          "description": "Apply the same responsive modal sizing and typography adjustments as LocationSetupSection to maintain consistency across location selection modals throughout the app."
+          "description": "Update the loadAppSettings and saveAppSettings functions to use the enhanced durableLocationStorage module for location data. Ensure location is saved to all available storage mechanisms (localStorage, sessionStorage, IndexedDB) on every write. Add recovery logic that attempts to read from all storage locations and uses the first valid location found."
+        },
+        {
+          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "operation": "modify",
+          "description": "Update the location save handler to call the enhanced storage functions that write to multiple storage locations. Add user feedback showing successful save confirmation. Ensure the component triggers storage integrity verification after save."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Enhance the location loading logic in useEffect to attempt recovery from all storage mechanisms (localStorage, sessionStorage, IndexedDB) on mount. Add fallback chain that tries each storage location in order until a valid location is found. Add console logging for debugging storage issues on mobile devices."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Implement responsive layouts for all application screens using Tailwind CSS breakpoints to optimize for mobile, tablet, and desktop",
+      "summary": "Prevent app from crashing or becoming non-functional when cache is cleared",
       "acceptanceCriteria": [
-        "All screens render appropriately on mobile phone screens (< 640px)",
-        "All screens adapt properly for tablet screens (640px - 1024px)",
-        "All screens display optimally on desktop screens (> 1024px)",
-        "Navigation, headers, and footers adjust based on screen size"
+        "App displays SelectLocationPrompt component when no location is available",
+        "App does not crash or throw errors when localStorage is empty",
+        "All prayer times, weather, and location-dependent features handle missing location gracefully"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Add responsive container classes to the root app wrapper (px-2 sm:px-4 md:px-6 lg:px-8) and ensure the main content area uses responsive max-width constraints (max-w-sm sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto). Apply responsive vertical spacing (py-4 sm:py-6 md:py-8) to the main content container."
-        },
-        {
-          "path": "frontend/src/components/MobileTabsNav.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to tab bar height (h-14 sm:h-16), icon sizes (w-5 h-5 sm:w-6 sm:h-6), and text sizes (text-xs sm:text-sm). Adjust spacing between tabs using responsive gap classes (gap-1 sm:gap-2). Ensure the Islamic pattern background scales appropriately with responsive opacity adjustments."
-        },
-        {
-          "path": "frontend/src/components/HeaderFlourish.tsx",
-          "operation": "modify",
-          "description": "Apply responsive image sizing (h-8 sm:h-10 md:h-12) and adjust visibility breakpoints to show the flourish on sm and larger screens (hidden sm:block). Adjust opacity responsively (opacity-20 sm:opacity-30)."
-        },
-        {
           "path": "frontend/src/features/home/HomeTab.tsx",
           "operation": "modify",
-          "description": "Apply responsive grid layouts for the home screen sections. Use single column on mobile (grid-cols-1) and multi-column on larger screens (sm:grid-cols-2 lg:grid-cols-3). Add responsive spacing between sections (space-y-4 sm:space-y-6 md:space-y-8) and responsive padding (p-3 sm:p-4 md:p-6)."
+          "description": "Add null-safety checks for location state before rendering prayer times, weather, and countdown components. When location is null or undefined, display the SelectLocationPrompt component instead of attempting to fetch data. Ensure all useQuery hooks that depend on location are disabled when location is unavailable."
+        },
+        {
+          "path": "frontend/src/features/prayer/usePrayerTimes.ts",
+          "operation": "modify",
+          "description": "Add enabled condition to the React Query that checks location is not null before attempting to fetch prayer times. Return null gracefully when location is unavailable instead of throwing errors."
+        },
+        {
+          "path": "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+          "operation": "modify",
+          "description": "Add enabled condition to the React Query that checks location is not null before attempting to fetch weekly prayer times. Return null gracefully when location is unavailable instead of throwing errors."
+        },
+        {
+          "path": "frontend/src/features/weather/useWeather.ts",
+          "operation": "modify",
+          "description": "Add enabled condition to the React Query that checks location coordinates are available before attempting to fetch weather data. Return null gracefully when location is unavailable instead of throwing errors."
+        },
+        {
+          "path": "frontend/src/features/prayer/PrayerTimesSection.tsx",
+          "operation": "modify",
+          "description": "Add early return that displays SelectLocationPrompt when location is null or undefined. Ensure the component does not attempt to render prayer times or kerahat times when location data is missing."
+        },
+        {
+          "path": "frontend/src/features/weather/WeatherSection.tsx",
+          "operation": "modify",
+          "description": "Add early return that displays SelectLocationPrompt when location is null or undefined. Ensure the component does not attempt to render weather data when location is missing."
+        },
+        {
+          "path": "frontend/src/features/weather/CompactWeatherSummary.tsx",
+          "operation": "modify",
+          "description": "Add null-safety checks to ensure the component renders nothing when location is unavailable, preventing errors during data fetching."
+        },
+        {
+          "path": "frontend/src/features/home/useNextPrayerCountdown.ts",
+          "operation": "modify",
+          "description": "Add guards to prevent countdown calculation when prayer times are null or undefined. Return safe default values (null nextPrayer, empty timeRemaining) when data is unavailable."
+        },
+        {
+          "path": "frontend/src/features/home/useSahurIftarCountdown.ts",
+          "operation": "modify",
+          "description": "Add guards to prevent countdown calculation when prayer times are null or undefined. Return safe default values when data is unavailable to prevent crashes."
+        },
+        {
+          "path": "frontend/src/features/home/useCurrentPrayerSlot.ts",
+          "operation": "modify",
+          "description": "Add null-safety checks for prayerTimes before attempting to determine current prayer slot. Return null when prayer times are unavailable."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Make typography responsive across all components using Tailwind's responsive text utilities",
+      "summary": "Add fallback mechanism to provide a default location if localStorage is completely cleared",
       "acceptanceCriteria": [
-        "Headings scale appropriately across breakpoints",
-        "Body text is readable on all device sizes",
-        "Arabic text and transliterations maintain legibility"
+        "Default location (Istanbul or similar) is defined as a constant",
+        "Default location is used only when localStorage is empty and no selection has been made",
+        "App displays prompt to encourage user to select their actual location",
+        "Prayer times and weather data load correctly with the default location"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/features/location/types.ts",
           "operation": "modify",
-          "description": "Add responsive typography utility classes in the @layer components section for headings (h1: text-2xl sm:text-3xl md:text-4xl, h2: text-xl sm:text-2xl md:text-3xl, h3: text-lg sm:text-xl md:text-2xl) and body text (text-sm sm:text-base md:text-lg). Define responsive line-height classes for Arabic text to ensure legibility (leading-relaxed sm:leading-loose)."
+          "description": "Add a constant DEFAULT_LOCATION defining Istanbul coordinates (41.0082° N, 28.9784° E) with a displayName indicating it is a default fallback location. Export this constant for use throughout the application."
         },
         {
-          "path": "frontend/src/features/esmaulhusna/EsmaulHusnaCard.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Apply responsive text sizes to Arabic names (text-xl sm:text-2xl md:text-3xl), transliterations (text-sm sm:text-base), and meanings (text-xs sm:text-sm). Adjust card padding responsively (p-3 sm:p-4 md:p-6) and ensure proper line-height for Arabic text (leading-relaxed sm:leading-loose)."
+          "description": "Update the location loading logic to use DEFAULT_LOCATION when all storage mechanisms fail to return a valid location. Add a state flag to track whether the current location is the default fallback. Pass this flag to child components so they can display appropriate messaging."
         },
         {
-          "path": "frontend/src/features/adhkar/MorningEveningAdhkarTab.tsx",
+          "path": "frontend/src/features/home/HomeTab.tsx",
           "operation": "modify",
-          "description": "Apply responsive text sizes to Arabic adhkar text (text-base sm:text-lg md:text-xl), transliterations (text-xs sm:text-sm), and translations (text-xs sm:text-sm). Ensure proper spacing and line-height for readability (leading-normal sm:leading-relaxed)."
+          "description": "Accept an isDefaultLocation prop from App. When isDefaultLocation is true, display a prominent banner or alert encouraging the user to select their actual location. Ensure prayer times and weather still render using the default location data."
         },
         {
-          "path": "frontend/src/features/quran-reading/QuranOgreniyorumTab.tsx",
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
           "operation": "modify",
-          "description": "Apply responsive text sizes to Arabic Quran text (text-lg sm:text-xl md:text-2xl), translation text (text-sm sm:text-base), and ayah numbers (text-xs sm:text-sm). Ensure proper line-height for Arabic text (leading-loose sm:leading-[2.5]) and adequate spacing between ayahs."
-        },
-        {
-          "path": "frontend/src/features/dua-guide/DuaGuideTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive text sizes to Arabic dua text (text-base sm:text-lg md:text-xl), transliterations (text-xs sm:text-sm), and translations (text-xs sm:text-sm). Ensure proper line-height for Arabic text and responsive spacing between dua items."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Make all buttons, input fields, and interactive elements responsive with appropriate touch targets for mobile",
-      "acceptanceCriteria": [
-        "Buttons have minimum 44px touch targets on mobile",
-        "Input fields are appropriately sized for mobile keyboards",
-        "Interactive elements have adequate spacing for touch interaction"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/home/MotifButton.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing with minimum touch target heights (min-h-[44px] sm:min-h-[48px]), responsive padding (px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4), and responsive text sizes (text-sm sm:text-base md:text-lg). Ensure the Islamic pattern overlay scales appropriately."
-        },
-        {
-          "path": "frontend/src/features/location/LocationSetupSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the location search input field (h-11 sm:h-12 md:h-14, text-sm sm:text-base) and search/select buttons (min-h-[44px] sm:min-h-[48px], px-4 sm:px-6, text-sm sm:text-base). Add responsive spacing between interactive elements (gap-2 sm:gap-3)."
-        },
-        {
-          "path": "frontend/src/features/settings/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to all input fields for prayer time offsets and notification settings (h-11 sm:h-12, text-sm sm:text-base). Ensure increment/decrement buttons have adequate touch targets (min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]). Add responsive spacing between form fields (space-y-3 sm:space-y-4)."
-        },
-        {
-          "path": "frontend/src/features/zikirmatik/ZikirmatikTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the increment button (large circular button with min-w-[120px] min-h-[120px] sm:min-w-[160px] sm:min-h-[160px] md:min-w-[200px] md:min-h-[200px]). Apply responsive sizing to reset and target-setting buttons (min-h-[44px] sm:min-h-[48px]). Use responsive text sizes for counter display (text-4xl sm:text-5xl md:text-6xl)."
-        },
-        {
-          "path": "frontend/src/features/prayer-tracker/PrayerTrackerTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to prayer checkboxes and increment/decrement buttons (min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]). Add responsive spacing between prayer rows (space-y-2 sm:space-y-3) and ensure touch targets are adequately spaced."
-        },
-        {
-          "path": "frontend/src/features/fasting-tracker/FastingTrackerTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to date inputs (h-11 sm:h-12), increment/decrement buttons (min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]), and fasting status toggles. Add responsive spacing between sections (space-y-3 sm:space-y-4 md:space-y-6)."
-        },
-        {
-          "path": "frontend/src/features/hatim/HatimTakipTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to increment/decrement buttons (min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]) and page number input (h-11 sm:h-12, text-base sm:text-lg). Use responsive text sizes for progress display (text-xl sm:text-2xl md:text-3xl)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Adjust spacing across all components to be responsive and appropriate for each breakpoint",
-      "acceptanceCriteria": [
-        "Spacing is compact on mobile without feeling cramped",
-        "Spacing increases appropriately on larger screens",
-        "Content remains well-organized across all breakpoints"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/home/PrayerTimeCardsSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive grid gaps (gap-2 sm:gap-3 md:gap-4) between prayer time cards. Use responsive padding within each card (p-3 sm:p-4 md:p-6). Apply responsive margin spacing between the cards section and other home sections (my-4 sm:my-6 md:my-8)."
-        },
-        {
-          "path": "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive spacing between prayer time rows (space-y-2 sm:space-y-3 md:space-y-4). Use responsive padding for each prayer time item (p-2 sm:p-3 md:p-4). Add responsive gap spacing between icon and text elements (gap-2 sm:gap-3)."
-        },
-        {
-          "path": "frontend/src/features/esmaulhusna/EsmaulHusnaTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive grid gaps between Esmaül Hüsna cards (gap-2 sm:gap-3 md:gap-4). Use responsive padding within the tab container (p-2 sm:p-4 md:p-6). Ensure responsive spacing in the detail dialog content (space-y-3 sm:space-y-4 md:space-y-6)."
-        },
-        {
-          "path": "frontend/src/features/ramazan/RamazanKosesiTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive spacing between Ramadan information sections (space-y-4 sm:space-y-6 md:space-y-8). Use responsive padding for content cards (p-3 sm:p-4 md:p-6) and responsive margins around the tab (m-2 sm:m-4 md:m-6)."
-        },
-        {
-          "path": "frontend/src/features/religious-days/ReligiousDaysTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive spacing between religious day items (space-y-2 sm:space-y-3 md:space-y-4). Use responsive padding for each day card (p-3 sm:p-4 md:p-5) and responsive margins around the list (m-2 sm:m-3 md:m-4)."
-        },
-        {
-          "path": "frontend/src/features/nearbymosque/NearbyMosqueTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive spacing between mosque items (space-y-2 sm:space-y-3). Use responsive padding for each mosque card (p-3 sm:p-4 md:p-5) and responsive gap spacing between mosque name and distance (gap-2 sm:gap-3)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Make the prayer times display section responsive for all device sizes",
-      "acceptanceCriteria": [
-        "Prayer time cards stack vertically on mobile",
-        "Prayer time tables are scrollable horizontally on small screens if needed",
-        "Countdown timers remain visible and readable on all devices"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/home/NextPrayerCountdown.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the countdown card (p-4 sm:p-6 md:p-8). Use responsive text sizes for the prayer name (text-lg sm:text-xl md:text-2xl), prayer time (text-base sm:text-lg md:text-xl), and countdown timer (text-2xl sm:text-3xl md:text-4xl font-mono). Ensure the card width is responsive (w-full max-w-sm sm:max-w-md mx-auto)."
-        },
-        {
-          "path": "frontend/src/features/home/PrayerTimeCardsSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive grid layout for prayer time cards (grid-cols-1 sm:grid-cols-2 md:grid-cols-4) to ensure cards stack vertically on mobile. Use responsive card dimensions (min-h-[200px] sm:min-h-[240px]) and responsive text sizes for card content (text-sm sm:text-base)."
-        },
-        {
-          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive table styling with horizontal scroll on mobile (overflow-x-auto). Use responsive text sizes for table headers (text-xs sm:text-sm) and table cells (text-xs sm:text-sm). Apply responsive padding to table cells (p-2 sm:p-3). Ensure the sticky first column works properly on mobile with appropriate width (min-w-[80px] sm:min-w-[100px])."
-        },
-        {
-          "path": "frontend/src/features/home/SahurIftarStrip.tsx",
-          "operation": "modify",
-          "description": "Apply responsive layout for the three-column strip (grid-cols-3 with responsive gaps gap-1 sm:gap-2 md:gap-3). Use responsive text sizes for labels (text-xs sm:text-sm) and times (text-sm sm:text-base md:text-lg). Apply responsive padding to the strip container (p-2 sm:p-3 md:p-4)."
-        },
-        {
-          "path": "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive layout for prayer time items. Ensure proper spacing between prayer icon and text on mobile (gap-2 sm:gap-3). Use responsive icon sizes (w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7). Apply responsive text sizes for prayer names (text-sm sm:text-base md:text-lg) and times (text-sm sm:text-base md:text-lg font-semibold)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Make the tab navigation and overflow menu responsive with appropriate sizing and touch targets",
-      "acceptanceCriteria": [
-        "Tab icons and labels are appropriately sized for mobile",
-        "Tabs are easily tappable with adequate spacing",
-        "Overflow menu items are accessible on all screen sizes"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/MobileTabsNav.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to individual tab items (min-w-[60px] sm:min-w-[80px], min-h-[60px] sm:min-h-[70px]) to ensure adequate touch targets. Use responsive icon sizes (w-5 h-5 sm:w-6 sm:h-6) and text sizes (text-xs sm:text-sm). Apply responsive horizontal spacing between tabs (gap-1 sm:gap-2 md:gap-3). Ensure the tab bar container has responsive padding (px-2 sm:px-4)."
-        },
-        {
-          "path": "frontend/src/components/TabsOverflowMenu.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the overflow menu trigger button (min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]). Use responsive sizing for menu items (min-h-[44px] sm:min-h-[48px], text-sm sm:text-base) and icons (w-5 h-5 sm:w-6 sm:h-6). Apply responsive padding to menu content (p-1 sm:p-2) and responsive spacing between items (gap-1). Ensure the Islamic corner ornament decoration scales responsively."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Make all modal dialogs and cards responsive across breakpoints",
-      "acceptanceCriteria": [
-        "Modals scale appropriately on mobile without overflowing",
-        "Cards maintain proper aspect ratios and readability",
-        "Dialog content is scrollable when needed on small screens"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/esmaulhusna/EsmaulHusnaTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the Esmaül Hüsna detail dialog (max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl). Ensure dialog content is scrollable on small screens (max-h-[80vh] overflow-y-auto). Use responsive padding for dialog content (p-4 sm:p-6 md:p-8) and responsive text sizes for Arabic names, meanings, and duas. Apply responsive spacing between dialog sections (space-y-3 sm:space-y-4 md:space-y-6)."
-        },
-        {
-          "path": "frontend/src/features/home/PrayerTimeCardsSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the prayer card detail dialogs (verses, hadiths, duas, esma) with max-w-sm sm:max-w-md md:max-w-lg. Ensure content is scrollable on small screens (max-h-[80vh] overflow-y-auto). Use responsive padding (p-4 sm:p-6 md:p-8) and responsive text sizes for Arabic text, transliterations, and translations."
-        },
-        {
-          "path": "frontend/src/features/dua-guide/DuaGuideTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to dua detail dialogs (max-w-sm sm:max-w-md md:max-w-lg). Ensure scrollable content on small screens (max-h-[80vh] overflow-y-auto). Use responsive padding (p-4 sm:p-6 md:p-8) and responsive text sizes for Arabic text (text-base sm:text-lg md:text-xl), transliterations (text-xs sm:text-sm), and translations (text-xs sm:text-sm)."
-        },
-        {
-          "path": "frontend/src/features/qibla/QiblaFinderTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the Qibla compass component. Use responsive dimensions for the compass visual (w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96). Apply responsive text sizes for compass labels (text-sm sm:text-base) and Qibla angle display (text-lg sm:text-xl md:text-2xl). Ensure responsive padding around the compass container (p-4 sm:p-6 md:p-8)."
-        },
-        {
-          "path": "frontend/src/features/settings/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive layout to settings cards and sections (space-y-4 sm:space-y-6 md:space-y-8). Use responsive padding for settings cards (p-3 sm:p-4 md:p-6). Ensure form inputs and labels use responsive sizing (text-sm sm:text-base) and responsive spacing between form fields (space-y-3 sm:space-y-4)."
-        },
-        {
-          "path": "frontend/src/features/namaz-ogretici/NamazOgreticiTab.tsx",
-          "operation": "modify",
-          "description": "Apply responsive layout for prayer tutorial steps. Use responsive image sizing for prayer position illustrations (w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto). Apply responsive text sizes for step descriptions (text-sm sm:text-base) and Arabic text (text-base sm:text-lg md:text-xl). Ensure responsive spacing between steps (space-y-4 sm:space-y-6 md:space-y-8)."
+          "description": "Update loadAppSettings to return DEFAULT_LOCATION as the location value when all storage recovery attempts fail and no location has ever been set. Ensure the default location is not persisted to storage automatically."
         },
         {
           "path": "frontend/src/components/SelectLocationPrompt.tsx",
           "operation": "modify",
-          "description": "Apply responsive sizing to the location prompt card (max-w-sm sm:max-w-md md:max-w-lg mx-auto). Use responsive padding (p-4 sm:p-6 md:p-8), responsive text sizes (text-sm sm:text-base md:text-lg), and responsive button sizing (min-h-[44px] sm:min-h-[48px], px-4 sm:px-6, text-sm sm:text-base)."
-        },
-        {
-          "path": "frontend/src/features/weather/WeatherSection.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to the weather card (p-3 sm:p-4 md:p-6). Use responsive text sizes for temperature (text-2xl sm:text-3xl md:text-4xl), weather description (text-sm sm:text-base), and weather details (text-xs sm:text-sm). Apply responsive spacing between weather elements (space-y-2 sm:space-y-3)."
-        },
-        {
-          "path": "frontend/src/features/home/MotifFrame.tsx",
-          "operation": "modify",
-          "description": "Apply responsive sizing to MotifFrame variants. For the ornamental variant, use responsive corner ornament sizes (w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12). For the divider variant, use responsive flourish heights (h-8 sm:h-10 md:h-12). Apply responsive padding to frame content (p-3 sm:p-4 md:p-6)."
+          "description": "Update the prompt text to inform users when the app is using a default location. Add messaging that explains setting their actual location will improve accuracy of prayer times and weather data."
         }
       ]
     }

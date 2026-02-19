@@ -3,12 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Label } from '../../components/ui/label';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
-import { SelectLocationPrompt } from '../../components/SelectLocationPrompt';
 import { usePrayerTimes } from './usePrayerTimes';
 import { useAppSettings } from '../settings/useAppSettings';
 import { applyOffsetToPrayerTimes } from './timeOffset';
 import { computeKerahatWindows, mergeTimesWithKerahat } from './kerahatTimes';
 import { Clock, Settings, Sunrise, Sun, Sunset, Moon, AlertCircle } from 'lucide-react';
+import { DEFAULT_LOCATION } from '../location/types';
 
 interface PrayerTimesDisplayProps {
   onNavigateToLocation: () => void;
@@ -16,13 +16,10 @@ interface PrayerTimesDisplayProps {
 
 export function PrayerTimesSection({ onNavigateToLocation }: PrayerTimesDisplayProps) {
   const { settings, saveSettings, isSaving } = useAppSettings();
-  const { data: prayerTimes, isLoading, error } = usePrayerTimes(settings.location);
+  const effectiveLocation = settings.location || DEFAULT_LOCATION;
+  const { data: prayerTimes, isLoading, error } = usePrayerTimes(effectiveLocation);
   const [offsetInput, setOffsetInput] = useState(settings.offsetMinutes.toString());
   const [isEditingOffset, setIsEditingOffset] = useState(false);
-
-  if (!settings.location) {
-    return <SelectLocationPrompt onNavigateToLocation={onNavigateToLocation} />;
-  }
 
   const handleSaveOffset = async () => {
     const newOffset = parseInt(offsetInput, 10) || 0;
@@ -60,7 +57,7 @@ export function PrayerTimesSection({ onNavigateToLocation }: PrayerTimesDisplayP
             <Clock className="h-5 w-5" />
             Namaz Vakitleri
           </CardTitle>
-          <CardDescription>{settings.location.displayName}</CardDescription>
+          <CardDescription>{effectiveLocation.displayName}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {isLoading && (

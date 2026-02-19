@@ -1,74 +1,38 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Responsive design implementation for mobile, tablet, and desktop devices with focus on location picker modal optimization",
+  "summary": "Mobile-responsive weather application with persistent location storage",
   "architectural_notes": [
-    "Using Tailwind CSS breakpoints (sm, md, lg, xl) for responsive design implementation"
+    "No authentication system (Internet Identity not used)",
+    "Location data stored in browser localStorage for persistence",
+    "Mobile-first responsive design"
   ],
-  "known_issues": [],
+  "known_issues": [
+    "Selected location is lost when cache is cleared or app is closed on mobile devices"
+  ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-make-the-location-selection-modal-displaying-konum-de-i-tir-header-with-location-like-gebze-kocaeli-i-li-t-rkiye-responsive-and-appropriately-sized-for-mobile-devices",
-      "title": "Make the location selection modal (displaying 'Konum Değiştir' header with location like 'Gebze, Kocaeli İli, Türkiye') responsive and appropriately sized for mobile devices",
+      "id": "feature-ensure-manually-selected-location-data-persists-in-localstorage-even-after-cache-clearing-on-mobile-devices-the-location-storage-must-survive-browser-cache-data-clearing-and-app-closure-reopening-scenarios",
+      "title": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices. The location storage must survive browser cache/data clearing and app closure/reopening scenarios.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-responsive-layouts-for-all-application-screens-using-tailwind-css-breakpoints-sm-md-lg-xl-to-optimize-for-mobile-phones-tablets-and-desktop-computers",
-      "title": "Implement responsive layouts for all application screens using Tailwind CSS breakpoints (sm, md, lg, xl) to optimize for mobile phones, tablets, and desktop computers",
+      "id": "feature-prevent-app-from-crashing-or-becoming-non-functional-when-cache-is-cleared-if-location-data-is-unavailable-display-the-location-selection-prompt-instead-of-breaking-the-application",
+      "title": "Prevent app from crashing or becoming non-functional when cache is cleared. If location data is unavailable, display the location selection prompt instead of breaking the application.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-make-typography-text-sizes-line-heights-responsive-across-all-components-and-screens-using-tailwind-s-responsive-text-utilities",
-      "title": "Make typography (text sizes, line heights) responsive across all components and screens using Tailwind's responsive text utilities",
+      "id": "feature-add-fallback-mechanism-to-provide-a-default-location-if-localstorage-is-completely-cleared-and-no-location-has-been-selected-use-a-sensible-default-location-for-turkey-e-g-istanbul-coordinates-to-ensure-basic-functionality",
+      "title": "Add fallback mechanism to provide a default location if localStorage is completely cleared and no location has been selected. Use a sensible default location for Turkey (e.g., Istanbul coordinates) to ensure basic functionality.",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-all-buttons-input-fields-and-interactive-elements-responsive-with-appropriate-sizing-and-touch-targets-for-mobile-devices",
-      "title": "Make all buttons, input fields, and interactive elements responsive with appropriate sizing and touch targets for mobile devices",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-adjust-spacing-padding-margins-gaps-across-all-components-to-be-responsive-and-appropriate-for-each-breakpoint",
-      "title": "Adjust spacing (padding, margins, gaps) across all components to be responsive and appropriate for each breakpoint",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-prayer-times-display-section-including-daily-prayer-times-weekly-schedule-countdown-timers-responsive-for-all-device-sizes",
-      "title": "Make the prayer times display section (including daily prayer times, weekly schedule, countdown timers) responsive for all device sizes",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-tab-navigation-mobiletabsnav-and-overflow-menu-responsive-with-appropriate-sizing-and-touch-targets",
-      "title": "Make the tab navigation (MobileTabsNav) and overflow menu responsive with appropriate sizing and touch targets",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-all-modal-dialogs-and-cards-prayer-cards-esmaul-husna-cards-settings-dialogs-responsive-across-breakpoints",
-      "title": "Make all modal dialogs and cards (prayer cards, esmaul husna cards, settings dialogs) responsive across breakpoints",
-      "reqIds": [
-        "REQ-8"
       ],
       "version": 1
     }
@@ -76,18 +40,13 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Implement responsive design across entire application for mobile, tablet, and desktop",
+      "summary": "Persist manually selected location in localStorage to survive cache clearing on mobile devices",
       "reqIds": [],
-      "status": "in_progress"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Fix location picker modal being too large on mobile devices",
-      "reqIds": [],
-      "status": "in_progress"
+      "status": "pending"
     }
   ],
-  "projectName": "Hadi Namaza",
+  "gameProjectType": "none",
+  "projectName": "Namaz Vakti",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

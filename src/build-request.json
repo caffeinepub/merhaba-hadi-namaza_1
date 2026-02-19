@@ -1,161 +1,78 @@
 {
   "kind": "build_request",
-  "title": "Implement responsive design across entire application",
-  "projectName": "Hadi Namaza",
-  "priority": "normal",
+  "title": "Fix location persistence in localStorage for mobile devices",
+  "projectName": "Namaz Vakti",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Make the location selection modal (displaying 'Konum Değiştir' header with location like 'Gebze, Kocaeli İli, Türkiye') responsive and appropriately sized for mobile devices",
+      "text": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices. The location storage must survive browser cache/data clearing and app closure/reopening scenarios.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3",
-          "msg-4",
-          "msg-5"
+          "msg-recent"
         ],
         "quotes": [
-          "Konum Değiştir Gebze, Kocaeli İli, Türkiye bu pencereden bahsediyorum"
+          "MOBİL CİHAZLARDA KULLANIRKEN",
+          "UYGULAMADA ÖN BELLEK TEMİZLEME YAPINCA KONUM SİLİNİYOR",
+          "Manuel seçilen konum bilgisi, uygulamadan çıkış yapıldığında ön bellek temizleme nedeniyle kayboluyor"
         ]
       },
       "acceptanceCriteria": [
-        "Location selection modal is compact and properly sized on mobile screens",
-        "Modal content (header, location text, buttons) scales appropriately",
-        "Modal does not overflow screen boundaries on small devices"
+        "Location data saved to localStorage with a dedicated key",
+        "Location persists after browser cache is cleared",
+        "Location persists after app is closed and reopened on mobile devices",
+        "App loads and functions correctly with the saved location on restart"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Implement responsive layouts for all application screens using Tailwind CSS breakpoints (sm, md, lg, xl) to optimize for mobile phones, tablets, and desktop computers",
+      "text": "Prevent app from crashing or becoming non-functional when cache is cleared. If location data is unavailable, display the location selection prompt instead of breaking the application.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6",
-          "msg-7",
-          "msg-8"
+          "msg-recent"
         ],
         "quotes": [
-          "tüm uygulamaya yao",
-          "Tüm uygulama için responsive tasarım"
+          "uygulamadan çıkış yapınca da ön bellek temizleme yapılıyor ve uygulama çalışmıyor"
         ]
       },
       "acceptanceCriteria": [
-        "All screens render appropriately on mobile phone screens (< 640px)",
-        "All screens adapt properly for tablet screens (640px - 1024px)",
-        "All screens display optimally on desktop screens (> 1024px)",
-        "Navigation, headers, and footers adjust based on screen size"
+        "App displays SelectLocationPrompt component when no location is available",
+        "App does not crash or throw errors when localStorage is empty",
+        "All prayer times, weather, and location-dependent features handle missing location gracefully"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Make typography (text sizes, line heights) responsive across all components and screens using Tailwind's responsive text utilities",
+      "text": "Add fallback mechanism to provide a default location if localStorage is completely cleared and no location has been selected. Use a sensible default location for Turkey (e.g., Istanbul coordinates) to ensure basic functionality.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-8",
-          "msg-9"
+          "msg-recent"
+        ],
+        "quotes": [
+          "İlk kullanımda konum seçilmezse varsayılan bir konum gösterilecek"
         ]
       },
       "acceptanceCriteria": [
-        "Headings scale appropriately across breakpoints",
-        "Body text is readable on all device sizes",
-        "Arabic text and transliterations maintain legibility"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Make all buttons, input fields, and interactive elements responsive with appropriate sizing and touch targets for mobile devices",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8",
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Buttons have minimum 44px touch targets on mobile",
-        "Input fields are appropriately sized for mobile keyboards",
-        "Interactive elements have adequate spacing for touch interaction"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Adjust spacing (padding, margins, gaps) across all components to be responsive and appropriate for each breakpoint",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8",
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Spacing is compact on mobile without feeling cramped",
-        "Spacing increases appropriately on larger screens",
-        "Content remains well-organized across all breakpoints"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Make the prayer times display section (including daily prayer times, weekly schedule, countdown timers) responsive for all device sizes",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8",
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Prayer time cards stack vertically on mobile",
-        "Prayer time tables are scrollable horizontally on small screens if needed",
-        "Countdown timers remain visible and readable on all devices"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Make the tab navigation (MobileTabsNav) and overflow menu responsive with appropriate sizing and touch targets",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8",
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Tab icons and labels are appropriately sized for mobile",
-        "Tabs are easily tappable with adequate spacing",
-        "Overflow menu items are accessible on all screen sizes"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Make all modal dialogs and cards (prayer cards, esmaul husna cards, settings dialogs) responsive across breakpoints",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8",
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Modals scale appropriately on mobile without overflowing",
-        "Cards maintain proper aspect ratios and readability",
-        "Dialog content is scrollable when needed on small screens"
+        "Default location (Istanbul or similar) is defined as a constant",
+        "Default location is used only when localStorage is empty and no selection has been made",
+        "App displays prompt to encourage user to select their actual location",
+        "Prayer times and weather data load correctly with the default location"
       ]
     }
   ],
   "constraints": [
-    "Maintain existing functionality and user flows",
-    "Preserve the Islamic visual design elements and patterns",
-    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
-    "Use only Tailwind CSS responsive utilities (sm:, md:, lg:, xl:) for breakpoints",
-    "Ensure safe area insets are maintained for Android WebView compatibility"
+    "Do not implement Internet Identity authentication (explicitly not used in this app)",
+    "Must work on mobile browsers without requiring native app features",
+    "Location data must survive aggressive cache clearing on mobile browsers"
   ],
   "nonGoals": [
-    "Changing the application's color scheme or visual identity",
-    "Adding new features beyond responsive layout adjustments",
-    "Modifying backend functionality",
-    "Implementing real-time features or WebSockets",
-    "Adding third-party UI frameworks beyond existing stack"
+    "GPS-based automatic location detection",
+    "Backend storage of location data in Internet Computer canisters",
+    "User authentication or multi-user location preferences",
+    "Location history or multiple saved locations"
   ],
   "imageRequirements": {
     "required": [],

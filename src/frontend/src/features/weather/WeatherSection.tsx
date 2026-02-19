@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { SelectLocationPrompt } from '../../components/SelectLocationPrompt';
 import { useWeather } from './useWeather';
 import { useAppSettings } from '../settings/useAppSettings';
 import { getWeatherDescription } from './openMeteoWeatherApi';
-import { Cloud, Droplets, Wind, Thermometer } from 'lucide-react';
+import { Cloud, Droplets, Wind } from 'lucide-react';
+import { DEFAULT_LOCATION } from '../location/types';
 
 interface WeatherSectionProps {
   onNavigateToLocation: () => void;
@@ -12,11 +12,8 @@ interface WeatherSectionProps {
 
 export function WeatherSection({ onNavigateToLocation }: WeatherSectionProps) {
   const { settings } = useAppSettings();
-  const { data: weather, isLoading, error } = useWeather(settings.location);
-
-  if (!settings.location) {
-    return <SelectLocationPrompt onNavigateToLocation={onNavigateToLocation} />;
-  }
+  const effectiveLocation = settings.location || DEFAULT_LOCATION;
+  const { data: weather, isLoading, error } = useWeather(effectiveLocation);
 
   return (
     <Card>
@@ -25,7 +22,7 @@ export function WeatherSection({ onNavigateToLocation }: WeatherSectionProps) {
           <Cloud className="h-5 w-5" />
           Hava Durumu
         </CardTitle>
-        <CardDescription>{settings.location.displayName}</CardDescription>
+        <CardDescription>{effectiveLocation.displayName}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading && (

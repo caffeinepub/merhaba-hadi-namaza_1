@@ -1,13 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { InternetIdentityProvider } from './hooks/useInternetIdentity';
 import { MobileTabsNav } from './components/MobileTabsNav';
 import { HomeTab } from './features/home/HomeTab';
-import { PrayerTimesSection } from './features/prayer/PrayerTimesSection';
-import { WeatherSection } from './features/weather/WeatherSection';
-import { LocationSetupSection } from './features/location/LocationSetupSection';
-import { SettingsTab } from './features/settings/SettingsTab';
 import { EsmaulHusnaTab } from './features/esmaulhusna/EsmaulHusnaTab';
+import { ZikirmatikTab } from './features/zikirmatik/ZikirmatikTab';
 import { NamazOgreticiTab } from './features/namaz-ogretici/NamazOgreticiTab';
 import { QiblaFinderTab } from './features/qibla/QiblaFinderTab';
 import { RamazanKosesiTab } from './features/ramazan/RamazanKosesiTab';
@@ -16,126 +13,121 @@ import { MorningEveningAdhkarTab } from './features/adhkar/MorningEveningAdhkarT
 import { DuaGuideTab } from './features/dua-guide/DuaGuideTab';
 import { TasbihatTab } from './features/tasbihat/TasbihatTab';
 import { ReligiousDaysTab } from './features/religious-days/ReligiousDaysTab';
-import { ZikirmatikTab } from './features/zikirmatik/ZikirmatikTab';
 import { NearbyMosqueTab } from './features/nearbymosque/NearbyMosqueTab';
 import { FastingTrackerTab } from './features/fasting-tracker/FastingTrackerTab';
 import { PrayerTrackerTab } from './features/prayer-tracker/PrayerTrackerTab';
 import { QuranOgreniyorumTab } from './features/quran-reading/QuranOgreniyorumTab';
+import { SettingsTab } from './features/settings/SettingsTab';
+import { UpdateAvailablePrompt } from './features/app-release/UpdateAvailablePrompt';
+import { CompactWeatherSummary } from './features/weather/CompactWeatherSummary';
 import { HeaderFlourish } from './components/HeaderFlourish';
 import { useAppSettings } from './features/settings/useAppSettings';
-import { getManualLocationFromLocalStorage } from './features/settings/localSettingsStorage';
+import { DEFAULT_LOCATION } from './features/location/types';
+import { Toaster } from './components/ui/sonner';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-    },
-  },
+      retry: 1
+    }
+  }
 });
 
-function AppContent() {
-  const [activeTab, setActiveTab] = React.useState('home');
-  const { settings, saveSettings } = useAppSettings();
+function App() {
+  const [selectedTab, setSelectedTab] = useState('home');
+  const { settings, isLoading: settingsLoading } = useAppSettings();
+  const [isUsingDefaultLocation, setIsUsingDefaultLocation] = useState(false);
 
-  // Load saved location from localStorage on mount
+  // Check if we need to use default location
   useEffect(() => {
-    const loadSavedLocation = async () => {
-      // Only load if no location is currently set
-      if (!settings.location) {
-        const manualLocation = getManualLocationFromLocalStorage();
-        if (manualLocation) {
-          try {
-            await saveSettings({ location: manualLocation });
-          } catch (error) {
-            console.error('Failed to restore saved location:', error);
-          }
-        }
+    if (!settingsLoading) {
+      const hasUserLocation = !!settings.location;
+      setIsUsingDefaultLocation(!hasUserLocation);
+      
+      if (!hasUserLocation) {
+        console.log('[App] No user location found, using default location:', DEFAULT_LOCATION.displayName);
+      } else {
+        console.log('[App] User location loaded:', settings.location?.displayName);
       }
-    };
-
-    loadSavedLocation();
-  }, []); // Run once on mount
-
-  const handleNavigateToLocation = () => {
-    setActiveTab('location');
-  };
+    }
+  }, [settings.location, settingsLoading]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <div 
-        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage: 'url(/assets/generated/islamic-pattern-vivid-bg.dim_1600x900.png)',
-          backgroundSize: '400px 225px',
-          backgroundRepeat: 'repeat'
-        }}
-      />
-
-      <div className="relative">
-        <header className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-800 dark:via-teal-800 dark:to-cyan-800 text-white shadow-lg border-b-2 border-emerald-700/30 dark:border-emerald-500/20">
-          <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-2 sm:px-4 md:px-6">
+          <div className="flex h-16 sm:h-20 items-center justify-between">
+            <div className="flex items-center gap-2 sm:gap-3">
               <img 
                 src="/assets/generated/merhaba-hadi-namaza-icon.dim_512x512.png" 
                 alt="Merhaba Hadi Namaza" 
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-md ring-2 ring-white/30"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg"
               />
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                 Merhaba Hadi Namaza
               </h1>
             </div>
-            <HeaderFlourish />
+            <div className="flex items-center gap-2 sm:gap-4">
+              <CompactWeatherSummary />
+            </div>
           </div>
-        </header>
+          <HeaderFlourish />
+        </div>
+      </header>
 
-        <main className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 pb-24 sm:pb-28">
-          <MobileTabsNav value={activeTab} onValueChange={setActiveTab}>
-            {{
-              home: <HomeTab />,
-              settings: (
-                <div className="space-y-4 sm:space-y-6">
-                  <SettingsTab />
-                  <div className="pt-4 sm:pt-6 border-t">
-                    <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Konum Ayarları</h2>
-                    <LocationSetupSection />
-                  </div>
-                  <div className="pt-4 sm:pt-6 border-t">
-                    <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Namaz Vakitleri</h2>
-                    <PrayerTimesSection onNavigateToLocation={handleNavigateToLocation} />
-                  </div>
-                  <div className="pt-4 sm:pt-6 border-t">
-                    <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Hava Durumu</h2>
-                    <WeatherSection onNavigateToLocation={handleNavigateToLocation} />
-                  </div>
-                </div>
-              ),
-              esmaulhusna: <EsmaulHusnaTab />,
-              zikirmatik: <ZikirmatikTab />,
-              namazogretici: <NamazOgreticiTab />,
-              qibla: <QiblaFinderTab />,
-              ramazan: <RamazanKosesiTab />,
-              hatim: <HatimTakipTab />,
-              adhkar: <MorningEveningAdhkarTab />,
-              duaguide: <DuaGuideTab />,
-              tasbihat: <TasbihatTab />,
-              religiousdays: <ReligiousDaysTab />,
-              nearbymosque: <NearbyMosqueTab />,
-              fastingtracker: <FastingTrackerTab />,
-              prayertracker: <PrayerTrackerTab />,
-              quranreading: <QuranOgreniyorumTab />
-            }}
-          </MobileTabsNav>
-        </main>
-      </div>
+      <main className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 pb-24">
+        <MobileTabsNav value={selectedTab} onValueChange={setSelectedTab}>
+          {{
+            home: <HomeTab />,
+            settings: <SettingsTab />,
+            esmaulhusna: <EsmaulHusnaTab />,
+            zikirmatik: <ZikirmatikTab />,
+            namazogretici: <NamazOgreticiTab />,
+            qibla: <QiblaFinderTab />,
+            ramazan: <RamazanKosesiTab />,
+            hatim: <HatimTakipTab />,
+            adhkar: <MorningEveningAdhkarTab />,
+            duaguide: <DuaGuideTab />,
+            tasbihat: <TasbihatTab />,
+            religiousdays: <ReligiousDaysTab />,
+            nearbymosque: <NearbyMosqueTab />,
+            fastingtracker: <FastingTrackerTab />,
+            prayertracker: <PrayerTrackerTab />,
+            quranreading: <QuranOgreniyorumTab />
+          }}
+        </MobileTabsNav>
+      </main>
+
+      <UpdateAvailablePrompt />
+      <Toaster />
+
+      <footer className="border-t bg-muted/30 py-6 mt-12">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          <p>
+            © {new Date().getFullYear()} · Built with ❤️ using{' '}
+            <a
+              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
+                typeof window !== 'undefined' ? window.location.hostname : 'merhaba-hadi-namaza'
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline font-medium"
+            >
+              caffeine.ai
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
 
-export default function App() {
+export default function AppWrapper() {
   return (
     <QueryClientProvider client={queryClient}>
       <InternetIdentityProvider>
-        <AppContent />
+        <App />
       </InternetIdentityProvider>
     </QueryClientProvider>
   );

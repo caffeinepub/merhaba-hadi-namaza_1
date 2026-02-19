@@ -1,16 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Implement comprehensive responsive design across the entire Hadi Namaza application to ensure optimal display and usability on mobile phones, tablets, and desktop computers.
+**Goal:** Fix location persistence in localStorage to survive cache clearing on mobile devices and prevent app crashes.
 
 **Planned changes:**
-- Make location selection modal responsive and properly sized for mobile devices
-- Implement responsive layouts for all screens using Tailwind CSS breakpoints (sm, md, lg, xl)
-- Make typography responsive across all components using Tailwind's responsive text utilities
-- Ensure all buttons, input fields, and interactive elements have appropriate sizing and touch targets for mobile
-- Adjust spacing (padding, margins, gaps) to be responsive across all breakpoints
-- Make prayer times display section responsive for all device sizes
-- Make tab navigation and overflow menu responsive with appropriate touch targets
-- Make all modal dialogs and cards responsive across breakpoints
+- Ensure manually selected location data persists in localStorage even after cache clearing
+- Prevent app crashes when localStorage is cleared by gracefully handling missing location data
+- Add fallback to a default location (Istanbul) when no location is available
+- Display location selection prompt instead of breaking when location data is unavailable
 
-**User-visible outcome:** Users will experience a fully responsive application that adapts seamlessly to their device screen size, with properly sized touch targets on mobile, readable text at all breakpoints, and well-organized content whether viewing on a phone, tablet, or desktop computer.
+**User-visible outcome:** Users can select their location once, and it will remain saved even after clearing browser cache or closing the app on mobile devices. If location data is lost, the app will continue to function with a default location and prompt users to select their actual location rather than crashing.
