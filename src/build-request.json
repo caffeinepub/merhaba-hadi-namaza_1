@@ -1,78 +1,39 @@
 {
   "kind": "build_request",
-  "title": "Fix location persistence in localStorage for mobile devices",
-  "projectName": "Namaz Vakti",
-  "priority": "high",
+  "title": "Remove duplicate time offset adjustment from homepage",
+  "projectName": "Prayer Times",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices. The location storage must survive browser cache/data clearing and app closure/reopening scenarios.",
+      "text": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-recent"
+          "msg-10",
+          "msg-11",
+          "msg-12"
         ],
         "quotes": [
-          "MOBİL CİHAZLARDA KULLANIRKEN",
-          "UYGULAMADA ÖN BELLEK TEMİZLEME YAPINCA KONUM SİLİNİYOR",
-          "Manuel seçilen konum bilgisi, uygulamadan çıkış yapıldığında ön bellek temizleme nedeniyle kayboluyor"
+          "Anasayfada bulunan saat düzeltmesi penceresini kaldır zaten ayarlar kısmında var",
+          "ana ekranda bulunan şu pencereden bahsediyorum aynısı ayarlar kısmında da var. Saat Düzeltmesi Diyanet'e göre dakika farkı (+ veya -) 0 Şu anki düzeltme: 0 dakika"
         ]
       },
       "acceptanceCriteria": [
-        "Location data saved to localStorage with a dedicated key",
-        "Location persists after browser cache is cleared",
-        "Location persists after app is closed and reopened on mobile devices",
-        "App loads and functions correctly with the saved location on restart"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Prevent app from crashing or becoming non-functional when cache is cleared. If location data is unavailable, display the location selection prompt instead of breaking the application.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-recent"
-        ],
-        "quotes": [
-          "uygulamadan çıkış yapınca da ön bellek temizleme yapılıyor ve uygulama çalışmıyor"
-        ]
-      },
-      "acceptanceCriteria": [
-        "App displays SelectLocationPrompt component when no location is available",
-        "App does not crash or throw errors when localStorage is empty",
-        "All prayer times, weather, and location-dependent features handle missing location gracefully"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Add fallback mechanism to provide a default location if localStorage is completely cleared and no location has been selected. Use a sensible default location for Turkey (e.g., Istanbul coordinates) to ensure basic functionality.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-recent"
-        ],
-        "quotes": [
-          "İlk kullanımda konum seçilmezse varsayılan bir konum gösterilecek"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Default location (Istanbul or similar) is defined as a constant",
-        "Default location is used only when localStorage is empty and no selection has been made",
-        "App displays prompt to encourage user to select their actual location",
-        "Prayer times and weather data load correctly with the default location"
+        "The time offset adjustment component is no longer visible on the homepage",
+        "The time offset adjustment functionality remains fully functional in the Settings page",
+        "No visual gaps or layout issues appear on the homepage after removal"
       ]
     }
   ],
   "constraints": [
-    "Do not implement Internet Identity authentication (explicitly not used in this app)",
-    "Must work on mobile browsers without requiring native app features",
-    "Location data must survive aggressive cache clearing on mobile browsers"
+    "Do not modify the time offset adjustment functionality in the Settings page",
+    "Preserve all other homepage components and their functionality"
   ],
   "nonGoals": [
-    "GPS-based automatic location detection",
-    "Backend storage of location data in Internet Computer canisters",
-    "User authentication or multi-user location preferences",
-    "Location history or multiple saved locations"
+    "Changing how time offset is stored or calculated",
+    "Modifying the Settings page time offset UI",
+    "Adding new features to the homepage"
   ],
   "imageRequirements": {
     "required": [],

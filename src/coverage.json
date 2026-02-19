@@ -1,70 +1,25 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-19T19:54:56.739Z",
+  "generatedAt": "2026-02-19T20:38:41.155Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices. The location storage must survive browser cache/data clearing and app closure/reopening scenarios.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/settings/durableLocationStorage.ts",
-          "frontend/src/features/settings/localSettingsStorage.ts",
-          "frontend/src/features/location/LocationSetupSection.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/settings/durableLocationStorage.ts",
-          "frontend/src/features/settings/localSettingsStorage.ts",
-          "frontend/src/features/location/LocationSetupSection.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Prevent app from crashing or becoming non-functional when cache is cleared. If location data is unavailable, display the location selection prompt instead of breaking the application.",
+        "summary": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/features/home/HomeTab.tsx",
-          "frontend/src/features/prayer/usePrayerTimes.ts",
-          "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
-          "frontend/src/features/weather/useWeather.ts",
-          "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "frontend/src/features/weather/WeatherSection.tsx",
-          "frontend/src/features/weather/CompactWeatherSummary.tsx",
-          "frontend/src/features/home/useNextPrayerCountdown.ts",
-          "frontend/src/features/home/useSahurIftarCountdown.ts",
-          "frontend/src/features/home/useCurrentPrayerSlot.ts"
+          "frontend/src/features/prayer/PrayerTimesSection.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/home/HomeTab.tsx",
-          "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "frontend/src/features/weather/WeatherSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Add fallback mechanism to provide a default location if localStorage is completely cleared and no location has been selected. Use a sensible default location for Turkey (e.g., Istanbul coordinates) to ensure basic functionality.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/location/types.ts",
-          "frontend/src/App.tsx",
-          "frontend/src/features/home/HomeTab.tsx",
-          "frontend/src/features/settings/localSettingsStorage.ts",
-          "frontend/src/components/SelectLocationPrompt.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/location/types.ts",
-          "frontend/src/App.tsx",
-          "frontend/src/features/home/HomeTab.tsx",
-          "frontend/src/features/settings/localSettingsStorage.ts"
+          "frontend/src/features/prayer/PrayerTimesSection.tsx"
         ]
       }
     ]
@@ -74,15 +29,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/features/home/HomeTab.tsx",
-    "frontend/src/features/location/LocationSetupSection.tsx",
-    "frontend/src/features/location/openMeteoGeocoding.ts",
-    "frontend/src/features/location/types.ts",
     "frontend/src/features/prayer/PrayerTimesSection.tsx",
-    "frontend/src/features/settings/durableLocationStorage.ts",
-    "frontend/src/features/settings/localSettingsStorage.ts",
-    "frontend/src/features/weather/WeatherSection.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

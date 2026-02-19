@@ -1,38 +1,16 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Mobile-responsive weather application with persistent location storage",
-  "architectural_notes": [
-    "No authentication system (Internet Identity not used)",
-    "Location data stored in browser localStorage for persistence",
-    "Mobile-first responsive design"
-  ],
-  "known_issues": [
-    "Selected location is lost when cache is cleared or app is closed on mobile devices"
-  ],
-  "isFixRequest": true,
+  "summary": "New project",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-ensure-manually-selected-location-data-persists-in-localstorage-even-after-cache-clearing-on-mobile-devices-the-location-storage-must-survive-browser-cache-data-clearing-and-app-closure-reopening-scenarios",
-      "title": "Ensure manually selected location data persists in localStorage even after cache clearing on mobile devices. The location storage must survive browser cache/data clearing and app closure/reopening scenarios.",
+      "id": "feature-remove-the-time-offset-adjustment-ui-component-from-the-homepage-that-displays-saat-d-zeltmesi-clock-adjustment-diyanet-e-g-re-dakika-fark-veya-label-the-offset-input-control-and-current-adjustment-display-u-anki-d-zeltme-x-dakika-since-this-functionality-already-exists-in-the-settings-page",
+      "title": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-prevent-app-from-crashing-or-becoming-non-functional-when-cache-is-cleared-if-location-data-is-unavailable-display-the-location-selection-prompt-instead-of-breaking-the-application",
-      "title": "Prevent app from crashing or becoming non-functional when cache is cleared. If location data is unavailable, display the location selection prompt instead of breaking the application.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-fallback-mechanism-to-provide-a-default-location-if-localstorage-is-completely-cleared-and-no-location-has-been-selected-use-a-sensible-default-location-for-turkey-e-g-istanbul-coordinates-to-ensure-basic-functionality",
-      "title": "Add fallback mechanism to provide a default location if localStorage is completely cleared and no location has been selected. Use a sensible default location for Turkey (e.g., Istanbul coordinates) to ensure basic functionality.",
-      "reqIds": [
-        "REQ-3"
       ],
       "version": 1
     }
@@ -40,13 +18,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Persist manually selected location in localStorage to survive cache clearing on mobile devices",
+      "summary": "Remove clock adjustment window from homepage (duplicate of settings page feature)",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "Namaz Vakti",
+  "projectName": "Prayer Times",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }
