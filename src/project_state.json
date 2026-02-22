@@ -1,16 +1,46 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "summary": "Prayer times application using Aladhan API with manual location selection",
+  "architectural_notes": [
+    "Uses Aladhan API for prayer times data",
+    "Manual location/city selection by user",
+    "Prayer times displayed on homepage and Ramadan tab"
+  ],
+  "known_issues": [
+    "Prayer times feature was broken by recent changes and needs restoration"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-remove-the-time-offset-adjustment-ui-component-from-the-homepage-that-displays-saat-d-zeltmesi-clock-adjustment-diyanet-e-g-re-dakika-fark-veya-label-the-offset-input-control-and-current-adjustment-display-u-anki-d-zeltme-x-dakika-since-this-functionality-already-exists-in-the-settings-page",
-      "title": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
+      "id": "feature-implement-manual-location-selection-functionality-users-must-be-able-to-select-their-location-city-search-dropdown-and-the-selected-location-must-be-persisted-across-sessions",
+      "title": "Implement manual location selection functionality. Users must be able to select their location (city search/dropdown) and the selected location must be persisted across sessions.",
       "reqIds": [
-        "REQ-1"
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-prayer-times-immediately-after-location-selection-when-a-user-selects-a-location-prayer-times-for-that-location-must-be-fetched-and-displayed-without-delay",
+      "title": "Display prayer times immediately after location selection. When a user selects a location, prayer times for that location must be fetched and displayed without delay.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-prayer-times-on-the-home-tab-ana-sayfa-ensure-all-six-prayer-times-fajr-sunrise-dhuhr-asr-maghrib-isha-are-visible-with-proper-formatting-and-styling-consistent-with-the-existing-design",
+      "title": "Display prayer times on the Home tab (Ana sayfa). Ensure all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) are visible with proper formatting and styling consistent with the existing design.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-prayer-times-on-the-ramazan-ramadan-tab-show-imsak-sahur-and-iftar-times-prominently-in-the-ramadan-section-as-they-were-before",
+      "title": "Display prayer times on the Ramazan (Ramadan) tab. Show imsak/sahur and iftar times prominently in the Ramadan section as they were before.",
+      "reqIds": [
+        "REQ-5"
       ],
       "version": 1
     }
@@ -18,12 +48,28 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Remove clock adjustment window from homepage (duplicate of settings page feature)",
+      "summary": "Restore prayer times feature with Aladhan API, manual location selection, display on homepage and Ramadan tab",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Restore Aladhan API integration for fetching prayer times. Ensure the backend fetchPrayerTimes proxy endpoint correctly calls the Aladhan API and returns prayer time data to the frontend without CORS issues.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Verify all existing prayer time features work correctly: next prayer countdown, weekly prayer times table, Android widget updates, and kerahat time calculations must all function with the restored prayer time data.",
+      "reqIds": [
+        "REQ-6"
+      ],
       "status": "pending"
     }
   ],
-  "projectName": "Prayer Times",
+  "projectName": "Hadi Namaza",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

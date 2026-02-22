@@ -1,39 +1,133 @@
 {
   "kind": "build_request",
-  "title": "Remove duplicate time offset adjustment from homepage",
-  "projectName": "Prayer Times",
-  "priority": "normal",
+  "title": "Restore Prayer Times Feature with Aladhan API Integration",
+  "projectName": "Hadi Namaza",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
-      "target": "frontend",
+      "text": "Restore Aladhan API integration for fetching prayer times. Ensure the backend fetchPrayerTimes proxy endpoint correctly calls the Aladhan API and returns prayer time data to the frontend without CORS issues.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-10",
-          "msg-11",
-          "msg-12"
+          "msg-5"
         ],
         "quotes": [
-          "Anasayfada bulunan saat düzeltmesi penceresini kaldır zaten ayarlar kısmında var",
-          "ana ekranda bulunan şu pencereden bahsediyorum aynısı ayarlar kısmında da var. Saat Düzeltmesi Diyanet'e göre dakika farkı (+ veya -) 0 Şu anki düzeltme: 0 dakika"
+          "Aladhan Apıden alınıyordu"
         ]
       },
       "acceptanceCriteria": [
-        "The time offset adjustment component is no longer visible on the homepage",
-        "The time offset adjustment functionality remains fully functional in the Settings page",
-        "No visual gaps or layout issues appear on the homepage after removal"
+        "Backend proxy endpoint successfully fetches prayer times from Aladhan API",
+        "Prayer time data is returned to frontend without errors",
+        "CORS restrictions are handled correctly by the backend proxy"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement manual location selection functionality. Users must be able to select their location (city search/dropdown) and the selected location must be persisted across sessions.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Konum manuel seçiliyordu"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Location selection UI is visible and functional",
+        "Selected location is saved to storage",
+        "Location persists after app restart or page reload"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Display prayer times immediately after location selection. When a user selects a location, prayer times for that location must be fetched and displayed without delay.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "konum seçilince vakitler hemen gözüküyordu"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Prayer times appear immediately after location selection",
+        "Loading states are shown during fetch",
+        "No manual refresh required to see prayer times"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Display prayer times on the Home tab (Ana sayfa). Ensure all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) are visible with proper formatting and styling consistent with the existing design.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Ana sayfa da"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Prayer times are visible on the Home tab",
+        "All six prayer times are displayed correctly",
+        "Times are formatted in HH:MM format",
+        "UI matches existing design patterns"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Display prayer times on the Ramazan (Ramadan) tab. Show imsak/sahur and iftar times prominently in the Ramadan section as they were before.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "ramazan sekmesinde"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Prayer times are visible on the Ramazan tab",
+        "Sahur (Fajr) and Iftar (Maghrib) times are prominently displayed",
+        "Times update when location changes"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Verify all existing prayer time features work correctly: next prayer countdown, weekly prayer times table, Android widget updates, and kerahat time calculations must all function with the restored prayer time data.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-5"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Next prayer countdown displays and updates correctly",
+        "Weekly prayer times table populates with data",
+        "Android widgets receive prayer time updates",
+        "Kerahat (prohibited prayer) times are calculated and displayed",
+        "Prayer time offsets from settings are applied correctly"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the time offset adjustment functionality in the Settings page",
-    "Preserve all other homepage components and their functionality"
+    "Must use Aladhan API as the prayer times data source",
+    "Must preserve existing backend proxy architecture (fetchPrayerTimes endpoint)",
+    "Must maintain compatibility with Android WebView bridge for widget updates",
+    "Do not modify Internet Identity authentication flow",
+    "Do not modify UI component library files (frontend/src/components/ui)",
+    "Must use existing location storage system (durableLocationStorage, localSettingsStorage)"
   ],
   "nonGoals": [
-    "Changing how time offset is stored or calculated",
-    "Modifying the Settings page time offset UI",
-    "Adding new features to the homepage"
+    "Adding automatic location detection via GPS",
+    "Changing to a different prayer times API",
+    "Modifying the prayer calculation method (keep method 13)",
+    "Adding new prayer time features beyond restoration",
+    "Redesigning the UI layout or styling"
   ],
   "imageRequirements": {
     "required": [],

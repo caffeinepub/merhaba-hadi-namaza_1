@@ -35,7 +35,7 @@ export function EsmaulHusnaTab() {
 
       {/* Details Dialog */}
       <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-        <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[85vh]">
+        <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[85vh]" aria-describedby="esma-description">
           <DialogHeader>
             <DialogTitle className="text-center space-y-2 sm:space-y-3">
               {/* Number badge */}
@@ -70,7 +70,7 @@ export function EsmaulHusnaTab() {
               {/* Dua */}
               <div className="space-y-2">
                 <h3 className="text-base sm:text-lg font-semibold text-primary">Dua</h3>
-                <DialogDescription asChild>
+                <DialogDescription id="esma-description" asChild>
                   <p className="text-base sm:text-lg leading-relaxed text-foreground">
                     {selectedItem?.dua}
                   </p>

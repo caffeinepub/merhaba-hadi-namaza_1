@@ -1,26 +1,178 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove duplicate time offset adjustment from homepage",
+  "title": "Restore Prayer Times Feature with Aladhan API Integration",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Remove the duplicate time offset adjustment UI component ('Saat Düzeltmesi') from the homepage since this functionality is already available in the Settings page",
+      "id": "REQ-2",
+      "summary": "Implement manual location selection functionality with persistence across sessions",
       "acceptanceCriteria": [
-        "The time offset adjustment component is no longer visible on the homepage",
-        "The time offset adjustment functionality remains fully functional in the Settings page",
-        "No visual gaps or layout issues appear on the homepage after removal"
+        "Location selection UI is visible and functional",
+        "Selected location is saved to storage",
+        "Location persists after app restart or page reload"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "operation": "modify",
+          "description": "Verify that location search UI correctly saves selected location to durableLocationStorage, localSettingsStorage, and backend AppSettings using saveCallerAppSettings. Ensure the component properly handles the search flow and persists the location with latitude, longitude, and display name."
+        },
+        {
+          "path": "frontend/src/features/settings/durableLocationStorage.ts",
+          "operation": "modify",
+          "description": "Review and ensure the multi-layer location persistence (IndexedDB primary, localStorage/sessionStorage backup) correctly stores and retrieves location data. Verify validation and recovery logic work correctly."
+        },
+        {
+          "path": "frontend/src/features/settings/localSettingsStorage.ts",
+          "operation": "modify",
+          "description": "Ensure localStorage-based settings correctly persist location data and that migration logic properly recovers location from multiple storage layers (IndexedDB, localStorage, sessionStorage)."
+        },
+        {
+          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "operation": "modify",
+          "description": "Verify that the useAppSettings hook correctly loads and saves location data to both local storage and backend via saveCallerAppSettings, ensuring location persists across sessions."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Display prayer times immediately after location selection without delay",
+      "acceptanceCriteria": [
+        "Prayer times appear immediately after location selection",
+        "Loading states are shown during fetch",
+        "No manual refresh required to see prayer times"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/prayer/usePrayerTimes.ts",
+          "operation": "modify",
+          "description": "Ensure the React Query hook correctly fetches prayer times immediately when location coordinates change. Verify the query is enabled when actor and location are available, and that it properly calls the backend fetchPrayerTimes proxy endpoint. Add loading state handling."
+        },
+        {
+          "path": "frontend/src/features/prayer/aladhanApi.ts",
+          "operation": "modify",
+          "description": "Verify the API client correctly calls the backend fetchPrayerTimes proxy endpoint with latitude, longitude, timestamp, and method 13. Ensure the response is properly parsed and formatted into prayer time data. Handle errors gracefully."
+        },
+        {
+          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "operation": "modify",
+          "description": "After location selection and save, ensure the component triggers a refetch of prayer times by invalidating the prayer times query cache or ensuring the location state change propagates to trigger automatic refetch."
+        },
+        {
+          "path": "frontend/src/features/home/HomeTab.tsx",
+          "operation": "modify",
+          "description": "Ensure the home tab correctly displays loading states while prayer times are being fetched after location selection. Verify that prayer times display immediately once the fetch completes without requiring manual refresh."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Display all six prayer times on the Home tab with proper formatting and styling",
+      "acceptanceCriteria": [
+        "Prayer times are visible on the Home tab",
+        "All six prayer times are displayed correctly",
+        "Times are formatted in HH:MM format",
+        "UI matches existing design patterns"
       ],
       "file_operations": [
         {
           "path": "frontend/src/features/home/HomeTab.tsx",
           "operation": "modify",
-          "description": "Remove the time offset adjustment UI section that displays 'Saat Düzeltmesi' label, 'Diyanet'e göre dakika farkı (+ veya -)' description, the offset input control, and 'Şu anki düzeltme: X dakika' display. This component is redundant as the same functionality exists in the Settings tab. Ensure no visual gaps remain after removal and verify that all other homepage sections (location selection, prayer times display, weather, weekly prayer times, countdown) remain intact and properly spaced."
+          "description": "Ensure the HomeTab component correctly renders the PrayerTimesSection with all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha). Verify it handles the case when no location is set by showing SelectLocationPrompt. Ensure loading and error states are properly displayed."
         },
         {
           "path": "frontend/src/features/prayer/PrayerTimesSection.tsx",
           "operation": "modify",
-          "description": "Review and remove any time offset editing UI elements if they appear in this component when rendered on the homepage. According to the file summary, this component 'supports time offset editing' which may be the duplicate UI being referenced. Verify that time offset adjustments are only accessible through the Settings page, and ensure the prayer times display on the homepage remains read-only without inline editing controls."
+          "description": "Verify the component correctly displays all six prayer times with icons, applies time offsets from settings, and shows kerahat time windows. Ensure times are formatted in HH:MM format and styling matches existing design patterns."
+        },
+        {
+          "path": "frontend/src/features/prayer/usePrayerTimes.ts",
+          "operation": "modify",
+          "description": "Ensure the hook returns all six prayer times (fajr, sunrise, dhuhr, asr, maghrib, isha) from the Aladhan API response. Verify the data structure matches what PrayerTimesSection expects."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Display prayer times on the Ramazan tab with prominent sahur and iftar times",
+      "acceptanceCriteria": [
+        "Prayer times are visible on the Ramazan tab",
+        "Sahur (Fajr) and Iftar (Maghrib) times are prominently displayed",
+        "Times update when location changes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/ramazan/RamazanKosesiTab.tsx",
+          "operation": "modify",
+          "description": "Ensure the Ramazan tab correctly displays imsak (sahur/Fajr) and iftar (Maghrib) times prominently. Verify the component uses usePrayerTimes hook to fetch prayer times based on current location. Ensure times update reactively when location changes and display SelectLocationPrompt when no location is set."
+        },
+        {
+          "path": "frontend/src/features/home/SahurIftarStrip.tsx",
+          "operation": "modify",
+          "description": "Verify this component correctly displays sahur (fajr) and iftar (maghrib) times with countdown to next meal time. Ensure it receives prayer times from the Ramazan tab and updates when location changes."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Verify all existing prayer time features work correctly with restored data",
+      "acceptanceCriteria": [
+        "Next prayer countdown displays and updates correctly",
+        "Weekly prayer times table populates with data",
+        "Android widgets receive prayer time updates",
+        "Kerahat (prohibited prayer) times are calculated and displayed",
+        "Prayer time offsets from settings are applied correctly"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/home/useNextPrayerCountdown.ts",
+          "operation": "modify",
+          "description": "Verify the hook correctly computes the next prayer with live per-second countdown using prayer times from usePrayerTimes. Ensure it applies time offsets from settings, updates countdown every second, and sends updates to Android bridge when next prayer changes."
+        },
+        {
+          "path": "frontend/src/features/home/NextPrayerCountdown.tsx",
+          "operation": "modify",
+          "description": "Ensure this presentational component correctly displays the next prayer name, time, and countdown in mm:ss or HH:mm:ss format as received from useNextPrayerCountdown hook."
+        },
+        {
+          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "operation": "modify",
+          "description": "Verify the weekly prayer times table correctly displays data from useWeeklyPrayerTimes hook with all six daily prayer times, highlights today's row, and applies time offsets from settings."
+        },
+        {
+          "path": "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+          "operation": "modify",
+          "description": "Ensure the hook correctly fetches 7-day prayer times from the Aladhan API via backend proxy based on location coordinates. Verify the data structure includes all six prayer times for each day."
+        },
+        {
+          "path": "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+          "operation": "modify",
+          "description": "Verify the API client correctly calls the backend fetchPrayerTimes proxy endpoint for 7 consecutive days and returns an array of daily prayer schedules with Turkish date labels."
+        },
+        {
+          "path": "frontend/src/features/home/useAndroidWidgetUpdates.ts",
+          "operation": "modify",
+          "description": "Ensure the hook correctly sends daily and weekly prayer times to Android widgets via both legacy and new bridge interfaces. Verify it deduplicates updates by tracking last-sent payloads and only sends updates when prayer times change."
+        },
+        {
+          "path": "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
+          "operation": "modify",
+          "description": "Verify the hook sends comprehensive prayer time data (next prayer, daily/weekly schedules with timestamps) to AndroidPush interface. Ensure it deduplicates updates by comparing JSON payloads and only pushes when data changes."
+        },
+        {
+          "path": "frontend/src/features/prayer/kerahatTimes.ts",
+          "operation": "modify",
+          "description": "Verify the function correctly computes three Islamic kerahat (prohibited prayer) time windows based on sunrise, dhuhr, and maghrib times from the fetched prayer data. Ensure kerahat times are merged with regular prayer times chronologically."
+        },
+        {
+          "path": "frontend/src/features/prayer/timeOffset.ts",
+          "operation": "modify",
+          "description": "Verify utility functions correctly apply minute offsets from user settings to prayer times with 24-hour wraparound support, handling single times, daily prayer sets, and weekly prayer schedules."
+        },
+        {
+          "path": "frontend/src/features/settings/SettingsTab.tsx",
+          "operation": "modify",
+          "description": "Ensure the settings UI allows users to configure prayer time offset adjustment and per-prayer notification lead times, and that these settings are correctly saved and applied to prayer time displays and notifications."
         }
       ]
     }

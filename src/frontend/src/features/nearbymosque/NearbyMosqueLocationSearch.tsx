@@ -60,6 +60,7 @@ export function NearbyMosqueLocationSearch({
                 size="sm"
                 onClick={onClearTemporary}
                 className="h-8 w-8 sm:h-9 sm:w-9 p-0 min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]"
+                aria-label="Konumu temizle"
               >
                 <X className="h-4 w-4" />
               </Button>

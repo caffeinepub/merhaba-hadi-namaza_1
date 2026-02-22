@@ -4,9 +4,8 @@ import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
 import MixinAuthorization "authorization/MixinAuthorization";
+import OutCall "http-outcalls/outcall";
 import AccessControl "authorization/access-control";
-
-
 
 actor {
   let accessControlState = AccessControl.initState();
@@ -99,6 +98,17 @@ actor {
   public query ({ caller }) func getLatestAppRelease() : async ?AppRelease {
     let _ignore = caller;
     latestAppRelease;
+  };
+
+  public shared ({ caller }) func fetchPrayerTimes(latitude : Text, longitude : Text, timestamp : Text, method : Text) : async Text {
+    let _ignore = caller;
+    let baseURL = "https://api.aladhan.com/v1/timings/" # timestamp;
+    let url = baseURL # "?latitude=" # latitude # "&longitude=" # longitude # "&method=" # method;
+    await OutCall.httpGetRequest(url, [], transform);
+  };
+
+  public query func transform(input : OutCall.TransformationInput) : async OutCall.TransformationOutput {
+    OutCall.transform(input);
   };
 
   system func preupgrade() {};

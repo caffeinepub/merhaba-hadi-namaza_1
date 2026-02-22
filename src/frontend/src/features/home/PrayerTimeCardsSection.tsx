@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../components/ui/dialog';
 import { ScrollArea } from '../../components/ui/scroll-area';
 import { useCurrentPrayerSlot } from './useCurrentPrayerSlot';
 import { usePrayerTimeCardContent } from './usePrayerTimeCardContent';
@@ -146,7 +146,7 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[80vh]">
+        <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[80vh]" aria-describedby="card-content-description">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base sm:text-lg md:text-xl">
               {selectedConfig && (
@@ -165,14 +165,16 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
                     {selectedContent.arabic}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm sm:text-base leading-relaxed">
-                    {selectedContent.turkish}
-                  </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground italic">
-                    {selectedContent.reference}
-                  </p>
-                </div>
+                <DialogDescription id="card-content-description" asChild>
+                  <div className="space-y-2">
+                    <p className="text-sm sm:text-base leading-relaxed">
+                      {selectedContent.turkish}
+                    </p>
+                    <p className="text-xs sm:text-sm text-muted-foreground italic">
+                      {selectedContent.reference}
+                    </p>
+                  </div>
+                </DialogDescription>
               </div>
             )}
           </ScrollArea>
