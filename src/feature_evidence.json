@@ -2,10 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-implement-manual-location-selection-functionality-users-must-be-able-to-select-their-location-city-search-dropdown-and-the-selected-location-must-be-persisted-across-sessions",
-      "featureTitle": "Implement manual location selection functionality. Users must be able to select their location (city search/dropdown) and the selected location must be persisted across sessions.",
+      "featureId": "feature-fix-prayer-times-display-on-the-homepage-to-show-daily-and-weekly-prayer-times-without-haftal-k-namaz-vakitleri-al-namad-error",
+      "featureTitle": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
       "files": [
-        "frontend/src/features/location/LocationSetupSection.tsx"
+        "frontend/src/features/home/HomeTab.tsx",
+        "frontend/src/features/prayer/aladhanApi.ts",
+        "frontend/src/features/prayer/aladhanWeeklyApi.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,12 +24,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-display-prayer-times-immediately-after-location-selection-when-a-user-selects-a-location-prayer-times-for-that-location-must-be-fetched-and-displayed-without-delay",
-      "featureTitle": "Display prayer times immediately after location selection. When a user selects a location, prayer times for that location must be fetched and displayed without delay.",
+      "featureId": "feature-fix-prayer-times-display-on-the-ramazan-ramadan-tab-to-show-sahur-and-iftar-times-correctly",
+      "featureTitle": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
       "files": [
-        "frontend/src/features/location/LocationSetupSection.tsx",
-        "frontend/src/features/prayer/aladhanApi.ts",
-        "frontend/src/features/prayer/usePrayerTimes.ts"
+        "frontend/src/features/ramazan/RamazanKosesiTab.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -44,11 +44,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-display-prayer-times-on-the-home-tab-ana-sayfa-ensure-all-six-prayer-times-fajr-sunrise-dhuhr-asr-maghrib-isha-are-visible-with-proper-formatting-and-styling-consistent-with-the-existing-design",
-      "featureTitle": "Display prayer times on the Home tab (Ana sayfa). Ensure all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) are visible with proper formatting and styling consistent with the existing design.",
+      "featureId": "feature-implement-persistent-city-selection-using-localstorage-so-the-selected-city-is-remembered-across-sessions-and-does-not-reset",
+      "featureTitle": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
       "files": [
-        "frontend/src/features/prayer/PrayerTimesSection.tsx",
-        "frontend/src/features/prayer/usePrayerTimes.ts"
+        "frontend/src/features/home/HomeTab.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -61,26 +60,6 @@
       ],
       "testIds": [
         "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-display-prayer-times-on-the-ramazan-ramadan-tab-show-imsak-sahur-and-iftar-times-prominently-in-the-ramadan-section-as-they-were-before",
-      "featureTitle": "Display prayer times on the Ramazan (Ramadan) tab. Show imsak/sahur and iftar times prominently in the Ramadan section as they were before.",
-      "files": [
-        "frontend/src/features/ramazan/RamazanKosesiTab.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
       ],
       "confidence": "high"
     }

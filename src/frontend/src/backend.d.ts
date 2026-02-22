@@ -46,6 +46,7 @@ export enum UserRole {
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     fetchPrayerTimes(latitude: string, longitude: string, timestamp: string, method: string): Promise<string>;
+    fetchPrayerTimesToday(city: string): Promise<string>;
     getAppSettings(user: Principal): Promise<AppSettings | null>;
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -56,5 +57,7 @@ export interface backendInterface {
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateCa(newCa: string): Promise<void>;
+    updateCacheKey(key: string): Promise<void>;
     updateLatestAppRelease(release: AppRelease): Promise<void>;
 }

@@ -51,6 +51,7 @@ export const idlService = IDL.Service({
       [IDL.Text],
       [],
     ),
+  'fetchPrayerTimesToday' : IDL.Func([IDL.Text], [IDL.Text], []),
   'getAppSettings' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(AppSettings)],
@@ -73,6 +74,8 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'updateCa' : IDL.Func([IDL.Text], [], []),
+  'updateCacheKey' : IDL.Func([IDL.Text], [], []),
   'updateLatestAppRelease' : IDL.Func([AppRelease], [], []),
 });
 
@@ -119,6 +122,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Text],
         [],
       ),
+    'fetchPrayerTimesToday' : IDL.Func([IDL.Text], [IDL.Text], []),
     'getAppSettings' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(AppSettings)],
@@ -141,6 +145,8 @@ export const idlFactory = ({ IDL }) => {
         [TransformationOutput],
         ['query'],
       ),
+    'updateCa' : IDL.Func([IDL.Text], [], []),
+    'updateCacheKey' : IDL.Func([IDL.Text], [], []),
     'updateLatestAppRelease' : IDL.Func([AppRelease], [], []),
   });
 };

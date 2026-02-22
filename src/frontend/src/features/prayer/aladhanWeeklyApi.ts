@@ -18,6 +18,7 @@ interface AladhanTimings {
   Asr: string;
   Maghrib: string;
   Isha: string;
+  Imsak: string;
 }
 
 interface AladhanResponse {
@@ -68,8 +69,11 @@ export async function fetchWeeklyPrayerTimes(
         month: 'long',
       });
 
+      // Use Imsak for fajr if available, otherwise use Fajr
+      const fajrTime = data.data.timings.Imsak || data.data.timings.Fajr;
+
       weeklyData.push({
-        fajr: data.data.timings.Fajr,
+        fajr: fajrTime,
         sunrise: data.data.timings.Sunrise,
         dhuhr: data.data.timings.Dhuhr,
         asr: data.data.timings.Asr,
@@ -80,7 +84,7 @@ export async function fetchWeeklyPrayerTimes(
       });
     } catch (error) {
       console.error(`Error fetching prayer times for day ${i}:`, error);
-      throw new Error('Failed to fetch prayer times for the week');
+      throw new Error('Haftalık namaz vakitleri alınamadı. Lütfen tekrar deneyin.');
     }
   }
 

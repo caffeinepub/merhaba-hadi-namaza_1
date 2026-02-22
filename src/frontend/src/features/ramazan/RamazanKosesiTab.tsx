@@ -7,16 +7,21 @@ import { useAppSettings } from '../settings/useAppSettings';
 import { LocationSetupSection } from '../location/LocationSetupSection';
 import { usePrayerTimes } from '../prayer/usePrayerTimes';
 import { applyOffsetToPrayerTimes } from '../prayer/timeOffset';
-import { MapPin, Moon, Sunrise, Sunset, Clock, BookOpen, Loader2, Sparkles, UtensilsCrossed } from 'lucide-react';
+import { MapPin, Moon, Sunrise, Sunset, Loader2, Sparkles, UtensilsCrossed } from 'lucide-react';
 import { fastingBasicsContent } from './fastingBasicsContent';
 import { tarawihContent } from './tarawihContent';
 import { useDailyRotatingRamadanMenu } from './useDailyRotatingRamadanMenu';
+import { DEFAULT_LOCATION } from '../location/types';
 
 export function RamazanKosesiTab() {
   const { settings } = useAppSettings();
   const [isLocationDialogOpen, setIsLocationDialogOpen] = useState(false);
   
-  const { data: prayerTimes, isLoading, isError, error } = usePrayerTimes(settings.location);
+  // Use default location if user hasn't set one
+  const effectiveLocation = settings.location || DEFAULT_LOCATION;
+  const isUsingDefaultLocation = !settings.location;
+  
+  const { data: prayerTimes, isLoading, isError, error } = usePrayerTimes(effectiveLocation);
   
   const adjustedTimes = prayerTimes && settings.offsetMinutes !== undefined
     ? applyOffsetToPrayerTimes(prayerTimes, settings.offsetMinutes)
@@ -28,144 +33,6 @@ export function RamazanKosesiTab() {
     setIsLocationDialogOpen(false);
   };
 
-  // No location set - show prompt
-  if (!settings.location) {
-    return (
-      <div className="space-y-4 sm:space-y-6 pb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
-              Ramazan Köşesi
-            </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              İmsakiye ve oruçla ilgili temel bilgiler
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Alert>
-              <MapPin className="h-4 w-4" />
-              <AlertTitle>Konum Gerekli</AlertTitle>
-              <AlertDescription>
-                İmsakiye bilgilerini görmek için lütfen konumunuzu seçin.
-              </AlertDescription>
-            </Alert>
-            <Dialog open={isLocationDialogOpen} onOpenChange={setIsLocationDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-full mt-4 min-h-[44px] sm:min-h-[48px]">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Konum Seç
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="text-lg sm:text-xl">Konumunuzu Seçin</DialogTitle>
-                  <DialogDescription>
-                    Konumunuzu ayarlamak için şehir veya ilçe arayın
-                  </DialogDescription>
-                </DialogHeader>
-                <LocationSetupSection onLocationSelected={handleLocationSelected} />
-              </DialogContent>
-            </Dialog>
-          </CardContent>
-        </Card>
-
-        {/* Teravih Section - Always visible */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-              {tarawihContent.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 sm:space-y-6">
-            {tarawihContent.sections.map((section, index) => (
-              <div key={index} className="space-y-2 sm:space-y-3">
-                <h3 className="font-semibold text-sm sm:text-base text-primary">{section.heading}</h3>
-                <div className="space-y-2">
-                  {section.content.map((paragraph, pIndex) => (
-                    <p key={pIndex} className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Ramadan Menus - Always visible */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <UtensilsCrossed className="h-4 w-4 sm:h-5 sm:w-5" />
-              Günün Ramazan Menüsü
-            </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              Sağlıklı sahur ve iftar önerileri
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 sm:space-y-6">
-            {/* Sahur */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-sm sm:text-base text-primary">Sahur Önerileri</h3>
-              <ul className="space-y-2">
-                {todaysMenu.sahur.map((item, index) => (
-                  <li key={index} className="text-xs sm:text-sm leading-relaxed text-muted-foreground flex items-start gap-2">
-                    <span className="text-accent mt-1">•</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Iftar */}
-            <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-sm sm:text-base text-primary">İftar Önerileri</h3>
-              <ul className="space-y-2">
-                {todaysMenu.iftar.map((item, index) => (
-                  <li key={index} className="text-xs sm:text-sm leading-relaxed text-muted-foreground flex items-start gap-2">
-                    <span className="text-accent mt-1">•</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="text-xs text-muted-foreground text-center pt-2">
-              Menüler her gün otomatik olarak değişir
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Fasting Basics - Always visible */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
-              Oruç Hakkında Temel Bilgiler
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 sm:space-y-6">
-            {fastingBasicsContent.map((section, index) => (
-              <div key={index} className="space-y-2 sm:space-y-3">
-                <h3 className="font-semibold text-sm sm:text-base text-primary">{section.heading}</h3>
-                <div className="space-y-2">
-                  {section.content.map((paragraph, pIndex) => (
-                    <p key={pIndex} className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Location is set - show full content
   return (
     <div className="space-y-4 sm:space-y-6 pb-6">
       {/* İmsakiye Section */}
@@ -180,7 +47,7 @@ export function RamazanKosesiTab() {
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-[48px] px-3 sm:px-4 text-sm sm:text-base">
                   <MapPin className="h-4 w-4 mr-2" />
-                  Değiştir
+                  {isUsingDefaultLocation ? 'Seç' : 'Değiştir'}
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -194,7 +61,10 @@ export function RamazanKosesiTab() {
               </DialogContent>
             </Dialog>
           </div>
-          <CardDescription className="text-xs sm:text-sm">{settings.location.displayName}</CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
+            {effectiveLocation.displayName}
+            {isUsingDefaultLocation && ' (Varsayılan)'}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 sm:space-y-4">
           {isLoading && (
@@ -336,7 +206,7 @@ export function RamazanKosesiTab() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
             Oruç Hakkında Temel Bilgiler
           </CardTitle>
         </CardHeader>

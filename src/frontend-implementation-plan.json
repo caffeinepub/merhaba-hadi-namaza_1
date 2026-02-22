@@ -1,178 +1,134 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Restore Prayer Times Feature with Aladhan API Integration",
+  "title": "Fix prayer times display and restore Aladhan API integration",
   "requirements": [
     {
       "id": "REQ-2",
-      "summary": "Implement manual location selection functionality with persistence across sessions",
+      "summary": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
       "acceptanceCriteria": [
-        "Location selection UI is visible and functional",
-        "Selected location is saved to storage",
-        "Location persists after app restart or page reload"
+        "Homepage displays current day's prayer times without errors",
+        "Weekly prayer times table renders with all 7 days",
+        "No 'alınamadı' (could not fetch) error messages appear"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "path": "frontend/src/features/prayer/usePrayerTimes.ts",
           "operation": "modify",
-          "description": "Verify that location search UI correctly saves selected location to durableLocationStorage, localSettingsStorage, and backend AppSettings using saveCallerAppSettings. Ensure the component properly handles the search flow and persists the location with latitude, longitude, and display name."
+          "description": "Update the usePrayerTimes hook to call the backend's fetchPrayerTimesToday method instead of making direct API calls. Ensure proper error handling to prevent 'alınamadı' messages and verify the response parsing matches the expected PrayerTimes interface."
         },
         {
-          "path": "frontend/src/features/settings/durableLocationStorage.ts",
+          "path": "frontend/src/features/prayer/aladhanApi.ts",
           "operation": "modify",
-          "description": "Review and ensure the multi-layer location persistence (IndexedDB primary, localStorage/sessionStorage backup) correctly stores and retrieves location data. Verify validation and recovery logic work correctly."
+          "description": "Refactor fetchPrayerTimes to use the backend actor's fetchPrayerTimesToday method, removing direct HTTP calls. Parse the JSON response from the backend proxy and map it to the PrayerTimes interface. Add robust error handling with fallback behavior."
         },
         {
-          "path": "frontend/src/features/settings/localSettingsStorage.ts",
+          "path": "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
           "operation": "modify",
-          "description": "Ensure localStorage-based settings correctly persist location data and that migration logic properly recovers location from multiple storage layers (IndexedDB, localStorage, sessionStorage)."
+          "description": "Update the useWeeklyPrayerTimes hook to integrate with the backend's fetchPrayerTimes method for constructing 7 days of prayer times. Implement proper date handling to generate timestamps for each day and aggregate the results into a weekly array."
         },
         {
-          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "path": "frontend/src/features/prayer/aladhanWeeklyApi.ts",
           "operation": "modify",
-          "description": "Verify that the useAppSettings hook correctly loads and saves location data to both local storage and backend via saveCallerAppSettings, ensuring location persists across sessions."
+          "description": "Refactor fetchWeeklyPrayerTimes to use the backend actor's fetchPrayerTimes method in a loop for 7 consecutive days. Generate appropriate Unix timestamps for each day and parse responses into the DailyPrayerTimes array format with Turkish day labels."
+        },
+        {
+          "path": "frontend/src/features/home/HomeTab.tsx",
+          "operation": "modify",
+          "description": "Review error handling in the HomeTab component for prayer times queries. Ensure loading states are properly managed and error messages are user-friendly. Verify that both daily and weekly prayer time sections gracefully handle loading and error states without displaying 'alınamadı' messages."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Display prayer times immediately after location selection without delay",
+      "summary": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
       "acceptanceCriteria": [
-        "Prayer times appear immediately after location selection",
-        "Loading states are shown during fetch",
-        "No manual refresh required to see prayer times"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/prayer/usePrayerTimes.ts",
-          "operation": "modify",
-          "description": "Ensure the React Query hook correctly fetches prayer times immediately when location coordinates change. Verify the query is enabled when actor and location are available, and that it properly calls the backend fetchPrayerTimes proxy endpoint. Add loading state handling."
-        },
-        {
-          "path": "frontend/src/features/prayer/aladhanApi.ts",
-          "operation": "modify",
-          "description": "Verify the API client correctly calls the backend fetchPrayerTimes proxy endpoint with latitude, longitude, timestamp, and method 13. Ensure the response is properly parsed and formatted into prayer time data. Handle errors gracefully."
-        },
-        {
-          "path": "frontend/src/features/location/LocationSetupSection.tsx",
-          "operation": "modify",
-          "description": "After location selection and save, ensure the component triggers a refetch of prayer times by invalidating the prayer times query cache or ensuring the location state change propagates to trigger automatic refetch."
-        },
-        {
-          "path": "frontend/src/features/home/HomeTab.tsx",
-          "operation": "modify",
-          "description": "Ensure the home tab correctly displays loading states while prayer times are being fetched after location selection. Verify that prayer times display immediately once the fetch completes without requiring manual refresh."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Display all six prayer times on the Home tab with proper formatting and styling",
-      "acceptanceCriteria": [
-        "Prayer times are visible on the Home tab",
-        "All six prayer times are displayed correctly",
-        "Times are formatted in HH:MM format",
-        "UI matches existing design patterns"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/home/HomeTab.tsx",
-          "operation": "modify",
-          "description": "Ensure the HomeTab component correctly renders the PrayerTimesSection with all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha). Verify it handles the case when no location is set by showing SelectLocationPrompt. Ensure loading and error states are properly displayed."
-        },
-        {
-          "path": "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "operation": "modify",
-          "description": "Verify the component correctly displays all six prayer times with icons, applies time offsets from settings, and shows kerahat time windows. Ensure times are formatted in HH:MM format and styling matches existing design patterns."
-        },
-        {
-          "path": "frontend/src/features/prayer/usePrayerTimes.ts",
-          "operation": "modify",
-          "description": "Ensure the hook returns all six prayer times (fajr, sunrise, dhuhr, asr, maghrib, isha) from the Aladhan API response. Verify the data structure matches what PrayerTimesSection expects."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Display prayer times on the Ramazan tab with prominent sahur and iftar times",
-      "acceptanceCriteria": [
-        "Prayer times are visible on the Ramazan tab",
-        "Sahur (Fajr) and Iftar (Maghrib) times are prominently displayed",
-        "Times update when location changes"
+        "Ramazan tab displays sahur (imsak) time",
+        "Ramazan tab displays iftar (maghrib) time",
+        "Countdown to next sahur or iftar works correctly"
       ],
       "file_operations": [
         {
           "path": "frontend/src/features/ramazan/RamazanKosesiTab.tsx",
           "operation": "modify",
-          "description": "Ensure the Ramazan tab correctly displays imsak (sahur/Fajr) and iftar (Maghrib) times prominently. Verify the component uses usePrayerTimes hook to fetch prayer times based on current location. Ensure times update reactively when location changes and display SelectLocationPrompt when no location is set."
+          "description": "Verify that the RamazanKosesiTab correctly uses the usePrayerTimes hook to fetch imsak and maghrib times. Ensure the SahurIftarStrip component receives properly formatted prayer times with applied offsets. Add error handling for missing prayer time data."
+        },
+        {
+          "path": "frontend/src/features/home/useSahurIftarCountdown.ts",
+          "operation": "modify",
+          "description": "Review the sahur/iftar countdown logic to ensure it correctly identifies the next event (sahur or iftar) based on current time and prayer times. Verify that the countdown updates every minute and handles edge cases like midnight transitions."
         },
         {
           "path": "frontend/src/features/home/SahurIftarStrip.tsx",
           "operation": "modify",
-          "description": "Verify this component correctly displays sahur (fajr) and iftar (maghrib) times with countdown to next meal time. Ensure it receives prayer times from the Ramazan tab and updates when location changes."
+          "description": "Ensure the SahurIftarStrip component properly displays sahur (imsak), iftar (maghrib), and countdown values. Add loading and error states to handle scenarios where prayer times are unavailable. Verify time formatting is correct for Turkish users."
         }
       ]
     },
     {
-      "id": "REQ-6",
-      "summary": "Verify all existing prayer time features work correctly with restored data",
+      "id": "REQ-4",
+      "summary": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
       "acceptanceCriteria": [
-        "Next prayer countdown displays and updates correctly",
-        "Weekly prayer times table populates with data",
-        "Android widgets receive prayer time updates",
-        "Kerahat (prohibited prayer) times are calculated and displayed",
-        "Prayer time offsets from settings are applied correctly"
+        "User's last selected city is saved to localStorage",
+        "On app reload, the saved city is automatically loaded",
+        "City selection persists across browser sessions"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/settings/durableLocationStorage.ts",
+          "operation": "modify",
+          "description": "Review the existing multi-layer location storage implementation (IndexedDB, localStorage, sessionStorage) to ensure it correctly persists the selected location. Verify that saveLocation and retrieveLocation functions are working properly across all storage layers with validation and recovery logic."
+        },
+        {
+          "path": "frontend/src/features/location/LocationSetupSection.tsx",
+          "operation": "modify",
+          "description": "Ensure that when a user selects a location, it is immediately saved using the durableLocationStorage utilities. Verify that the selected location triggers the appropriate app settings update and prayer time query invalidation."
+        },
+        {
+          "path": "frontend/src/features/home/HomeTab.tsx",
+          "operation": "modify",
+          "description": "Verify that the HomeTab component correctly loads the persisted location on mount using the durableLocationStorage utilities. Ensure the default location fallback (Istanbul) is only used when no saved location exists. Test that location persistence works across browser sessions."
+        },
+        {
+          "path": "frontend/src/features/settings/useAppSettings.ts",
+          "operation": "modify",
+          "description": "Review the useAppSettings hook to ensure location data is properly integrated with the settings object and persisted to localStorage. Verify that location changes trigger appropriate query invalidations for prayer times and weather data."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Ensure hourly prayer time tracking displays correctly on the homepage",
+      "acceptanceCriteria": [
+        "Next prayer countdown shows hours and minutes remaining",
+        "Current prayer slot is correctly identified",
+        "Countdown updates every minute"
       ],
       "file_operations": [
         {
           "path": "frontend/src/features/home/useNextPrayerCountdown.ts",
           "operation": "modify",
-          "description": "Verify the hook correctly computes the next prayer with live per-second countdown using prayer times from usePrayerTimes. Ensure it applies time offsets from settings, updates countdown every second, and sends updates to Android bridge when next prayer changes."
+          "description": "Review the useNextPrayerCountdown hook to ensure it correctly calculates the next prayer and remaining time. Verify that the countdown updates every second and the formatted time uses the formatRemainingTime utility. Ensure Android bridge updates occur only when the next prayer changes."
+        },
+        {
+          "path": "frontend/src/features/home/formatRemainingTime.ts",
+          "operation": "modify",
+          "description": "Verify the formatRemainingTime utility correctly formats milliseconds into mm:ss for under 1 hour and HH:mm:ss for 1 hour or more. Ensure zero-padding is applied and negative values are clamped to zero."
+        },
+        {
+          "path": "frontend/src/features/home/useCurrentPrayerSlot.ts",
+          "operation": "modify",
+          "description": "Review the useCurrentPrayerSlot hook to ensure it correctly identifies the current prayer slot by comparing current time against adjusted prayer times. Verify that the slot updates every minute and handles edge cases like midnight transitions."
         },
         {
           "path": "frontend/src/features/home/NextPrayerCountdown.tsx",
           "operation": "modify",
-          "description": "Ensure this presentational component correctly displays the next prayer name, time, and countdown in mm:ss or HH:mm:ss format as received from useNextPrayerCountdown hook."
+          "description": "Verify the NextPrayerCountdown component correctly displays the next prayer name, time, and countdown in the appropriate format. Ensure the component receives computed data from the parent to avoid duplicate bridge calls and displays loading states gracefully."
         },
         {
-          "path": "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
+          "path": "frontend/src/features/home/currentPrayerSlot.ts",
           "operation": "modify",
-          "description": "Verify the weekly prayer times table correctly displays data from useWeeklyPrayerTimes hook with all six daily prayer times, highlights today's row, and applies time offsets from settings."
-        },
-        {
-          "path": "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
-          "operation": "modify",
-          "description": "Ensure the hook correctly fetches 7-day prayer times from the Aladhan API via backend proxy based on location coordinates. Verify the data structure includes all six prayer times for each day."
-        },
-        {
-          "path": "frontend/src/features/prayer/aladhanWeeklyApi.ts",
-          "operation": "modify",
-          "description": "Verify the API client correctly calls the backend fetchPrayerTimes proxy endpoint for 7 consecutive days and returns an array of daily prayer schedules with Turkish date labels."
-        },
-        {
-          "path": "frontend/src/features/home/useAndroidWidgetUpdates.ts",
-          "operation": "modify",
-          "description": "Ensure the hook correctly sends daily and weekly prayer times to Android widgets via both legacy and new bridge interfaces. Verify it deduplicates updates by tracking last-sent payloads and only sends updates when prayer times change."
-        },
-        {
-          "path": "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
-          "operation": "modify",
-          "description": "Verify the hook sends comprehensive prayer time data (next prayer, daily/weekly schedules with timestamps) to AndroidPush interface. Ensure it deduplicates updates by comparing JSON payloads and only pushes when data changes."
-        },
-        {
-          "path": "frontend/src/features/prayer/kerahatTimes.ts",
-          "operation": "modify",
-          "description": "Verify the function correctly computes three Islamic kerahat (prohibited prayer) time windows based on sunrise, dhuhr, and maghrib times from the fetched prayer data. Ensure kerahat times are merged with regular prayer times chronologically."
-        },
-        {
-          "path": "frontend/src/features/prayer/timeOffset.ts",
-          "operation": "modify",
-          "description": "Verify utility functions correctly apply minute offsets from user settings to prayer times with 24-hour wraparound support, handling single times, daily prayer sets, and weekly prayer schedules."
-        },
-        {
-          "path": "frontend/src/features/settings/SettingsTab.tsx",
-          "operation": "modify",
-          "description": "Ensure the settings UI allows users to configure prayer time offset adjustment and per-prayer notification lead times, and that these settings are correctly saved and applied to prayer time displays and notifications."
+          "description": "Review the currentPrayerSlot utility to ensure it correctly determines the current prayer slot (fajr, sunrise, dhuhr, asr, maghrib, isha) by comparing current time against adjusted prayer times. Verify the logic handles all prayer transitions correctly."
         }
       ]
     }

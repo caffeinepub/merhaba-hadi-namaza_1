@@ -40,6 +40,7 @@ export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'fetchPrayerTimes' : ActorMethod<[string, string, string, string], string>,
+  'fetchPrayerTimesToday' : ActorMethod<[string], string>,
   'getAppSettings' : ActorMethod<[Principal], [] | [AppSettings]>,
   'getCallerAppSettings' : ActorMethod<[], [] | [AppSettings]>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
@@ -50,6 +51,8 @@ export interface _SERVICE {
   'saveCallerAppSettings' : ActorMethod<[AppSettings], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateCa' : ActorMethod<[string], undefined>,
+  'updateCacheKey' : ActorMethod<[string], undefined>,
   'updateLatestAppRelease' : ActorMethod<[AppRelease], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

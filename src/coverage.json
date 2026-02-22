@@ -1,72 +1,46 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-22T00:58:37.814Z",
+  "generatedAt": "2026-02-22T19:47:36.309Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 4,
+    "total": 5,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Restore Aladhan API integration for fetching prayer times. Ensure the backend fetchPrayerTimes proxy endpoint correctly calls the Aladhan API and returns prayer time data to the frontend without CORS issues.",
+        "summary": "Restore Aladhan API integration for fetching prayer times, ensuring the backend proxy correctly calls the Aladhan API with method 13 for Turkish cities",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Implement manual location selection functionality. Users must be able to select their location (city search/dropdown) and the selected location must be persisted across sessions.",
+        "summary": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/location/LocationSetupSection.tsx",
-          "frontend/src/features/settings/durableLocationStorage.ts",
-          "frontend/src/features/settings/localSettingsStorage.ts",
-          "frontend/src/features/settings/useAppSettings.ts"
+          "frontend/src/features/prayer/usePrayerTimes.ts",
+          "frontend/src/features/prayer/aladhanApi.ts",
+          "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
+          "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+          "frontend/src/features/home/HomeTab.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/location/LocationSetupSection.tsx"
+          "frontend/src/features/prayer/aladhanApi.ts",
+          "frontend/src/features/prayer/aladhanWeeklyApi.ts",
+          "frontend/src/features/home/HomeTab.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Display prayer times immediately after location selection. When a user selects a location, prayer times for that location must be fetched and displayed without delay.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/prayer/usePrayerTimes.ts",
-          "frontend/src/features/prayer/aladhanApi.ts",
-          "frontend/src/features/location/LocationSetupSection.tsx",
-          "frontend/src/features/home/HomeTab.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/prayer/usePrayerTimes.ts",
-          "frontend/src/features/prayer/aladhanApi.ts",
-          "frontend/src/features/location/LocationSetupSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Display prayer times on the Home tab (Ana sayfa). Ensure all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) are visible with proper formatting and styling consistent with the existing design.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/home/HomeTab.tsx",
-          "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "frontend/src/features/prayer/usePrayerTimes.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/prayer/PrayerTimesSection.tsx",
-          "frontend/src/features/prayer/usePrayerTimes.ts"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Display prayer times on the Ramazan (Ramadan) tab. Show imsak/sahur and iftar times prominently in the Ramadan section as they were before.",
+        "summary": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/features/ramazan/RamazanKosesiTab.tsx",
+          "frontend/src/features/home/useSahurIftarCountdown.ts",
           "frontend/src/features/home/SahurIftarStrip.tsx"
         ],
         "matchedFiles": [
@@ -74,20 +48,29 @@
         ]
       },
       {
-        "id": "REQ-6",
-        "summary": "Verify all existing prayer time features work correctly: next prayer countdown, weekly prayer times table, Android widget updates, and kerahat time calculations must all function with the restored prayer time data.",
+        "id": "REQ-4",
+        "summary": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/settings/durableLocationStorage.ts",
+          "frontend/src/features/location/LocationSetupSection.tsx",
+          "frontend/src/features/home/HomeTab.tsx",
+          "frontend/src/features/settings/useAppSettings.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/home/HomeTab.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Ensure hourly prayer time tracking displays correctly on the homepage",
         "status": "missing",
         "plannedFiles": [
           "frontend/src/features/home/useNextPrayerCountdown.ts",
+          "frontend/src/features/home/formatRemainingTime.ts",
+          "frontend/src/features/home/useCurrentPrayerSlot.ts",
           "frontend/src/features/home/NextPrayerCountdown.tsx",
-          "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
-          "frontend/src/features/prayer/useWeeklyPrayerTimes.ts",
-          "frontend/src/features/prayer/aladhanWeeklyApi.ts",
-          "frontend/src/features/home/useAndroidWidgetUpdates.ts",
-          "frontend/src/features/home/useAndroidPushPrayerTimes.ts",
-          "frontend/src/features/prayer/kerahatTimes.ts",
-          "frontend/src/features/prayer/timeOffset.ts",
-          "frontend/src/features/settings/SettingsTab.tsx"
+          "frontend/src/features/home/currentPrayerSlot.ts"
         ],
         "matchedFiles": []
       }
@@ -99,10 +82,14 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/features/location/LocationSetupSection.tsx",
-    "frontend/src/features/prayer/PrayerTimesSection.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/features/home/HomeTab.tsx",
+    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
     "frontend/src/features/prayer/aladhanApi.ts",
-    "frontend/src/features/prayer/usePrayerTimes.ts",
+    "frontend/src/features/prayer/aladhanWeeklyApi.ts",
     "frontend/src/features/ramazan/RamazanKosesiTab.tsx",
     "project_state.json",
     "scratch/component-selection.json",

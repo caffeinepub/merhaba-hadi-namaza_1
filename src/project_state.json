@@ -1,46 +1,39 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Prayer times application using Aladhan API with manual location selection",
+  "summary": "Prayer times application for Turkish cities using Aladhan API, featuring weekly/daily prayer times display on homepage and Ramadan tab, persistent city selection, and hourly prayer time tracking",
   "architectural_notes": [
     "Uses Aladhan API for prayer times data",
-    "Manual location/city selection by user",
-    "Prayer times displayed on homepage and Ramadan tab"
+    "Implements localStorage for persisting user's city selection",
+    "Supports Turkish cities for prayer time lookup",
+    "Displays prayer times on both homepage and Ramadan tab"
   ],
   "known_issues": [
-    "Prayer times feature was broken by recent changes and needs restoration"
+    "Previous prayer times feature stopped working around version 70"
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-implement-manual-location-selection-functionality-users-must-be-able-to-select-their-location-city-search-dropdown-and-the-selected-location-must-be-persisted-across-sessions",
-      "title": "Implement manual location selection functionality. Users must be able to select their location (city search/dropdown) and the selected location must be persisted across sessions.",
+      "id": "feature-fix-prayer-times-display-on-the-homepage-to-show-daily-and-weekly-prayer-times-without-haftal-k-namaz-vakitleri-al-namad-error",
+      "title": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-display-prayer-times-immediately-after-location-selection-when-a-user-selects-a-location-prayer-times-for-that-location-must-be-fetched-and-displayed-without-delay",
-      "title": "Display prayer times immediately after location selection. When a user selects a location, prayer times for that location must be fetched and displayed without delay.",
+      "id": "feature-fix-prayer-times-display-on-the-ramazan-ramadan-tab-to-show-sahur-and-iftar-times-correctly",
+      "title": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
     },
     {
-      "id": "feature-display-prayer-times-on-the-home-tab-ana-sayfa-ensure-all-six-prayer-times-fajr-sunrise-dhuhr-asr-maghrib-isha-are-visible-with-proper-formatting-and-styling-consistent-with-the-existing-design",
-      "title": "Display prayer times on the Home tab (Ana sayfa). Ensure all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) are visible with proper formatting and styling consistent with the existing design.",
+      "id": "feature-implement-persistent-city-selection-using-localstorage-so-the-selected-city-is-remembered-across-sessions-and-does-not-reset",
+      "title": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
       "reqIds": [
         "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-display-prayer-times-on-the-ramazan-ramadan-tab-show-imsak-sahur-and-iftar-times-prominently-in-the-ramadan-section-as-they-were-before",
-      "title": "Display prayer times on the Ramazan (Ramadan) tab. Show imsak/sahur and iftar times prominently in the Ramadan section as they were before.",
-      "reqIds": [
-        "REQ-5"
       ],
       "version": 1
     }
@@ -48,28 +41,52 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Restore prayer times feature with Aladhan API, manual location selection, display on homepage and Ramadan tab",
+      "summary": "Implement prayer times display using Aladhan API for Turkish cities",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Restore Aladhan API integration for fetching prayer times. Ensure the backend fetchPrayerTimes proxy endpoint correctly calls the Aladhan API and returns prayer time data to the frontend without CORS issues.",
+      "summary": "Add persistent city selection using localStorage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Display weekly and daily prayer times on homepage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Display prayer times on Ramadan tab",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add hourly prayer time tracking feature",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Restore Aladhan API integration for fetching prayer times, ensuring the backend proxy correctly calls the Aladhan API with method 13 for Turkish cities",
       "reqIds": [
         "REQ-1"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-7",
-      "summary": "Verify all existing prayer time features work correctly: next prayer countdown, weekly prayer times table, Android widget updates, and kerahat time calculations must all function with the restored prayer time data.",
+      "id": "AR-10",
+      "summary": "Ensure hourly prayer time tracking displays correctly on the homepage",
       "reqIds": [
-        "REQ-6"
+        "REQ-5"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Hadi Namaza",
+  "projectName": "Namaz Vakitleri",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

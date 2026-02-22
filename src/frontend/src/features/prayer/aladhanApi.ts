@@ -15,6 +15,7 @@ interface AladhanTimings {
   Asr: string;
   Maghrib: string;
   Isha: string;
+  Imsak: string;
 }
 
 interface AladhanResponse {
@@ -57,8 +58,11 @@ export async function fetchPrayerTimes(
       throw new Error('Invalid response from prayer times API');
     }
 
+    // Use Imsak for fajr if available, otherwise use Fajr
+    const fajrTime = data.data.timings.Imsak || data.data.timings.Fajr;
+
     return {
-      fajr: data.data.timings.Fajr,
+      fajr: fajrTime,
       sunrise: data.data.timings.Sunrise,
       dhuhr: data.data.timings.Dhuhr,
       asr: data.data.timings.Asr,

@@ -1,133 +1,123 @@
 {
   "kind": "build_request",
-  "title": "Restore Prayer Times Feature with Aladhan API Integration",
-  "projectName": "Hadi Namaza",
+  "title": "Fix prayer times display and restore Aladhan API integration",
+  "projectName": "Namaz Vakitleri",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Restore Aladhan API integration for fetching prayer times. Ensure the backend fetchPrayerTimes proxy endpoint correctly calls the Aladhan API and returns prayer time data to the frontend without CORS issues.",
+      "text": "Restore Aladhan API integration for fetching prayer times, ensuring the backend proxy correctly calls the Aladhan API with method 13 for Turkish cities",
       "target": "backend",
       "source": {
         "messageIds": [
+          "msg-1",
+          "msg-3",
           "msg-5"
         ],
         "quotes": [
-          "Aladhan Apıden alınıyordu"
+          "Haftalık Namaz Vakitleri Haftalık namaz vakitleri alınamadı SAATLİK NAMAZ VAKİTLERİ DE YOK",
+          "daha önce sorunsuz çalışıyordu"
         ]
       },
       "acceptanceCriteria": [
-        "Backend proxy endpoint successfully fetches prayer times from Aladhan API",
-        "Prayer time data is returned to frontend without errors",
-        "CORS restrictions are handled correctly by the backend proxy"
+        "Backend successfully fetches prayer times from Aladhan API",
+        "API responses include all six daily prayer times (Imsak, Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)",
+        "Weekly prayer times endpoint returns 7 days of data"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Implement manual location selection functionality. Users must be able to select their location (city search/dropdown) and the selected location must be persisted across sessions.",
+      "text": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-1",
+          "msg-3"
         ],
         "quotes": [
-          "Konum manuel seçiliyordu"
+          "Haftalık namaz vakitleri alınamadı SAATLİK NAMAZ VAKİTLERİ DE YOK",
+          "Anasayfa da da var ramazan sekmesinde de var"
         ]
       },
       "acceptanceCriteria": [
-        "Location selection UI is visible and functional",
-        "Selected location is saved to storage",
-        "Location persists after app restart or page reload"
+        "Homepage displays current day's prayer times without errors",
+        "Weekly prayer times table renders with all 7 days",
+        "No 'alınamadı' (could not fetch) error messages appear"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Display prayer times immediately after location selection. When a user selects a location, prayer times for that location must be fetched and displayed without delay.",
+      "text": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-1",
+          "msg-3"
         ],
         "quotes": [
-          "konum seçilince vakitler hemen gözüküyordu"
+          "Anasayfa da da var ramazan sekmesinde de var",
+          "daha önce sorunsuz çalışıyordu"
         ]
       },
       "acceptanceCriteria": [
-        "Prayer times appear immediately after location selection",
-        "Loading states are shown during fetch",
-        "No manual refresh required to see prayer times"
+        "Ramazan tab displays sahur (imsak) time",
+        "Ramazan tab displays iftar (maghrib) time",
+        "Countdown to next sahur or iftar works correctly"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Display prayer times on the Home tab (Ana sayfa). Ensure all six prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) are visible with proper formatting and styling consistent with the existing design.",
+      "text": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "Ana sayfa da"
+          "şehir manuel seçiliyor her seferinde değişiyor",
+          "Şehir seçiminin her seferinde sıfırlanması yerine, kullanıcının son seçtiği şehrin hatırlanmasını ister misiniz? - Hatırlansın"
         ]
       },
       "acceptanceCriteria": [
-        "Prayer times are visible on the Home tab",
-        "All six prayer times are displayed correctly",
-        "Times are formatted in HH:MM format",
-        "UI matches existing design patterns"
+        "User's last selected city is saved to localStorage",
+        "On app reload, the saved city is automatically loaded",
+        "City selection persists across browser sessions"
       ]
     },
     {
       "id": "REQ-5",
-      "text": "Display prayer times on the Ramazan (Ramadan) tab. Show imsak/sahur and iftar times prominently in the Ramadan section as they were before.",
+      "text": "Ensure hourly prayer time tracking displays correctly on the homepage",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-1"
         ],
         "quotes": [
-          "ramazan sekmesinde"
+          "SAATLİK NAMAZ VAKİTLERİ DE YOK"
         ]
       },
       "acceptanceCriteria": [
-        "Prayer times are visible on the Ramazan tab",
-        "Sahur (Fajr) and Iftar (Maghrib) times are prominently displayed",
-        "Times update when location changes"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Verify all existing prayer time features work correctly: next prayer countdown, weekly prayer times table, Android widget updates, and kerahat time calculations must all function with the restored prayer time data.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-4",
-          "msg-5"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Next prayer countdown displays and updates correctly",
-        "Weekly prayer times table populates with data",
-        "Android widgets receive prayer time updates",
-        "Kerahat (prohibited prayer) times are calculated and displayed",
-        "Prayer time offsets from settings are applied correctly"
+        "Next prayer countdown shows hours and minutes remaining",
+        "Current prayer slot is correctly identified",
+        "Countdown updates every minute"
       ]
     }
   ],
   "constraints": [
-    "Must use Aladhan API as the prayer times data source",
-    "Must preserve existing backend proxy architecture (fetchPrayerTimes endpoint)",
-    "Must maintain compatibility with Android WebView bridge for widget updates",
-    "Do not modify Internet Identity authentication flow",
-    "Do not modify UI component library files (frontend/src/components/ui)",
-    "Must use existing location storage system (durableLocationStorage, localSettingsStorage)"
+    "Use Aladhan API with method 13 for Turkish cities",
+    "Maintain existing multi-layer location storage architecture (IndexedDB, localStorage, sessionStorage)",
+    "Keep all prayer time calculation logic in the frontend",
+    "Preserve existing UI components in frontend/src/components/ui (read-only)",
+    "Do not modify authentication hooks (useInternetIdentity.ts, useActor.ts)",
+    "Backend must remain single-actor architecture in backend/main.mo"
   ],
   "nonGoals": [
-    "Adding automatic location detection via GPS",
-    "Changing to a different prayer times API",
-    "Modifying the prayer calculation method (keep method 13)",
-    "Adding new prayer time features beyond restoration",
-    "Redesigning the UI layout or styling"
+    "Adding new prayer time APIs beyond Aladhan",
+    "Changing the technology stack from React/Motoko",
+    "Modifying the visual design or theme colors",
+    "Adding real-time sync or WebSocket features",
+    "Integrating third-party authentication beyond Internet Identity"
   ],
   "imageRequirements": {
     "required": [],

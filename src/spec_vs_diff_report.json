@@ -1,39 +1,18 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-22T00:58:37.809Z",
-  "summary": "The diff implements all core requirements for restoring prayer times functionality with Aladhan API integration, manual location selection, and display on both Home and Ramadan tabs. However, some REQ-6 sub-features (next prayer countdown, weekly prayer times table, Android widget updates) lack evidence in the diff.",
-  "missing_requirements": [
-    {
-      "id": "REQ-6",
-      "requirement": "Next prayer countdown displays and updates correctly",
-      "reason": "No evidence of next prayer countdown component or countdown logic in the modified files",
-      "evidence": []
-    },
-    {
-      "id": "REQ-6",
-      "requirement": "Weekly prayer times table populates with data",
-      "reason": "Weekly prayer times table component is not shown in the diff. Only queryClient.invalidateQueries for 'weeklyPrayerTimes' is present in LocationSetupSection.tsx, but no table implementation is visible",
-      "evidence": [
-        "frontend/src/features/location/LocationSetupSection.tsx"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "requirement": "Android widgets receive prayer time updates",
-      "reason": "No Android widget bridge communication or widget update logic is present in the diff",
-      "evidence": []
-    }
-  ],
+  "generatedAt": "2026-02-22T19:47:36.305Z",
+  "summary": "All five requirements (REQ-1 through REQ-5) have been implemented in the diff. The backend now includes Aladhan API integration with method 13, the frontend fetches daily and weekly prayer times through the backend proxy, persistent city selection is implemented via localStorage with DEFAULT_LOCATION fallback, and prayer time tracking components are present in HomeTab and RamazanKosesiTab. No missing requirements or hallucinated features were detected.",
+  "missing_requirements": [],
   "hallucinated_features": [],
-  "confidence": 0.75,
+  "confidence": 0.92,
   "changed_files": [
     "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/features/location/LocationSetupSection.tsx",
-    "frontend/src/features/prayer/PrayerTimesSection.tsx",
+    "frontend/src/features/home/HomeTab.tsx",
+    "frontend/src/features/home/WeeklyPrayerTimesSection.tsx",
     "frontend/src/features/prayer/aladhanApi.ts",
-    "frontend/src/features/prayer/usePrayerTimes.ts",
+    "frontend/src/features/prayer/aladhanWeeklyApi.ts",
     "frontend/src/features/ramazan/RamazanKosesiTab.tsx",
     "project_state.json"
   ]

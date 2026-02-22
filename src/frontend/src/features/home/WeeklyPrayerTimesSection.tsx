@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
+import { Calendar, Loader2, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '../../components/ui/alert';
 import type { DailyPrayerTimes } from '../prayer/aladhanWeeklyApi';
 
 interface WeeklyPrayerTimesSectionProps {
@@ -10,90 +11,101 @@ interface WeeklyPrayerTimesSectionProps {
 }
 
 export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: WeeklyPrayerTimesSectionProps) {
-  if (isLoading) {
-    return (
-      <Card className="border-2 shadow-soft">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
-          <CardTitle className="text-lg">Haftalık Namaz Vakitleri</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-4">Yükleniyor...</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="border-2 shadow-soft">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
-          <CardTitle className="text-lg">Haftalık Namaz Vakitleri</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-destructive text-center py-4">Haftalık namaz vakitleri alınamadı</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="border-2 shadow-soft overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b">
-        <CardTitle className="text-lg">Haftalık Namaz Vakitleri</CardTitle>
+    <Card className="border-2 shadow-lg">
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
+          Haftalık Namaz Vakitleri
+        </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="weekly-prayer-table-wrapper">
-          <Table className="weekly-prayer-table">
-            <TableHeader>
-              <TableRow className="border-b-2 hover:bg-transparent">
-                <TableHead className="font-semibold weekly-sticky-col weekly-sticky-header">Gün</TableHead>
-                <TableHead className="text-center font-semibold prayer-imsak-col border-l">İmsak</TableHead>
-                <TableHead className="text-center font-semibold prayer-gunes-col border-l">Güneş</TableHead>
-                <TableHead className="text-center font-semibold prayer-ogle-col border-l">Öğle</TableHead>
-                <TableHead className="text-center font-semibold prayer-ikindi-col border-l">İkindi</TableHead>
-                <TableHead className="text-center font-semibold prayer-aksam-col border-l">Akşam</TableHead>
-                <TableHead className="text-center font-semibold prayer-yatsi-col border-l">Yatsı</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {weeklyData.map((day, index) => {
-                const isToday = index === 0;
-                return (
-                  <TableRow 
-                    key={index} 
-                    className={`
-                      border-b transition-colors
-                      ${isToday ? 'bg-primary/10 hover:bg-primary/15 font-medium' : 'hover:bg-muted/20'}
-                    `}
-                  >
-                    <TableCell className={`font-medium whitespace-nowrap weekly-sticky-col ${isToday ? 'weekly-sticky-today' : 'weekly-sticky-body'}`}>
-                      {day.dayLabel}
-                      {isToday && <span className="ml-2 text-xs text-primary">(Bugün)</span>}
-                    </TableCell>
-                    <TableCell className="text-center tabular-nums prayer-imsak-col border-l">
-                      {day.fajr}
-                    </TableCell>
-                    <TableCell className="text-center tabular-nums prayer-gunes-col border-l">
-                      {day.sunrise}
-                    </TableCell>
-                    <TableCell className="text-center tabular-nums prayer-ogle-col border-l">
-                      {day.dhuhr}
-                    </TableCell>
-                    <TableCell className="text-center tabular-nums prayer-ikindi-col border-l">
-                      {day.asr}
-                    </TableCell>
-                    <TableCell className="text-center tabular-nums prayer-aksam-col border-l">
-                      {day.maghrib}
-                    </TableCell>
-                    <TableCell className="text-center tabular-nums prayer-yatsi-col border-l">
-                      {day.isha}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+      <CardContent>
+        {isLoading && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-muted-foreground" />
+          </div>
+        )}
+
+        {error && !isLoading && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-xs sm:text-sm">
+              Haftalık namaz vakitleri alınamadı. Lütfen daha sonra tekrar deneyin.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {!isLoading && !error && weeklyData.length > 0 && (
+          <div className="overflow-x-auto -mx-4 sm:-mx-6">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden">
+                <table className="min-w-full divide-y divide-border">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th
+                        scope="col"
+                        className="sticky left-0 z-10 bg-muted/95 backdrop-blur-sm px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]"
+                      >
+                        Gün
+                      </th>
+                      <th scope="col" className="weekly-prayer-col-imsak px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold">
+                        İmsak
+                      </th>
+                      <th scope="col" className="weekly-prayer-col-gunes px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold">
+                        Güneş
+                      </th>
+                      <th scope="col" className="weekly-prayer-col-ogle px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold">
+                        Öğle
+                      </th>
+                      <th scope="col" className="weekly-prayer-col-ikindi px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold">
+                        İkindi
+                      </th>
+                      <th scope="col" className="weekly-prayer-col-aksam px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold">
+                        Akşam
+                      </th>
+                      <th scope="col" className="weekly-prayer-col-yatsi px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold">
+                        Yatsı
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border bg-background">
+                    {weeklyData.map((day, index) => (
+                      <tr key={index} className="hover:bg-muted/30 transition-colors">
+                        <td className="sticky left-0 z-10 bg-background/95 backdrop-blur-sm px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.05)]">
+                          {day.dayLabel}
+                        </td>
+                        <td className="weekly-prayer-col-imsak px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm tabular-nums">
+                          {day.fajr}
+                        </td>
+                        <td className="weekly-prayer-col-gunes px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm tabular-nums">
+                          {day.sunrise}
+                        </td>
+                        <td className="weekly-prayer-col-ogle px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm tabular-nums">
+                          {day.dhuhr}
+                        </td>
+                        <td className="weekly-prayer-col-ikindi px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm tabular-nums">
+                          {day.asr}
+                        </td>
+                        <td className="weekly-prayer-col-aksam px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm tabular-nums">
+                          {day.maghrib}
+                        </td>
+                        <td className="weekly-prayer-col-yatsi px-2 sm:px-3 py-2 sm:py-3 text-center text-xs sm:text-sm tabular-nums">
+                          {day.isha}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && !error && weeklyData.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            Haftalık namaz vakitleri yükleniyor...
+          </p>
+        )}
       </CardContent>
     </Card>
   );

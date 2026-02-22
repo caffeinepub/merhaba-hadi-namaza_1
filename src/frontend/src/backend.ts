@@ -129,6 +129,7 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     fetchPrayerTimes(latitude: string, longitude: string, timestamp: string, method: string): Promise<string>;
+    fetchPrayerTimesToday(city: string): Promise<string>;
     getAppSettings(user: Principal): Promise<AppSettings | null>;
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -139,6 +140,8 @@ export interface backendInterface {
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateCa(newCa: string): Promise<void>;
+    updateCacheKey(key: string): Promise<void>;
     updateLatestAppRelease(release: AppRelease): Promise<void>;
 }
 import type { AppRelease as _AppRelease, AppSettings as _AppSettings, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
@@ -183,6 +186,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.fetchPrayerTimes(arg0, arg1, arg2, arg3);
+            return result;
+        }
+    }
+    async fetchPrayerTimesToday(arg0: string): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.fetchPrayerTimesToday(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.fetchPrayerTimesToday(arg0);
             return result;
         }
     }
@@ -323,6 +340,34 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.transform(arg0);
+            return result;
+        }
+    }
+    async updateCa(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateCa(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateCa(arg0);
+            return result;
+        }
+    }
+    async updateCacheKey(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateCacheKey(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateCacheKey(arg0);
             return result;
         }
     }
