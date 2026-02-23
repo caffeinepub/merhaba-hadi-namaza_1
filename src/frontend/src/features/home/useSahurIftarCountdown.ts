@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SahurIftarCountdownResult {
   sahurTime: string;
@@ -11,19 +11,14 @@ export function useSahurIftarCountdown(
   adjustedTimes: { fajr: string; maghrib: string } | null
 ): SahurIftarCountdownResult | null {
   const [countdown, setCountdown] = useState<SahurIftarCountdownResult | null>(null);
-  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    isMountedRef.current = true;
-
     if (!adjustedTimes) {
       setCountdown(null);
       return;
     }
 
     const updateCountdown = () => {
-      if (!isMountedRef.current) return;
-
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -75,23 +70,18 @@ export function useSahurIftarCountdown(
         timeRemaining = `${minutesLeft} dk`;
       }
 
-      if (isMountedRef.current) {
-        setCountdown({
-          sahurTime: adjustedTimes.fajr,
-          iftarTime: adjustedTimes.maghrib,
-          targetLabel,
-          timeRemaining,
-        });
-      }
+      setCountdown({
+        sahurTime: adjustedTimes.fajr,
+        iftarTime: adjustedTimes.maghrib,
+        targetLabel,
+        timeRemaining,
+      });
     };
 
     updateCountdown();
     const interval = setInterval(updateCountdown, 60000); // Update every minute
 
-    return () => {
-      isMountedRef.current = false;
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [adjustedTimes]);
 
   return countdown;

@@ -15,7 +15,6 @@ interface AladhanTimings {
   Asr: string;
   Maghrib: string;
   Isha: string;
-  Imsak: string;
 }
 
 interface AladhanResponse {
@@ -30,48 +29,26 @@ interface AladhanResponse {
 // Shared calculation method constant
 export const ALADHAN_METHOD = 13;
 
-export async function fetchPrayerTimes(
-  latitude: number,
-  longitude: number,
-  actor: any
-): Promise<PrayerTimes> {
-  if (!actor) {
-    throw new Error('Backend actor not available');
-  }
-
+export async function fetchPrayerTimes(latitude: number, longitude: number): Promise<PrayerTimes> {
   const today = new Date();
-  const timestamp = Math.floor(today.getTime() / 1000).toString();
+  const timestamp = Math.floor(today.getTime() / 1000);
+  
+  const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${latitude}&longitude=${longitude}&method=${ALADHAN_METHOD}`;
 
-  try {
-    // Call backend proxy instead of direct API call
-    const jsonString = await actor.fetchPrayerTimes(
-      latitude.toString(),
-      longitude.toString(),
-      timestamp,
-      ALADHAN_METHOD.toString()
-    );
-
-    // Parse the JSON response from backend
-    const data: AladhanResponse = JSON.parse(jsonString);
-
-    if (!data || !data.data || !data.data.timings) {
-      throw new Error('Invalid response from prayer times API');
-    }
-
-    // Use Imsak for fajr if available, otherwise use Fajr
-    const fajrTime = data.data.timings.Imsak || data.data.timings.Fajr;
-
-    return {
-      fajr: fajrTime,
-      sunrise: data.data.timings.Sunrise,
-      dhuhr: data.data.timings.Dhuhr,
-      asr: data.data.timings.Asr,
-      maghrib: data.data.timings.Maghrib,
-      isha: data.data.timings.Isha,
-      date: data.data.date.readable,
-    };
-  } catch (error) {
-    console.error('Error fetching prayer times:', error);
-    throw new Error('Namaz vakitleri alınamadı. Lütfen tekrar deneyin.');
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Namaz vakitleri alınamadı');
   }
+
+  const data: AladhanResponse = await response.json();
+  
+  return {
+    fajr: data.data.timings.Fajr,
+    sunrise: data.data.timings.Sunrise,
+    dhuhr: data.data.timings.Dhuhr,
+    asr: data.data.timings.Asr,
+    maghrib: data.data.timings.Maghrib,
+    isha: data.data.timings.Isha,
+    date: data.data.date.readable
+  };
 }

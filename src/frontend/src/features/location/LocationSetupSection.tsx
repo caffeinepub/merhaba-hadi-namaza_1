@@ -7,7 +7,6 @@ import { useGeocodingSearch } from './useGeocodingSearch';
 import { useAppSettings } from '../settings/useAppSettings';
 import { setDurableLocation } from '../settings/durableLocationStorage';
 import { saveManualLocationToLocalStorage } from '../settings/localSettingsStorage';
-import { useQueryClient } from '@tanstack/react-query';
 import type { Location } from './types';
 
 interface LocationSetupSectionProps {
@@ -19,7 +18,6 @@ export function LocationSetupSection({ onLocationSelected }: LocationSetupSectio
   const { data: results, isLoading } = useGeocodingSearch(searchQuery);
   const { settings, saveSettings, isSaving } = useAppSettings();
   const [savingLocation, setSavingLocation] = useState(false);
-  const queryClient = useQueryClient();
 
   const handleSelectLocation = async (location: Location) => {
     setSavingLocation(true);
@@ -33,10 +31,6 @@ export function LocationSetupSection({ onLocationSelected }: LocationSetupSectio
         ...settings,
         location
       });
-
-      // Invalidate all prayer-related queries to trigger refetch
-      await queryClient.invalidateQueries({ queryKey: ['prayerTimes'] });
-      await queryClient.invalidateQueries({ queryKey: ['weeklyPrayerTimes'] });
 
       console.log('[LocationSetup] Location saved successfully:', location.displayName);
       

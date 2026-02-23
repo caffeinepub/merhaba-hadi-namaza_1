@@ -1,39 +1,16 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Prayer times application for Turkish cities using Aladhan API, featuring weekly/daily prayer times display on homepage and Ramadan tab, persistent city selection, and hourly prayer time tracking",
-  "architectural_notes": [
-    "Uses Aladhan API for prayer times data",
-    "Implements localStorage for persisting user's city selection",
-    "Supports Turkish cities for prayer time lookup",
-    "Displays prayer times on both homepage and Ramadan tab"
-  ],
-  "known_issues": [
-    "Previous prayer times feature stopped working around version 70"
-  ],
-  "isFixRequest": true,
+  "summary": "New project",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-fix-prayer-times-display-on-the-homepage-to-show-daily-and-weekly-prayer-times-without-haftal-k-namaz-vakitleri-al-namad-error",
-      "title": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
+      "id": "feature-remove-the-time-offset-adjustment-ui-component-from-the-homepage-that-displays-saat-d-zeltmesi-clock-adjustment-diyanet-e-g-re-dakika-fark-veya-label-the-offset-input-control-and-current-adjustment-display-u-anki-d-zeltme-x-dakika-since-this-functionality-already-exists-in-the-settings-page",
+      "title": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
       "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-fix-prayer-times-display-on-the-ramazan-ramadan-tab-to-show-sahur-and-iftar-times-correctly",
-      "title": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-persistent-city-selection-using-localstorage-so-the-selected-city-is-remembered-across-sessions-and-does-not-reset",
-      "title": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
-      "reqIds": [
-        "REQ-4"
+        "REQ-1"
       ],
       "version": 1
     }
@@ -41,52 +18,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Implement prayer times display using Aladhan API for Turkish cities",
+      "summary": "Remove clock adjustment window from homepage (duplicate of settings page feature)",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Add persistent city selection using localStorage",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Display weekly and daily prayer times on homepage",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Display prayer times on Ramadan tab",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Add hourly prayer time tracking feature",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Restore Aladhan API integration for fetching prayer times, ensuring the backend proxy correctly calls the Aladhan API with method 13 for Turkish cities",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Ensure hourly prayer time tracking displays correctly on the homepage",
-      "reqIds": [
-        "REQ-5"
-      ],
       "status": "pending"
     }
   ],
-  "projectName": "Namaz Vakitleri",
+  "projectName": "Prayer Times",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

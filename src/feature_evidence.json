@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-fix-prayer-times-display-on-the-homepage-to-show-daily-and-weekly-prayer-times-without-haftal-k-namaz-vakitleri-al-namad-error",
-      "featureTitle": "Fix prayer times display on the homepage to show daily and weekly prayer times without 'Haftalık namaz vakitleri alınamadı' error",
+      "featureId": "feature-remove-the-time-offset-adjustment-ui-component-from-the-homepage-that-displays-saat-d-zeltmesi-clock-adjustment-diyanet-e-g-re-dakika-fark-veya-label-the-offset-input-control-and-current-adjustment-display-u-anki-d-zeltme-x-dakika-since-this-functionality-already-exists-in-the-settings-page",
+      "featureTitle": "Remove the time offset adjustment UI component from the homepage that displays 'Saat Düzeltmesi' (Clock Adjustment), 'Diyanet'e göre dakika farkı (+ veya -)' label, the offset input control, and current adjustment display ('Şu anki düzeltme: X dakika'), since this functionality already exists in the Settings page",
       "files": [
-        "frontend/src/features/home/HomeTab.tsx",
-        "frontend/src/features/prayer/aladhanApi.ts",
-        "frontend/src/features/prayer/aladhanWeeklyApi.ts"
+        "frontend/src/features/prayer/PrayerTimesSection.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -19,47 +17,7 @@
         "http-outcalls@3.0.0"
       ],
       "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-fix-prayer-times-display-on-the-ramazan-ramadan-tab-to-show-sahur-and-iftar-times-correctly",
-      "featureTitle": "Fix prayer times display on the Ramazan (Ramadan) tab to show sahur and iftar times correctly",
-      "files": [
-        "frontend/src/features/ramazan/RamazanKosesiTab.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-persistent-city-selection-using-localstorage-so-the-selected-city-is-remembered-across-sessions-and-does-not-reset",
-      "featureTitle": "Implement persistent city selection using localStorage so the selected city is remembered across sessions and does not reset",
-      "files": [
-        "frontend/src/features/home/HomeTab.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "http-outcalls@3.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
+        "REQ-1"
       ],
       "confidence": "high"
     }

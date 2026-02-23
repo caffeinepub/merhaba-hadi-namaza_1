@@ -48,10 +48,10 @@ export function RamadanChecklistSection({
                 Sıfırla
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent aria-describedby="reset-description">
+            <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Ramazan takibini sıfırla?</AlertDialogTitle>
-                <AlertDialogDescription id="reset-description">
+                <AlertDialogDescription>
                   Tüm günler "Tuttu" olarak işaretlenecek. Bu işlem geri alınamaz.
                 </AlertDialogDescription>
               </AlertDialogHeader>

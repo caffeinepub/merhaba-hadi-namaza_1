@@ -4,8 +4,9 @@ import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
 import MixinAuthorization "authorization/MixinAuthorization";
-import OutCall "http-outcalls/outcall";
 import AccessControl "authorization/access-control";
+
+
 
 actor {
   let accessControlState = AccessControl.initState();
@@ -88,29 +89,6 @@ actor {
 
   var latestAppRelease : ?AppRelease = null;
 
-  var CA : Text = "Aladhan@1";
-  let ALADHAN_COLLECTION = "https://api.aladhan.com/v1/timings";
-  let TURKEY_CALC_METHOD = "13";
-  let translationMap = Map.empty<Text, Text>();
-
-  public shared ({ caller }) func updateCacheKey(key : Text) : async () {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Only the admin can update translation map");
-    };
-    translationMap.add(key, key # CA);
-  };
-
-  public shared ({ caller }) func updateCa(newCa : Text) : async () {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Only the admin can update translation map");
-    };
-    CA := newCa;
-    let allCacheKeys = translationMap.keys();
-    for (cacheKey in allCacheKeys) {
-      translationMap.add(cacheKey, cacheKey # CA);
-    };
-  };
-
   public shared ({ caller }) func updateLatestAppRelease(release : AppRelease) : async () {
     if (not AccessControl.isAdmin(accessControlState, caller)) {
       Runtime.trap("Unauthorized: Only the admin can update app releases");
@@ -121,23 +99,6 @@ actor {
   public query ({ caller }) func getLatestAppRelease() : async ?AppRelease {
     let _ignore = caller;
     latestAppRelease;
-  };
-
-  public shared ({ caller }) func fetchPrayerTimesToday(city : Text) : async Text {
-    let baseURL = ALADHAN_COLLECTION;
-    let url = baseURL # "?city=" # city # "?method=" # TURKEY_CALC_METHOD;
-    await OutCall.httpGetRequest(url, [], transform);
-  };
-
-  public shared ({ caller }) func fetchPrayerTimes(latitude : Text, longitude : Text, timestamp : Text, method : Text) : async Text {
-    let _ignore = caller;
-    let baseURL = "https://api.aladhan.com/v1/timings/" # timestamp;
-    let url = baseURL # "?latitude=" # latitude # "&longitude=" # longitude # "&method=" # method;
-    await OutCall.httpGetRequest(url, [], transform);
-  };
-
-  public query func transform(input : OutCall.TransformationInput) : async OutCall.TransformationOutput {
-    OutCall.transform(input);
   };
 
   system func preupgrade() {};

@@ -8,6 +8,7 @@ import { useAppSettings } from '../settings/useAppSettings';
 import { usePrayerTimes } from '../prayer/usePrayerTimes';
 import { useWeather } from '../weather/useWeather';
 import { useWeeklyPrayerTimes } from '../prayer/useWeeklyPrayerTimes';
+import { SelectLocationPrompt } from '../../components/SelectLocationPrompt';
 import { LocationSetupSection } from '../location/LocationSetupSection';
 import { PrayerTimesSection } from '../prayer/PrayerTimesSection';
 import { WeatherSection } from '../weather/WeatherSection';

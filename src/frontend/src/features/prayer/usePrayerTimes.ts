@@ -1,21 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchPrayerTimes, PrayerTimes } from './aladhanApi';
-import { useActor } from '../../hooks/useActor';
+import { fetchPrayerTimes } from './aladhanApi';
 import type { Location } from '../location/types';
 
 export function usePrayerTimes(location: Location | null) {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery<PrayerTimes>({
+  return useQuery({
     queryKey: ['prayerTimes', location?.latitude, location?.longitude],
-    queryFn: async () => {
-      if (!location || !actor) {
-        throw new Error('Location or actor not available');
-      }
-      return fetchPrayerTimes(location.latitude, location.longitude, actor);
+    queryFn: () => {
+      if (!location) throw new Error('Konum seçilmedi');
+      return fetchPrayerTimes(location.latitude, location.longitude);
     },
-    enabled: !!location && !!actor && !actorFetching,
+    enabled: !!location,
     staleTime: 30 * 60 * 1000, // 30 minutes
-    retry: 2,
+    retry: 2
   });
 }

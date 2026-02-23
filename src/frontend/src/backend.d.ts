@@ -7,25 +7,7 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface http_request_result {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface AppSettings {
-    offset: string;
-    location: string;
-}
-export interface TransformationOutput {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
 export type Time = bigint;
-export interface TransformationInput {
-    context: Uint8Array;
-    response: http_request_result;
-}
 export interface AppRelease {
     version: string;
     updatedAt: Time;
@@ -34,9 +16,9 @@ export interface AppRelease {
 export interface UserProfile {
     name: string;
 }
-export interface http_header {
-    value: string;
-    name: string;
+export interface AppSettings {
+    offset: string;
+    location: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -45,8 +27,6 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    fetchPrayerTimes(latitude: string, longitude: string, timestamp: string, method: string): Promise<string>;
-    fetchPrayerTimesToday(city: string): Promise<string>;
     getAppSettings(user: Principal): Promise<AppSettings | null>;
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -56,8 +36,5 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateCa(newCa: string): Promise<void>;
-    updateCacheKey(key: string): Promise<void>;
     updateLatestAppRelease(release: AppRelease): Promise<void>;
 }

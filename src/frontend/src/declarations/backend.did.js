@@ -24,34 +24,10 @@ export const AppRelease = IDL.Record({
   'updatedAt' : Time,
   'storeUrl' : IDL.Text,
 });
-export const http_header = IDL.Record({
-  'value' : IDL.Text,
-  'name' : IDL.Text,
-});
-export const http_request_result = IDL.Record({
-  'status' : IDL.Nat,
-  'body' : IDL.Vec(IDL.Nat8),
-  'headers' : IDL.Vec(http_header),
-});
-export const TransformationInput = IDL.Record({
-  'context' : IDL.Vec(IDL.Nat8),
-  'response' : http_request_result,
-});
-export const TransformationOutput = IDL.Record({
-  'status' : IDL.Nat,
-  'body' : IDL.Vec(IDL.Nat8),
-  'headers' : IDL.Vec(http_header),
-});
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'fetchPrayerTimes' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
-      [IDL.Text],
-      [],
-    ),
-  'fetchPrayerTimesToday' : IDL.Func([IDL.Text], [IDL.Text], []),
   'getAppSettings' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(AppSettings)],
@@ -69,13 +45,6 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'saveCallerAppSettings' : IDL.Func([AppSettings], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'transform' : IDL.Func(
-      [TransformationInput],
-      [TransformationOutput],
-      ['query'],
-    ),
-  'updateCa' : IDL.Func([IDL.Text], [], []),
-  'updateCacheKey' : IDL.Func([IDL.Text], [], []),
   'updateLatestAppRelease' : IDL.Func([AppRelease], [], []),
 });
 
@@ -98,31 +67,10 @@ export const idlFactory = ({ IDL }) => {
     'updatedAt' : Time,
     'storeUrl' : IDL.Text,
   });
-  const http_header = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
-  const http_request_result = IDL.Record({
-    'status' : IDL.Nat,
-    'body' : IDL.Vec(IDL.Nat8),
-    'headers' : IDL.Vec(http_header),
-  });
-  const TransformationInput = IDL.Record({
-    'context' : IDL.Vec(IDL.Nat8),
-    'response' : http_request_result,
-  });
-  const TransformationOutput = IDL.Record({
-    'status' : IDL.Nat,
-    'body' : IDL.Vec(IDL.Nat8),
-    'headers' : IDL.Vec(http_header),
-  });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'fetchPrayerTimes' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
-        [IDL.Text],
-        [],
-      ),
-    'fetchPrayerTimesToday' : IDL.Func([IDL.Text], [IDL.Text], []),
     'getAppSettings' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(AppSettings)],
@@ -140,13 +88,6 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'saveCallerAppSettings' : IDL.Func([AppSettings], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'transform' : IDL.Func(
-        [TransformationInput],
-        [TransformationOutput],
-        ['query'],
-      ),
-    'updateCa' : IDL.Func([IDL.Text], [], []),
-    'updateCacheKey' : IDL.Func([IDL.Text], [], []),
     'updateLatestAppRelease' : IDL.Func([AppRelease], [], []),
   });
 };

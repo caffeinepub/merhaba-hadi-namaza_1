@@ -59,10 +59,10 @@ export function DuaGuideTab() {
 
       {/* Dua Detail Dialog */}
       <Dialog open={!!selectedDua} onOpenChange={(open) => !open && setSelectedDua(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh]" aria-describedby="dua-occasion">
+        <DialogContent className="max-w-2xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle>{selectedDua?.title}</DialogTitle>
-            <DialogDescription id="dua-occasion">{selectedDua?.occasion}</DialogDescription>
+            <DialogDescription>{selectedDua?.occasion}</DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] pr-4">
             <div className="space-y-4">

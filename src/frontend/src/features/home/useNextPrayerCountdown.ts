@@ -42,11 +42,8 @@ export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextP
   // Track last sent prayer to avoid excessive bridge calls
   const lastSentTimestampRef = useRef<{ name: string; timestamp: number } | null>(null);
   const lastSentTimeStringRef = useRef<{ name: string; time: string } | null>(null);
-  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    isMountedRef.current = true;
-
     if (!adjustedTimes) {
       setNextPrayer(null);
       setNextPrayerMillis(null);
@@ -64,8 +61,6 @@ export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextP
     ];
 
     const updateCountdown = () => {
-      if (!isMountedRef.current) return;
-
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -96,14 +91,12 @@ export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextP
         nextTimestamp = nextDate.getTime();
       }
 
-      if (isMountedRef.current) {
-        setNextPrayer(foundNext);
-        setNextPrayerMillis(nextTimestamp);
+      setNextPrayer(foundNext);
+      setNextPrayerMillis(nextTimestamp);
 
-        // Calculate time remaining using formatRemainingTime helper
-        const remainingMillis = nextTimestamp - now.getTime();
-        setTimeRemaining(formatRemainingTime(remainingMillis));
-      }
+      // Calculate time remaining using formatRemainingTime helper
+      const remainingMillis = nextTimestamp - now.getTime();
+      setTimeRemaining(formatRemainingTime(remainingMillis));
 
       // Send legacy bridge updates only when next prayer changes
       if (foundNext) {
@@ -129,10 +122,7 @@ export function useNextPrayerCountdown(adjustedTimes: PrayerTimes | null): NextP
     // Update every second for smooth countdown
     const interval = setInterval(updateCountdown, 1000);
 
-    return () => {
-      isMountedRef.current = false;
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [adjustedTimes]);
 
   return { nextPrayer, nextPrayerMillis, timeRemaining };

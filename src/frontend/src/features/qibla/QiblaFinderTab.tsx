@@ -57,10 +57,10 @@ export function QiblaFinderTab() {
                   Konum Seç
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" aria-describedby="location-setup-description">
+              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Konumunuzu Seçin</DialogTitle>
-                  <DialogDescription id="location-setup-description">
+                  <DialogDescription>
                     Konumunuzu ayarlamak için şehir veya ilçe arayın
                   </DialogDescription>
                 </DialogHeader>
@@ -96,10 +96,10 @@ export function QiblaFinderTab() {
                 Konumu Değiştir
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" aria-describedby="change-location-description">
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Konumu Değiştir</DialogTitle>
-                <DialogDescription id="change-location-description">
+                <DialogDescription>
                   Yeni bir şehir veya ilçe arayın
                 </DialogDescription>
               </DialogHeader>
@@ -153,38 +153,61 @@ export function QiblaFinderTab() {
             )}
           </div>
 
-          {/* Permission/Support Messages */}
-          {!isSupported && (
+          {/* Orientation Status */}
+          {isLoading && (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Yükleniyor</AlertTitle>
+              <AlertDescription>
+                Cihaz yönlendirme desteği kontrol ediliyor...
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {!isLoading && !isSupported && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Pusula Desteklenmiyor</AlertTitle>
+              <AlertTitle>Yönlendirme Desteklenmiyor</AlertTitle>
               <AlertDescription>
-                Cihazınız pusula sensörünü desteklemiyor.
+                Cihazınız yönlendirme sensörlerini desteklemiyor. Kıble yönü Kuzey'den {qiblaBearing?.toFixed(1)}° olarak gösteriliyor.
               </AlertDescription>
             </Alert>
           )}
 
-          {isSupported && isPermissionDenied && (
-            <Alert>
+          {!isLoading && isSupported && isPermissionDenied && (
+            <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>İzin Gerekli</AlertTitle>
-              <AlertDescription className="space-y-2">
-                <p>Pusula kullanmak için cihaz yönlendirme izni gerekiyor.</p>
-                <Button onClick={requestPermission} size="sm" className="mt-2">
-                  İzin Ver
-                </Button>
+              <AlertDescription>
+                Canlı pusula yönünü göstermek için yönlendirme erişimi gereklidir.
               </AlertDescription>
             </Alert>
           )}
 
-          {isSupported && !isPermissionDenied && heading === null && !isLoading && (
+          {!isLoading && isSupported && isPermissionDenied && typeof (DeviceOrientationEvent as any).requestPermission === 'function' && (
+            <Button onClick={requestPermission} className="w-full">
+              Yönlendirmeyi Etkinleştir
+            </Button>
+          )}
+
+          {!isLoading && isSupported && !isPermissionDenied && heading === null && (
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Pusula Verisi Bekleniyor</AlertTitle>
+              <AlertTitle>Sensör Bekleniyor</AlertTitle>
               <AlertDescription>
-                Cihazınızı hareket ettirerek pusula sensörünü aktifleştirin.
+                Yönlendirme sensörünü etkinleştirmek için cihazınızı hareket ettirin.
               </AlertDescription>
             </Alert>
+          )}
+
+          {!isLoading && isSupported && !isPermissionDenied && heading !== null && (
+            <div className="text-center space-y-2">
+              <p className="text-sm text-muted-foreground">Cihaz yönü:</p>
+              <p className="text-lg font-semibold">{heading.toFixed(1)}°</p>
+              <p className="text-xs text-muted-foreground">
+                Ok Kıble yönünü gösteriyor
+              </p>
+            </div>
           )}
         </CardContent>
       </Card>

@@ -89,25 +89,7 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface http_request_result {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface AppSettings {
-    offset: string;
-    location: string;
-}
-export interface TransformationOutput {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
 export type Time = bigint;
-export interface TransformationInput {
-    context: Uint8Array;
-    response: http_request_result;
-}
 export interface AppRelease {
     version: string;
     updatedAt: Time;
@@ -116,9 +98,9 @@ export interface AppRelease {
 export interface UserProfile {
     name: string;
 }
-export interface http_header {
-    value: string;
-    name: string;
+export interface AppSettings {
+    offset: string;
+    location: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -128,8 +110,6 @@ export enum UserRole {
 export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    fetchPrayerTimes(latitude: string, longitude: string, timestamp: string, method: string): Promise<string>;
-    fetchPrayerTimesToday(city: string): Promise<string>;
     getAppSettings(user: Principal): Promise<AppSettings | null>;
     getCallerAppSettings(): Promise<AppSettings | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -139,9 +119,6 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerAppSettings(settings: AppSettings): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateCa(newCa: string): Promise<void>;
-    updateCacheKey(key: string): Promise<void>;
     updateLatestAppRelease(release: AppRelease): Promise<void>;
 }
 import type { AppRelease as _AppRelease, AppSettings as _AppSettings, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
@@ -172,34 +149,6 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
-            return result;
-        }
-    }
-    async fetchPrayerTimes(arg0: string, arg1: string, arg2: string, arg3: string): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.fetchPrayerTimes(arg0, arg1, arg2, arg3);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.fetchPrayerTimes(arg0, arg1, arg2, arg3);
-            return result;
-        }
-    }
-    async fetchPrayerTimesToday(arg0: string): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.fetchPrayerTimesToday(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.fetchPrayerTimesToday(arg0);
             return result;
         }
     }
@@ -326,48 +275,6 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveCallerUserProfile(arg0);
-            return result;
-        }
-    }
-    async transform(arg0: TransformationInput): Promise<TransformationOutput> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.transform(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.transform(arg0);
-            return result;
-        }
-    }
-    async updateCa(arg0: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateCa(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateCa(arg0);
-            return result;
-        }
-    }
-    async updateCacheKey(arg0: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateCacheKey(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateCacheKey(arg0);
             return result;
         }
     }

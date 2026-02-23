@@ -18,7 +18,6 @@ interface AladhanTimings {
   Asr: string;
   Maghrib: string;
   Isha: string;
-  Imsak: string;
 }
 
 interface AladhanResponse {
@@ -35,56 +34,45 @@ interface AladhanResponse {
 
 export async function fetchWeeklyPrayerTimes(
   latitude: number,
-  longitude: number,
-  actor: any
+  longitude: number
 ): Promise<DailyPrayerTimes[]> {
-  if (!actor) {
-    throw new Error('Backend actor not available');
-  }
-
   const weeklyData: DailyPrayerTimes[] = [];
   const today = new Date();
 
   for (let i = 0; i < 7; i++) {
     const targetDate = new Date(today);
     targetDate.setDate(today.getDate() + i);
-    const timestamp = Math.floor(targetDate.getTime() / 1000).toString();
+    const timestamp = Math.floor(targetDate.getTime() / 1000);
+
+    const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${latitude}&longitude=${longitude}&method=${ALADHAN_METHOD}`;
 
     try {
-      // Call backend proxy instead of direct API call
-      const jsonString = await actor.fetchPrayerTimes(
-        latitude.toString(),
-        longitude.toString(),
-        timestamp,
-        ALADHAN_METHOD.toString()
-      );
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch prayer times for the week');
+      }
 
-      // Parse the JSON response from backend
-      const data: AladhanResponse = JSON.parse(jsonString);
+      const data: AladhanResponse = await response.json();
 
       // Format day label (e.g., "Pazartesi, 13 Şubat")
       const dayLabel = targetDate.toLocaleDateString('tr-TR', {
         weekday: 'long',
         day: 'numeric',
-        month: 'long',
+        month: 'long'
       });
 
-      // Use Imsak for fajr if available, otherwise use Fajr
-      const fajrTime = data.data.timings.Imsak || data.data.timings.Fajr;
-
       weeklyData.push({
-        fajr: fajrTime,
+        fajr: data.data.timings.Fajr,
         sunrise: data.data.timings.Sunrise,
         dhuhr: data.data.timings.Dhuhr,
         asr: data.data.timings.Asr,
         maghrib: data.data.timings.Maghrib,
         isha: data.data.timings.Isha,
         date: data.data.date.readable,
-        dayLabel,
+        dayLabel
       });
     } catch (error) {
-      console.error(`Error fetching prayer times for day ${i}:`, error);
-      throw new Error('Haftalık namaz vakitleri alınamadı. Lütfen tekrar deneyin.');
+      throw new Error('Failed to fetch prayer times for the week');
     }
   }
 
