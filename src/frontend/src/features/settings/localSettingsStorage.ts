@@ -1,7 +1,14 @@
-import type { Location } from '../location/types';
-import { DEFAULT_LOCATION } from '../location/types';
-import type { RamadanDayStatus, PrayerDailyChecklist, PrayerKazaCounters } from './appSettingsModel';
-import { getDurableLocation, setDurableLocation } from './durableLocationStorage';
+import type { Location } from "../location/types";
+import { DEFAULT_LOCATION } from "../location/types";
+import type {
+  PrayerDailyChecklist,
+  PrayerKazaCounters,
+  RamadanDayStatus,
+} from "./appSettingsModel";
+import {
+  getDurableLocation,
+  setDurableLocation,
+} from "./durableLocationStorage";
 
 export interface NotificationLeadTimes {
   fajr: number;
@@ -32,8 +39,8 @@ export interface LocalSettings {
   quranScrollPosition?: number;
 }
 
-const STORAGE_KEY = 'merhaba-hadi-namaza-settings';
-const MANUAL_LOCATION_KEY = 'prayer-times-manual-location';
+const STORAGE_KEY = "merhaba-hadi-namaza-settings";
+const MANUAL_LOCATION_KEY = "prayer-times-manual-location";
 const STORAGE_VERSION = 10;
 
 interface StoredData {
@@ -47,7 +54,7 @@ const DEFAULT_NOTIFICATION_LEAD_TIMES: NotificationLeadTimes = {
   dhuhr: 15,
   asr: 15,
   maghrib: 15,
-  isha: 15
+  isha: 15,
 };
 
 const DEFAULT_PRAYER_KAZA_COUNTERS: PrayerKazaCounters = {
@@ -55,7 +62,7 @@ const DEFAULT_PRAYER_KAZA_COUNTERS: PrayerKazaCounters = {
   dhuhr: 0,
   asr: 0,
   maghrib: 0,
-  isha: 0
+  isha: 0,
 };
 
 /**
@@ -65,9 +72,9 @@ export function saveManualLocationToLocalStorage(location: Location): void {
   try {
     const locationData = JSON.stringify(location);
     localStorage.setItem(MANUAL_LOCATION_KEY, locationData);
-    console.log('[LocalStorage] Saved manual location:', location.displayName);
+    console.log("[LocalStorage] Saved manual location:", location.displayName);
   } catch (error) {
-    console.warn('Failed to save manual location to localStorage:', error);
+    console.warn("Failed to save manual location to localStorage:", error);
   }
 }
 
@@ -80,22 +87,22 @@ export function getManualLocationFromLocalStorage(): Location | null {
     if (!stored) return null;
 
     const location = JSON.parse(stored) as Location;
-    
+
     // Validate required fields
     if (
       !location ||
-      typeof location.displayName !== 'string' ||
-      typeof location.latitude !== 'number' ||
-      typeof location.longitude !== 'number'
+      typeof location.displayName !== "string" ||
+      typeof location.latitude !== "number" ||
+      typeof location.longitude !== "number"
     ) {
-      console.warn('Invalid manual location data in localStorage');
+      console.warn("Invalid manual location data in localStorage");
       return null;
     }
 
-    console.log('[LocalStorage] Loaded manual location:', location.displayName);
+    console.log("[LocalStorage] Loaded manual location:", location.displayName);
     return location;
   } catch (error) {
-    console.warn('Failed to load manual location from localStorage:', error);
+    console.warn("Failed to load manual location from localStorage:", error);
     return null;
   }
 }
@@ -118,12 +125,12 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
         fastingVoluntaryDates: [],
         fastingMakeUpDates: [],
         fastingMakeUpTargetCount: 0,
-        ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+        ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
         prayerDailyChecklists: {},
         prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
         quranLastSurahNumber: 1,
         quranLastAyahNumber: 1,
-        quranScrollPosition: 0
+        quranScrollPosition: 0,
       };
     } else {
       const data: StoredData = JSON.parse(stored);
@@ -132,12 +139,14 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
 
     // Multi-layer recovery strategy for location
     if (!settings.location) {
-      console.log('[Settings] No location in main settings, attempting recovery...');
+      console.log(
+        "[Settings] No location in main settings, attempting recovery...",
+      );
 
       // 1. Try manual location key in localStorage
       const manualLocation = getManualLocationFromLocalStorage();
       if (manualLocation) {
-        console.log('[Settings] Recovered from manual localStorage key');
+        console.log("[Settings] Recovered from manual localStorage key");
         settings.location = manualLocation;
         saveLocalSettingsSync(settings);
         await setDurableLocation(manualLocation);
@@ -147,7 +156,7 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
       // 2. Try durable storage (localStorage backup, sessionStorage, IndexedDB)
       const durableLocation = await getDurableLocation();
       if (durableLocation) {
-        console.log('[Settings] Recovered from durable storage');
+        console.log("[Settings] Recovered from durable storage");
         settings.location = durableLocation;
         saveLocalSettingsSync(settings);
         saveManualLocationToLocalStorage(durableLocation);
@@ -155,13 +164,16 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
       }
 
       // 3. No location found - will use default in App.tsx
-      console.log('[Settings] No location found in any storage');
+      console.log("[Settings] No location found in any storage");
     } else {
       // Location exists in main settings - ensure it's backed up everywhere
-      console.log('[Settings] Location found in main settings:', settings.location.displayName);
+      console.log(
+        "[Settings] Location found in main settings:",
+        settings.location.displayName,
+      );
       const durableLocation = await getDurableLocation();
       if (!durableLocation) {
-        console.log('[Settings] Backfilling durable storage');
+        console.log("[Settings] Backfilling durable storage");
         await setDurableLocation(settings.location);
         saveManualLocationToLocalStorage(settings.location);
       }
@@ -169,7 +181,7 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
 
     return settings;
   } catch (error) {
-    console.error('Failed to load settings from localStorage:', error);
+    console.error("Failed to load settings from localStorage:", error);
     return {
       location: null,
       offsetMinutes: 0,
@@ -182,12 +194,12 @@ export async function loadLocalSettings(): Promise<LocalSettings> {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 }
@@ -207,12 +219,12 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -223,7 +235,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: 0,
       zikirmatikTarget: 33,
@@ -233,12 +245,12 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -249,7 +261,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -259,12 +271,12 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -275,7 +287,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -285,12 +297,12 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -301,7 +313,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -311,12 +323,12 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: [],
       fastingMakeUpDates: [],
       fastingMakeUpTargetCount: 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -327,7 +339,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -337,12 +349,12 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
       fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
       fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -353,7 +365,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -363,12 +375,14 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
       fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
       fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-      ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses:
+        data.settings.ramadanDayStatuses ??
+        Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -379,7 +393,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -389,12 +403,14 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
       fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
       fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-      ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses:
+        data.settings.ramadanDayStatuses ??
+        Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: data.settings.prayerDailyChecklists ?? {},
       prayerKazaCounters: DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -405,7 +421,7 @@ function migrateSettings(data: StoredData): LocalSettings {
       offsetMinutes: data.settings.offsetMinutes || 0,
       notificationLeadTimes: {
         ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-        ...(data.settings.notificationLeadTimes || {})
+        ...(data.settings.notificationLeadTimes || {}),
       },
       zikirmatikCount: data.settings.zikirmatikCount ?? 0,
       zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -415,12 +431,15 @@ function migrateSettings(data: StoredData): LocalSettings {
       fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
       fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
       fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-      ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+      ramadanDayStatuses:
+        data.settings.ramadanDayStatuses ??
+        Array(30).fill("Fasted" as RamadanDayStatus),
       prayerDailyChecklists: data.settings.prayerDailyChecklists ?? {},
-      prayerKazaCounters: data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS,
+      prayerKazaCounters:
+        data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS,
       quranLastSurahNumber: 1,
       quranLastAyahNumber: 1,
-      quranScrollPosition: 0
+      quranScrollPosition: 0,
     };
   }
 
@@ -430,7 +449,7 @@ function migrateSettings(data: StoredData): LocalSettings {
     offsetMinutes: data.settings.offsetMinutes || 0,
     notificationLeadTimes: {
       ...DEFAULT_NOTIFICATION_LEAD_TIMES,
-      ...(data.settings.notificationLeadTimes || {})
+      ...(data.settings.notificationLeadTimes || {}),
     },
     zikirmatikCount: data.settings.zikirmatikCount ?? 0,
     zikirmatikTarget: data.settings.zikirmatikTarget ?? 33,
@@ -440,12 +459,15 @@ function migrateSettings(data: StoredData): LocalSettings {
     fastingVoluntaryDates: data.settings.fastingVoluntaryDates ?? [],
     fastingMakeUpDates: data.settings.fastingMakeUpDates ?? [],
     fastingMakeUpTargetCount: data.settings.fastingMakeUpTargetCount ?? 0,
-    ramadanDayStatuses: data.settings.ramadanDayStatuses ?? Array(30).fill('Fasted' as RamadanDayStatus),
+    ramadanDayStatuses:
+      data.settings.ramadanDayStatuses ??
+      Array(30).fill("Fasted" as RamadanDayStatus),
     prayerDailyChecklists: data.settings.prayerDailyChecklists ?? {},
-    prayerKazaCounters: data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS,
+    prayerKazaCounters:
+      data.settings.prayerKazaCounters ?? DEFAULT_PRAYER_KAZA_COUNTERS,
     quranLastSurahNumber: data.settings.quranLastSurahNumber ?? 1,
     quranLastAyahNumber: data.settings.quranLastAyahNumber ?? 1,
-    quranScrollPosition: data.settings.quranScrollPosition ?? 0
+    quranScrollPosition: data.settings.quranScrollPosition ?? 0,
   };
 }
 
@@ -453,24 +475,26 @@ export function saveLocalSettingsSync(settings: LocalSettings): void {
   try {
     const data: StoredData = {
       version: STORAGE_VERSION,
-      settings
+      settings,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
-    console.error('Failed to save settings to localStorage:', error);
+    console.error("Failed to save settings to localStorage:", error);
   }
 }
 
-export async function saveLocalSettings(settings: LocalSettings): Promise<void> {
+export async function saveLocalSettings(
+  settings: LocalSettings,
+): Promise<void> {
   saveLocalSettingsSync(settings);
-  
+
   // Also save location to durable storage if present
   if (settings.location) {
     try {
       await setDurableLocation(settings.location);
       saveManualLocationToLocalStorage(settings.location);
     } catch (error) {
-      console.error('Failed to save location to durable storage:', error);
+      console.error("Failed to save location to durable storage:", error);
     }
   }
 }

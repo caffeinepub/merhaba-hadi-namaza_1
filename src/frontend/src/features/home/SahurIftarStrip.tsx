@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardContent } from '../../components/ui/card';
-import { Clock, Moon, Sunset } from 'lucide-react';
-import { useSahurIftarCountdown } from './useSahurIftarCountdown';
+import { Clock, Moon, Sunset } from "lucide-react";
+import React from "react";
+import { Card, CardContent } from "../../components/ui/card";
+import { useSahurIftarCountdown } from "./useSahurIftarCountdown";
 
 interface SahurIftarStripProps {
   adjustedTimes: { fajr: string; maghrib: string } | null;
@@ -9,7 +9,11 @@ interface SahurIftarStripProps {
   error: any;
 }
 
-export function SahurIftarStrip({ adjustedTimes, isLoading, error }: SahurIftarStripProps) {
+export function SahurIftarStrip({
+  adjustedTimes,
+  isLoading,
+  error,
+}: SahurIftarStripProps) {
   const countdown = useSahurIftarCountdown(adjustedTimes);
 
   // Hide if loading, error, or no data
@@ -28,7 +32,9 @@ export function SahurIftarStrip({ adjustedTimes, isLoading, error }: SahurIftarS
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground font-medium">Sahur</p>
-              <p className="text-lg font-bold tabular-nums">{countdown.sahurTime}</p>
+              <p className="text-lg font-bold tabular-nums">
+                {countdown.sahurTime}
+              </p>
             </div>
           </div>
 
@@ -38,9 +44,13 @@ export function SahurIftarStrip({ adjustedTimes, isLoading, error }: SahurIftarS
               <Clock className="h-5 w-5 text-primary" />
             </div>
             <div className="text-center">
-              <p className="text-xs text-muted-foreground font-medium">Kalan süre</p>
+              <p className="text-xs text-muted-foreground font-medium">
+                Kalan süre
+              </p>
               <p className="text-base font-bold">{countdown.targetLabel}</p>
-              <p className="text-lg font-bold tabular-nums text-primary">{countdown.timeRemaining}</p>
+              <p className="text-lg font-bold tabular-nums text-primary">
+                {countdown.timeRemaining}
+              </p>
             </div>
           </div>
 
@@ -51,7 +61,9 @@ export function SahurIftarStrip({ adjustedTimes, isLoading, error }: SahurIftarS
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground font-medium">Iftar</p>
-              <p className="text-lg font-bold tabular-nums">{countdown.iftarTime}</p>
+              <p className="text-lg font-bold tabular-nums">
+                {countdown.iftarTime}
+              </p>
             </div>
           </div>
         </div>

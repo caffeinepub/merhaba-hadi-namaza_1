@@ -1,13 +1,13 @@
-import type { Location } from '../location/types';
+import type { Location } from "../location/types";
 
-const DB_NAME = 'merhaba-hadi-namaza-durable';
+const DB_NAME = "merhaba-hadi-namaza-durable";
 const DB_VERSION = 1;
-const STORE_NAME = 'location';
-const LOCATION_KEY = 'saved-location';
+const STORE_NAME = "location";
+const LOCATION_KEY = "saved-location";
 
 // Additional storage keys for redundancy
-const LOCALSTORAGE_BACKUP_KEY = 'prayer-app-location-backup';
-const SESSIONSTORAGE_BACKUP_KEY = 'prayer-app-location-session';
+const LOCALSTORAGE_BACKUP_KEY = "prayer-app-location-backup";
+const SESSIONSTORAGE_BACKUP_KEY = "prayer-app-location-session";
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
@@ -18,7 +18,7 @@ function openDB(): Promise<IDBDatabase> {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = () => {
-      console.error('IndexedDB open error:', request.error);
+      console.error("IndexedDB open error:", request.error);
       reject(request.error);
     };
 
@@ -43,12 +43,12 @@ function openDB(): Promise<IDBDatabase> {
 function isValidLocation(location: any): location is Location {
   return (
     location &&
-    typeof location === 'object' &&
-    typeof location.displayName === 'string' &&
-    typeof location.latitude === 'number' &&
-    typeof location.longitude === 'number' &&
-    !isNaN(location.latitude) &&
-    !isNaN(location.longitude)
+    typeof location === "object" &&
+    typeof location.displayName === "string" &&
+    typeof location.latitude === "number" &&
+    typeof location.longitude === "number" &&
+    !Number.isNaN(location.latitude) &&
+    !Number.isNaN(location.longitude)
   );
 }
 
@@ -62,7 +62,7 @@ function getFromLocalStorage(): Location | null {
     const location = JSON.parse(stored);
     return isValidLocation(location) ? location : null;
   } catch (error) {
-    console.warn('Failed to read from localStorage backup:', error);
+    console.warn("Failed to read from localStorage backup:", error);
     return null;
   }
 }
@@ -77,7 +77,7 @@ function getFromSessionStorage(): Location | null {
     const location = JSON.parse(stored);
     return isValidLocation(location) ? location : null;
   } catch (error) {
-    console.warn('Failed to read from sessionStorage backup:', error);
+    console.warn("Failed to read from sessionStorage backup:", error);
     return null;
   }
 }
@@ -89,7 +89,7 @@ function saveToLocalStorage(location: Location): void {
   try {
     localStorage.setItem(LOCALSTORAGE_BACKUP_KEY, JSON.stringify(location));
   } catch (error) {
-    console.warn('Failed to save to localStorage backup:', error);
+    console.warn("Failed to save to localStorage backup:", error);
   }
 }
 
@@ -100,7 +100,7 @@ function saveToSessionStorage(location: Location): void {
   try {
     sessionStorage.setItem(SESSIONSTORAGE_BACKUP_KEY, JSON.stringify(location));
   } catch (error) {
-    console.warn('Failed to save to sessionStorage backup:', error);
+    console.warn("Failed to save to sessionStorage backup:", error);
   }
 }
 
@@ -111,7 +111,7 @@ async function getFromIndexedDB(): Promise<Location | null> {
   try {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const transaction = db.transaction(STORE_NAME, "readonly");
       const store = transaction.objectStore(STORE_NAME);
       const request = store.get(LOCATION_KEY);
 
@@ -121,12 +121,12 @@ async function getFromIndexedDB(): Promise<Location | null> {
       };
 
       request.onerror = () => {
-        console.error('IndexedDB get error:', request.error);
+        console.error("IndexedDB get error:", request.error);
         reject(request.error);
       };
     });
   } catch (error) {
-    console.error('Failed to get from IndexedDB:', error);
+    console.error("Failed to get from IndexedDB:", error);
     return null;
   }
 }
@@ -138,7 +138,7 @@ async function saveToIndexedDB(location: Location): Promise<void> {
   try {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const transaction = db.transaction(STORE_NAME, "readwrite");
       const store = transaction.objectStore(STORE_NAME);
       const request = store.put(location, LOCATION_KEY);
 
@@ -147,12 +147,12 @@ async function saveToIndexedDB(location: Location): Promise<void> {
       };
 
       request.onerror = () => {
-        console.error('IndexedDB put error:', request.error);
+        console.error("IndexedDB put error:", request.error);
         reject(request.error);
       };
     });
   } catch (error) {
-    console.error('Failed to save to IndexedDB:', error);
+    console.error("Failed to save to IndexedDB:", error);
     throw error;
   }
 }
@@ -165,19 +165,19 @@ async function saveToIndexedDB(location: Location): Promise<void> {
  * Returns the first valid location found, or null if all fail
  */
 export async function getDurableLocation(): Promise<Location | null> {
-  console.log('[DurableStorage] Attempting to recover location...');
+  console.log("[DurableStorage] Attempting to recover location...");
 
   // Try localStorage first (most reliable on mobile)
   const fromLocalStorage = getFromLocalStorage();
   if (fromLocalStorage) {
-    console.log('[DurableStorage] Recovered from localStorage');
+    console.log("[DurableStorage] Recovered from localStorage");
     return fromLocalStorage;
   }
 
   // Try sessionStorage
   const fromSessionStorage = getFromSessionStorage();
   if (fromSessionStorage) {
-    console.log('[DurableStorage] Recovered from sessionStorage');
+    console.log("[DurableStorage] Recovered from sessionStorage");
     // Backfill localStorage
     saveToLocalStorage(fromSessionStorage);
     return fromSessionStorage;
@@ -186,14 +186,14 @@ export async function getDurableLocation(): Promise<Location | null> {
   // Try IndexedDB
   const fromIndexedDB = await getFromIndexedDB();
   if (fromIndexedDB) {
-    console.log('[DurableStorage] Recovered from IndexedDB');
+    console.log("[DurableStorage] Recovered from IndexedDB");
     // Backfill other storages
     saveToLocalStorage(fromIndexedDB);
     saveToSessionStorage(fromIndexedDB);
     return fromIndexedDB;
   }
 
-  console.log('[DurableStorage] No location found in any storage');
+  console.log("[DurableStorage] No location found in any storage");
   return null;
 }
 
@@ -202,21 +202,26 @@ export async function getDurableLocation(): Promise<Location | null> {
  */
 export async function setDurableLocation(location: Location): Promise<void> {
   if (!isValidLocation(location)) {
-    console.error('[DurableStorage] Invalid location object:', location);
-    throw new Error('Invalid location object');
+    console.error("[DurableStorage] Invalid location object:", location);
+    throw new Error("Invalid location object");
   }
 
-  console.log('[DurableStorage] Saving location to all storage mechanisms:', location.displayName);
+  console.log(
+    "[DurableStorage] Saving location to all storage mechanisms:",
+    location.displayName,
+  );
 
   // Save to all storage locations simultaneously
   saveToLocalStorage(location);
   saveToSessionStorage(location);
-  
+
   try {
     await saveToIndexedDB(location);
-    console.log('[DurableStorage] Successfully saved to all storages');
-  } catch (error) {
-    console.error('[DurableStorage] Failed to save to IndexedDB, but localStorage/sessionStorage succeeded');
+    console.log("[DurableStorage] Successfully saved to all storages");
+  } catch (_error) {
+    console.error(
+      "[DurableStorage] Failed to save to IndexedDB, but localStorage/sessionStorage succeeded",
+    );
     // Don't throw - localStorage/sessionStorage saves succeeded
   }
 }
@@ -225,27 +230,27 @@ export async function setDurableLocation(location: Location): Promise<void> {
  * Clear location from all storage mechanisms
  */
 export async function clearDurableLocation(): Promise<void> {
-  console.log('[DurableStorage] Clearing location from all storages');
+  console.log("[DurableStorage] Clearing location from all storages");
 
   // Clear localStorage
   try {
     localStorage.removeItem(LOCALSTORAGE_BACKUP_KEY);
   } catch (error) {
-    console.warn('Failed to clear localStorage backup:', error);
+    console.warn("Failed to clear localStorage backup:", error);
   }
 
   // Clear sessionStorage
   try {
     sessionStorage.removeItem(SESSIONSTORAGE_BACKUP_KEY);
   } catch (error) {
-    console.warn('Failed to clear sessionStorage backup:', error);
+    console.warn("Failed to clear sessionStorage backup:", error);
   }
 
   // Clear IndexedDB
   try {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const transaction = db.transaction(STORE_NAME, "readwrite");
       const store = transaction.objectStore(STORE_NAME);
       const request = store.delete(LOCATION_KEY);
 
@@ -254,12 +259,12 @@ export async function clearDurableLocation(): Promise<void> {
       };
 
       request.onerror = () => {
-        console.error('IndexedDB delete error:', request.error);
+        console.error("IndexedDB delete error:", request.error);
         reject(request.error);
       };
     });
   } catch (error) {
-    console.error('Failed to clear IndexedDB:', error);
+    console.error("Failed to clear IndexedDB:", error);
     throw error;
   }
 }
@@ -273,13 +278,17 @@ export async function verifyStorageIntegrity(): Promise<boolean> {
   const fromSessionStorage = getFromSessionStorage();
   const fromIndexedDB = await getFromIndexedDB();
 
-  const hasLocation = !!(fromLocalStorage || fromSessionStorage || fromIndexedDB);
-  
-  console.log('[DurableStorage] Storage integrity check:', {
+  const hasLocation = !!(
+    fromLocalStorage ||
+    fromSessionStorage ||
+    fromIndexedDB
+  );
+
+  console.log("[DurableStorage] Storage integrity check:", {
     localStorage: !!fromLocalStorage,
     sessionStorage: !!fromSessionStorage,
     indexedDB: !!fromIndexedDB,
-    hasLocation
+    hasLocation,
   });
 
   return hasLocation;

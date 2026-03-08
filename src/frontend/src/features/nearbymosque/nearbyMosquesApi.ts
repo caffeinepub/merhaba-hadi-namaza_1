@@ -1,8 +1,8 @@
-import type { NearbyMosque } from './types';
-import { calculateDistance } from './distance';
+import { calculateDistance } from "./distance";
+import type { NearbyMosque } from "./types";
 
 interface OverpassElement {
-  type: 'node' | 'way' | 'relation';
+  type: "node" | "way" | "relation";
   id: number;
   lat?: number;
   lon?: number;
@@ -12,10 +12,10 @@ interface OverpassElement {
   };
   tags?: {
     name?: string;
-    'name:tr'?: string;
-    'addr:street'?: string;
-    'addr:housenumber'?: string;
-    'addr:city'?: string;
+    "name:tr"?: string;
+    "addr:street"?: string;
+    "addr:housenumber"?: string;
+    "addr:city"?: string;
   };
 }
 
@@ -33,7 +33,7 @@ interface OverpassResponse {
 export async function fetchNearbyMosques(
   latitude: number,
   longitude: number,
-  radiusMeters: number
+  radiusMeters: number,
 ): Promise<NearbyMosque[]> {
   // Overpass QL query to find mosques (place_of_worship with religion=muslim)
   const query = `
@@ -45,10 +45,10 @@ export async function fetchNearbyMosques(
     out center;
   `;
 
-  const response = await fetch('https://overpass-api.de/api/interpreter', {
-    method: 'POST',
+  const response = await fetch("https://overpass-api.de/api/interpreter", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
     },
     body: `data=${encodeURIComponent(query)}`,
   });
@@ -73,7 +73,7 @@ export async function fetchNearbyMosques(
     }
 
     // Get name (prefer Turkish name if available)
-    const name = element.tags?.['name:tr'] || element.tags?.name;
+    const name = element.tags?.["name:tr"] || element.tags?.name;
 
     // Skip if no name
     if (!name) {
@@ -84,17 +84,18 @@ export async function fetchNearbyMosques(
     let address: string | undefined;
     if (element.tags) {
       const parts: string[] = [];
-      if (element.tags['addr:street']) {
-        parts.push(element.tags['addr:street']);
-        if (element.tags['addr:housenumber']) {
-          parts[parts.length - 1] = `${element.tags['addr:street']} ${element.tags['addr:housenumber']}`;
+      if (element.tags["addr:street"]) {
+        parts.push(element.tags["addr:street"]);
+        if (element.tags["addr:housenumber"]) {
+          parts[parts.length - 1] =
+            `${element.tags["addr:street"]} ${element.tags["addr:housenumber"]}`;
         }
       }
-      if (element.tags['addr:city']) {
-        parts.push(element.tags['addr:city']);
+      if (element.tags["addr:city"]) {
+        parts.push(element.tags["addr:city"]);
       }
       if (parts.length > 0) {
-        address = parts.join(', ');
+        address = parts.join(", ");
       }
     }
 

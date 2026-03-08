@@ -1,8 +1,8 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
-import { tasbihatData } from './tasbihatData';
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import React from "react";
+import { tasbihatData } from "./tasbihatData";
 
 export function TasbihatTab() {
   return (
@@ -33,7 +33,10 @@ export function TasbihatTab() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="p-4 bg-muted/50 rounded-lg">
-                  <p className="text-right text-xl leading-relaxed font-arabic" dir="rtl">
+                  <p
+                    className="text-right text-xl leading-relaxed font-arabic"
+                    dir="rtl"
+                  >
                     {item.arabic}
                   </p>
                 </div>
@@ -45,9 +48,7 @@ export function TasbihatTab() {
                   </div>
                 )}
                 <div className="p-3 bg-accent/30 rounded-lg">
-                  <p className="text-sm leading-relaxed">
-                    {item.translation}
-                  </p>
+                  <p className="text-sm leading-relaxed">{item.translation}</p>
                 </div>
               </CardContent>
             </Card>
@@ -58,8 +59,9 @@ export function TasbihatTab() {
       <Card className="bg-primary/5 border-primary/20">
         <CardContent className="pt-6">
           <p className="text-sm text-center text-muted-foreground">
-            💡 <strong>Not:</strong> Bu tesbihatlar her farz namazın ardından okunur. 
-            Zikirmatik sekmesini kullanarak sayıları takip edebilirsiniz.
+            💡 <strong>Not:</strong> Bu tesbihatlar her farz namazın ardından
+            okunur. Zikirmatik sekmesini kullanarak sayıları takip
+            edebilirsiniz.
           </p>
         </CardContent>
       </Card>

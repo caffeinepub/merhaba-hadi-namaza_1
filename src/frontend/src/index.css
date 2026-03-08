@@ -3,244 +3,245 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --radius: 0.75rem;
-        /* Vivid colorful palette - rich jewel tones */
-        --background: 0.98 0.01 45;
-        --foreground: 0.25 0.03 30;
-        --card: 1 0 0;
-        --card-foreground: 0.25 0.03 30;
-        --popover: 1 0 0;
-        --popover-foreground: 0.25 0.03 30;
-        /* Rich emerald primary */
-        --primary: 0.55 0.18 160;
-        --primary-foreground: 0.98 0.01 160;
-        /* Warm amber secondary */
-        --secondary: 0.75 0.15 60;
-        --secondary-foreground: 0.20 0.03 60;
-        --muted: 0.92 0.02 50;
-        --muted-foreground: 0.50 0.03 30;
-        /* Vibrant turquoise accent */
-        --accent: 0.65 0.14 200;
-        --accent-foreground: 0.98 0.01 200;
-        --destructive: 0.55 0.22 25;
-        --destructive-foreground: 0.98 0.01 25;
-        --border: 0.85 0.03 50;
-        --input: 0.85 0.03 50;
-        --ring: 0.55 0.18 160;
-        --chart-1: 0.55 0.18 160;
-        --chart-2: 0.60 0.16 280;
-        --chart-3: 0.70 0.14 340;
-        --chart-4: 0.65 0.12 100;
-        --chart-5: 0.58 0.20 20;
+  :root {
+    --radius: 0.75rem;
+    /* Vivid colorful palette - rich jewel tones */
+    --background: 0.98 0.01 45;
+    --foreground: 0.25 0.03 30;
+    --card: 1 0 0;
+    --card-foreground: 0.25 0.03 30;
+    --popover: 1 0 0;
+    --popover-foreground: 0.25 0.03 30;
+    /* Rich emerald primary */
+    --primary: 0.55 0.18 160;
+    --primary-foreground: 0.98 0.01 160;
+    /* Warm amber secondary */
+    --secondary: 0.75 0.15 60;
+    --secondary-foreground: 0.2 0.03 60;
+    --muted: 0.92 0.02 50;
+    --muted-foreground: 0.5 0.03 30;
+    /* Vibrant turquoise accent */
+    --accent: 0.65 0.14 200;
+    --accent-foreground: 0.98 0.01 200;
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.98 0.01 25;
+    --border: 0.85 0.03 50;
+    --input: 0.85 0.03 50;
+    --ring: 0.55 0.18 160;
+    --chart-1: 0.55 0.18 160;
+    --chart-2: 0.6 0.16 280;
+    --chart-3: 0.7 0.14 340;
+    --chart-4: 0.65 0.12 100;
+    --chart-5: 0.58 0.2 20;
 
-        /* Soft pastel prayer time colors */
-        --prayer-imsak: 0.88 0.08 280;
-        --prayer-imsak-fg: 0.35 0.06 280;
-        --prayer-gunes: 0.90 0.08 50;
-        --prayer-gunes-fg: 0.40 0.06 50;
-        --prayer-ogle: 0.88 0.08 160;
-        --prayer-ogle-fg: 0.35 0.06 160;
-        --prayer-ikindi: 0.90 0.08 200;
-        --prayer-ikindi-fg: 0.40 0.06 200;
-        --prayer-aksam: 0.88 0.08 320;
-        --prayer-aksam-fg: 0.35 0.06 320;
-        --prayer-yatsi: 0.90 0.08 240;
-        --prayer-yatsi-fg: 0.40 0.06 240;
-    }
+    /* Soft pastel prayer time colors */
+    --prayer-imsak: 0.88 0.08 280;
+    --prayer-imsak-fg: 0.35 0.06 280;
+    --prayer-gunes: 0.9 0.08 50;
+    --prayer-gunes-fg: 0.4 0.06 50;
+    --prayer-ogle: 0.88 0.08 160;
+    --prayer-ogle-fg: 0.35 0.06 160;
+    --prayer-ikindi: 0.9 0.08 200;
+    --prayer-ikindi-fg: 0.4 0.06 200;
+    --prayer-aksam: 0.88 0.08 320;
+    --prayer-aksam-fg: 0.35 0.06 320;
+    --prayer-yatsi: 0.9 0.08 240;
+    --prayer-yatsi-fg: 0.4 0.06 240;
+  }
 
-    .dark {
-        --background: 0.18 0.03 30;
-        --foreground: 0.95 0.02 160;
-        --card: 0.22 0.03 30;
-        --card-foreground: 0.95 0.02 160;
-        --popover: 0.20 0.03 30;
-        --popover-foreground: 0.95 0.02 160;
-        --primary: 0.65 0.18 160;
-        --primary-foreground: 0.18 0.03 160;
-        --secondary: 0.55 0.15 60;
-        --secondary-foreground: 0.95 0.02 60;
-        --muted: 0.28 0.03 30;
-        --muted-foreground: 0.65 0.03 160;
-        --accent: 0.55 0.14 200;
-        --accent-foreground: 0.95 0.02 200;
-        --destructive: 0.50 0.22 25;
-        --destructive-foreground: 0.95 0.02 25;
-        --border: 0.30 0.03 30;
-        --input: 0.30 0.03 30;
-        --ring: 0.65 0.18 160;
-        --chart-1: 0.65 0.18 160;
-        --chart-2: 0.60 0.16 280;
-        --chart-3: 0.70 0.14 340;
-        --chart-4: 0.65 0.12 100;
-        --chart-5: 0.58 0.20 20;
+  .dark {
+    --background: 0.18 0.03 30;
+    --foreground: 0.95 0.02 160;
+    --card: 0.22 0.03 30;
+    --card-foreground: 0.95 0.02 160;
+    --popover: 0.2 0.03 30;
+    --popover-foreground: 0.95 0.02 160;
+    --primary: 0.65 0.18 160;
+    --primary-foreground: 0.18 0.03 160;
+    --secondary: 0.55 0.15 60;
+    --secondary-foreground: 0.95 0.02 60;
+    --muted: 0.28 0.03 30;
+    --muted-foreground: 0.65 0.03 160;
+    --accent: 0.55 0.14 200;
+    --accent-foreground: 0.95 0.02 200;
+    --destructive: 0.5 0.22 25;
+    --destructive-foreground: 0.95 0.02 25;
+    --border: 0.3 0.03 30;
+    --input: 0.3 0.03 30;
+    --ring: 0.65 0.18 160;
+    --chart-1: 0.65 0.18 160;
+    --chart-2: 0.6 0.16 280;
+    --chart-3: 0.7 0.14 340;
+    --chart-4: 0.65 0.12 100;
+    --chart-5: 0.58 0.2 20;
 
-        /* Soft pastel prayer time colors - dark mode */
-        --prayer-imsak: 0.35 0.10 280;
-        --prayer-imsak-fg: 0.85 0.06 280;
-        --prayer-gunes: 0.38 0.10 50;
-        --prayer-gunes-fg: 0.88 0.06 50;
-        --prayer-ogle: 0.35 0.10 160;
-        --prayer-ogle-fg: 0.85 0.06 160;
-        --prayer-ikindi: 0.38 0.10 200;
-        --prayer-ikindi-fg: 0.88 0.06 200;
-        --prayer-aksam: 0.35 0.10 320;
-        --prayer-aksam-fg: 0.85 0.06 320;
-        --prayer-yatsi: 0.38 0.10 240;
-        --prayer-yatsi-fg: 0.88 0.06 240;
-    }
+    /* Soft pastel prayer time colors - dark mode */
+    --prayer-imsak: 0.35 0.1 280;
+    --prayer-imsak-fg: 0.85 0.06 280;
+    --prayer-gunes: 0.38 0.1 50;
+    --prayer-gunes-fg: 0.88 0.06 50;
+    --prayer-ogle: 0.35 0.1 160;
+    --prayer-ogle-fg: 0.85 0.06 160;
+    --prayer-ikindi: 0.38 0.1 200;
+    --prayer-ikindi-fg: 0.88 0.06 200;
+    --prayer-aksam: 0.35 0.1 320;
+    --prayer-aksam-fg: 0.85 0.06 320;
+    --prayer-yatsi: 0.38 0.1 240;
+    --prayer-yatsi-fg: 0.88 0.06 240;
+  }
 
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
+  }
 }
 
 @layer components {
-    /* Responsive typography utilities */
-    .heading-1 {
-        @apply text-2xl sm:text-3xl md:text-4xl font-bold;
-    }
-    
-    .heading-2 {
-        @apply text-xl sm:text-2xl md:text-3xl font-semibold;
-    }
-    
-    .heading-3 {
-        @apply text-lg sm:text-xl md:text-2xl font-semibold;
-    }
-    
-    .body-text {
-        @apply text-sm sm:text-base md:text-lg;
-    }
-    
-    .arabic-text {
-        @apply text-base sm:text-lg md:text-xl leading-relaxed sm:leading-loose;
-    }
-    
-    .arabic-text-large {
-        @apply text-xl sm:text-2xl md:text-3xl leading-relaxed sm:leading-loose;
-    }
+  /* Responsive typography utilities */
+  .heading-1 {
+    @apply text-2xl sm:text-3xl md:text-4xl font-bold;
+  }
+
+  .heading-2 {
+    @apply text-xl sm:text-2xl md:text-3xl font-semibold;
+  }
+
+  .heading-3 {
+    @apply text-lg sm:text-xl md:text-2xl font-semibold;
+  }
+
+  .body-text {
+    @apply text-sm sm:text-base md:text-lg;
+  }
+
+  .arabic-text {
+    @apply text-base sm:text-lg md:text-xl leading-relaxed sm:leading-loose;
+  }
+
+  .arabic-text-large {
+    @apply text-xl sm:text-2xl md:text-3xl leading-relaxed sm:leading-loose;
+  }
 }
 
 @layer utilities {
-    /* Safe area insets for edge-to-edge WebView */
-    .safe-area-inset {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-    }
+  /* Safe area insets for edge-to-edge WebView */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
 
-    .safe-area-inset-top {
-        padding-top: env(safe-area-inset-top);
-    }
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
 
-    .safe-area-inset-bottom {
-        padding-bottom: env(safe-area-inset-bottom);
-    }
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 
-    .safe-area-inset-x {
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-    }
+  .safe-area-inset-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
 
-    .pattern-bg {
-        background-image: url('/assets/generated/islamic-pattern-bg.dim_1600x900.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-    
-    .vivid-motif-bg {
-        background-image: url('/assets/generated/islamic-pattern-vivid-bg.dim_1600x900.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
+  .pattern-bg {
+    background-image: url("/assets/generated/islamic-pattern-bg.dim_1600x900.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
-    /* Pastel prayer time column utilities */
-    .prayer-imsak-col {
-        background-color: oklch(var(--prayer-imsak) / 0.4);
-        color: oklch(var(--prayer-imsak-fg));
-    }
-    .prayer-gunes-col {
-        background-color: oklch(var(--prayer-gunes) / 0.4);
-        color: oklch(var(--prayer-gunes-fg));
-    }
-    .prayer-ogle-col {
-        background-color: oklch(var(--prayer-ogle) / 0.4);
-        color: oklch(var(--prayer-ogle-fg));
-    }
-    .prayer-ikindi-col {
-        background-color: oklch(var(--prayer-ikindi) / 0.4);
-        color: oklch(var(--prayer-ikindi-fg));
-    }
-    .prayer-aksam-col {
-        background-color: oklch(var(--prayer-aksam) / 0.4);
-        color: oklch(var(--prayer-aksam-fg));
-    }
-    .prayer-yatsi-col {
-        background-color: oklch(var(--prayer-yatsi) / 0.4);
-        color: oklch(var(--prayer-yatsi-fg));
-    }
+  .vivid-motif-bg {
+    background-image: url("/assets/generated/islamic-pattern-vivid-bg.dim_1600x900.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
-    /* Weekly prayer times table horizontal scroll with sticky first column */
-    .weekly-prayer-table-wrapper {
-        overflow-x: auto;
-        width: 100%;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-        isolation: isolate;
-    }
+  /* Pastel prayer time column utilities */
+  .prayer-imsak-col {
+    background-color: oklch(var(--prayer-imsak) / 0.4);
+    color: oklch(var(--prayer-imsak-fg));
+  }
+  .prayer-gunes-col {
+    background-color: oklch(var(--prayer-gunes) / 0.4);
+    color: oklch(var(--prayer-gunes-fg));
+  }
+  .prayer-ogle-col {
+    background-color: oklch(var(--prayer-ogle) / 0.4);
+    color: oklch(var(--prayer-ogle-fg));
+  }
+  .prayer-ikindi-col {
+    background-color: oklch(var(--prayer-ikindi) / 0.4);
+    color: oklch(var(--prayer-ikindi-fg));
+  }
+  .prayer-aksam-col {
+    background-color: oklch(var(--prayer-aksam) / 0.4);
+    color: oklch(var(--prayer-aksam-fg));
+  }
+  .prayer-yatsi-col {
+    background-color: oklch(var(--prayer-yatsi) / 0.4);
+    color: oklch(var(--prayer-yatsi-fg));
+  }
 
-    .weekly-prayer-table {
-        min-width: 650px;
-        white-space: nowrap;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+  /* Weekly prayer times table horizontal scroll with sticky first column */
+  .weekly-prayer-table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    isolation: isolate;
+  }
 
-    /* Sticky first column base - fully opaque backgrounds with clear separator */
-    .weekly-sticky-col {
-        position: sticky;
-        left: 0;
-        border-right: 2px solid oklch(var(--border));
-        box-shadow: 2px 0 6px -1px rgba(0, 0, 0, 0.15);
-    }
+  .weekly-prayer-table {
+    min-width: 650px;
+    white-space: nowrap;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
 
-    /* Header sticky column - highest z-index, fully opaque */
-    .weekly-sticky-header {
-        z-index: 30;
-        background-color: oklch(0.94 0.02 50);
-    }
+  /* Sticky first column base - fully opaque backgrounds with clear separator */
+  .weekly-sticky-col {
+    position: sticky;
+    left: 0;
+    border-right: 2px solid oklch(var(--border));
+    box-shadow: 2px 0 6px -1px rgba(0, 0, 0, 0.15);
+  }
 
-    /* Body sticky column - fully opaque */
-    .weekly-sticky-body {
-        z-index: 20;
-        background-color: oklch(0.97 0.01 50);
-    }
+  /* Header sticky column - highest z-index, fully opaque */
+  .weekly-sticky-header {
+    z-index: 30;
+    background-color: oklch(0.94 0.02 50);
+  }
 
-    /* Today row sticky column - fully opaque with subtle tint */
-    .weekly-sticky-today {
-        z-index: 20;
-        background-color: oklch(0.90 0.04 160);
-    }
+  /* Body sticky column - fully opaque */
+  .weekly-sticky-body {
+    z-index: 20;
+    background-color: oklch(0.97 0.01 50);
+  }
 
-    /* Dark mode adjustments for sticky column - all fully opaque */
-    .dark .weekly-sticky-header {
-        background-color: oklch(0.25 0.03 30);
-        box-shadow: 2px 0 6px -1px rgba(0, 0, 0, 0.4);
-    }
+  /* Today row sticky column - fully opaque with subtle tint */
+  .weekly-sticky-today {
+    z-index: 20;
+    background-color: oklch(0.9 0.04 160);
+  }
 
-    .dark .weekly-sticky-body {
-        background-color: oklch(0.22 0.03 30);
-    }
+  /* Dark mode adjustments for sticky column - all fully opaque */
+  .dark .weekly-sticky-header {
+    background-color: oklch(0.25 0.03 30);
+    box-shadow: 2px 0 6px -1px rgba(0, 0, 0, 0.4);
+  }
 
-    .dark .weekly-sticky-today {
-        background-color: oklch(0.28 0.08 160);
-    }
+  .dark .weekly-sticky-body {
+    background-color: oklch(0.22 0.03 30);
+  }
+
+  .dark .weekly-sticky-today {
+    background-color: oklch(0.28 0.08 160);
+  }
 }

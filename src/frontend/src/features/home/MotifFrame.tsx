@@ -1,13 +1,17 @@
-import React from 'react';
+import type React from "react";
 
 interface MotifFrameProps {
   children: React.ReactNode;
-  variant?: 'default' | 'ornamental' | 'divider';
+  variant?: "default" | "ornamental" | "divider";
   className?: string;
 }
 
-export function MotifFrame({ children, variant = 'default', className = '' }: MotifFrameProps) {
-  if (variant === 'ornamental') {
+export function MotifFrame({
+  children,
+  variant = "default",
+  className = "",
+}: MotifFrameProps) {
+  if (variant === "ornamental") {
     return (
       <div className={`relative ${className}`}>
         {/* Corner ornaments */}
@@ -44,7 +48,7 @@ export function MotifFrame({ children, variant = 'default', className = '' }: Mo
     );
   }
 
-  if (variant === 'divider') {
+  if (variant === "divider") {
     return (
       <div className={`space-y-4 ${className}`}>
         {children}

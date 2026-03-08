@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
-import { getCurrentPrayerSlot, type PrayerSlot, type AdjustedPrayerTimes } from './currentPrayerSlot';
+import { useEffect, useState } from "react";
+import {
+  type AdjustedPrayerTimes,
+  type PrayerSlot,
+  getCurrentPrayerSlot,
+} from "./currentPrayerSlot";
 
 /**
  * Hook that tracks the current prayer slot and updates when it changes.
  * Checks every minute for slot changes.
  */
-export function useCurrentPrayerSlot(adjustedTimes: AdjustedPrayerTimes | null): PrayerSlot | null {
+export function useCurrentPrayerSlot(
+  adjustedTimes: AdjustedPrayerTimes | null,
+): PrayerSlot | null {
   const [currentSlot, setCurrentSlot] = useState<PrayerSlot | null>(null);
 
   useEffect(() => {
@@ -21,7 +27,7 @@ export function useCurrentPrayerSlot(adjustedTimes: AdjustedPrayerTimes | null):
     // Update every minute
     const interval = setInterval(() => {
       const newSlot = getCurrentPrayerSlot(adjustedTimes);
-      setCurrentSlot(prev => {
+      setCurrentSlot((prev) => {
         // Only update if slot actually changed
         if (prev !== newSlot) {
           return newSlot;

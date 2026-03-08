@@ -1,14 +1,23 @@
-import React from 'react';
-import { Button } from '../../components/ui/button';
-import type { VariantProps } from 'class-variance-authority';
-import { buttonVariants } from '../../components/ui/button';
+import type { VariantProps } from "class-variance-authority";
+import type React from "react";
+import { Button } from "../../components/ui/button";
+import type { buttonVariants } from "../../components/ui/button";
 
-interface MotifButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+interface MotifButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   children: React.ReactNode;
   asChild?: boolean;
 }
 
-export function MotifButton({ children, className = '', variant, size, asChild, ...props }: MotifButtonProps) {
+export function MotifButton({
+  children,
+  className = "",
+  variant,
+  size,
+  asChild,
+  ...props
+}: MotifButtonProps) {
   return (
     <div className="relative inline-block">
       {/* Subtle tile pattern overlay */}
@@ -16,13 +25,20 @@ export function MotifButton({ children, className = '', variant, size, asChild, 
         <div
           className="w-full h-full"
           style={{
-            backgroundImage: 'url(/assets/generated/islamic-pattern-tile.dim_512x512.png)',
-            backgroundSize: '32px 32px',
-            backgroundRepeat: 'repeat'
+            backgroundImage:
+              "url(/assets/generated/islamic-pattern-tile.dim_512x512.png)",
+            backgroundSize: "32px 32px",
+            backgroundRepeat: "repeat",
           }}
         />
       </div>
-      <Button className={`relative ${className}`} variant={variant} size={size} asChild={asChild} {...props}>
+      <Button
+        className={`relative ${className}`}
+        variant={variant}
+        size={size}
+        asChild={asChild}
+        {...props}
+      >
         {children}
       </Button>
     </div>

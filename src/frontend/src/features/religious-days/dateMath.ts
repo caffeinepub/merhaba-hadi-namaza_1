@@ -23,9 +23,9 @@ export function daysBetweenLocalDays(startDate: Date, endDate: Date): number {
  * Format date for display in Turkish locale
  */
 export function formatDateForDisplay(date: Date): string {
-  return new Intl.DateTimeFormat('tr-TR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Intl.DateTimeFormat("tr-TR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   }).format(date);
 }

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { RotateCcw, Target } from 'lucide-react';
-import { useAppSettings } from '../settings/useAppSettings';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { RotateCcw, Target } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useAppSettings } from "../settings/useAppSettings";
 
 export function ZikirmatikTab() {
   const { settings, saveSettings, isSaving } = useAppSettings();
@@ -25,7 +26,7 @@ export function ZikirmatikTab() {
     setCount(newCount);
     await saveSettings({
       ...settings,
-      zikirmatikCount: newCount
+      zikirmatikCount: newCount,
     });
   };
 
@@ -33,7 +34,7 @@ export function ZikirmatikTab() {
     setCount(0);
     await saveSettings({
       ...settings,
-      zikirmatikCount: 0
+      zikirmatikCount: 0,
     });
   };
 
@@ -42,12 +43,12 @@ export function ZikirmatikTab() {
   };
 
   const handleTargetBlur = async () => {
-    const numValue = parseInt(tempTarget, 10);
-    if (!isNaN(numValue) && numValue > 0) {
+    const numValue = Number.parseInt(tempTarget, 10);
+    if (!Number.isNaN(numValue) && numValue > 0) {
       setTarget(numValue);
       await saveSettings({
         ...settings,
-        zikirmatikTarget: numValue
+        zikirmatikTarget: numValue,
       });
     } else {
       setTempTarget(String(target));
@@ -55,7 +56,7 @@ export function ZikirmatikTab() {
   };
 
   const handleTargetKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.currentTarget.blur();
     }
   };
@@ -67,7 +68,9 @@ export function ZikirmatikTab() {
     <div className="space-y-4 sm:space-y-6 pb-20">
       <Card className="border-2">
         <CardHeader className="pb-3 sm:pb-4">
-          <CardTitle className="text-center text-xl sm:text-2xl">Dijital Tesbih</CardTitle>
+          <CardTitle className="text-center text-xl sm:text-2xl">
+            Dijital Tesbih
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 sm:space-y-6">
           {/* Counter Display */}
@@ -76,7 +79,7 @@ export function ZikirmatikTab() {
               {count}
             </div>
             <div className="mt-2 text-xs sm:text-sm text-muted-foreground">
-              {remaining > 0 ? `${remaining} kez daha` : 'Hedefe ulaştınız! 🎉'}
+              {remaining > 0 ? `${remaining} kez daha` : "Hedefe ulaştınız! 🎉"}
             </div>
           </div>
 
@@ -91,7 +94,10 @@ export function ZikirmatikTab() {
 
           {/* Target Setting */}
           <div className="space-y-2">
-            <Label htmlFor="target" className="flex items-center gap-2 text-sm sm:text-base">
+            <Label
+              htmlFor="target"
+              className="flex items-center gap-2 text-sm sm:text-base"
+            >
               <Target className="h-4 w-4" />
               Hedef Sayı
             </Label>
@@ -135,20 +141,22 @@ export function ZikirmatikTab() {
       {/* Quick Target Buttons */}
       <Card>
         <CardHeader className="pb-3 sm:pb-4">
-          <CardTitle className="text-base sm:text-lg">Hızlı Hedef Seçimi</CardTitle>
+          <CardTitle className="text-base sm:text-lg">
+            Hızlı Hedef Seçimi
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {[33, 99, 100, 500, 1000, 10000].map((value) => (
               <Button
                 key={value}
-                variant={target === value ? 'default' : 'outline'}
+                variant={target === value ? "default" : "outline"}
                 onClick={async () => {
                   setTarget(value);
                   setTempTarget(String(value));
                   await saveSettings({
                     ...settings,
-                    zikirmatikTarget: value
+                    zikirmatikTarget: value,
                   });
                 }}
                 disabled={isSaving}
@@ -165,8 +173,8 @@ export function ZikirmatikTab() {
       <Card className="bg-muted/50">
         <CardContent className="pt-4 sm:pt-6">
           <p className="text-xs sm:text-sm text-muted-foreground text-center leading-relaxed">
-            Tesbih çekerken kalp huzuru ve konsantrasyonunuzu koruyun. 
-            Her zikir, Allah'a yakınlaşmanın bir adımıdır.
+            Tesbih çekerken kalp huzuru ve konsantrasyonunuzu koruyun. Her
+            zikir, Allah'a yakınlaşmanın bir adımıdır.
           </p>
         </CardContent>
       </Card>

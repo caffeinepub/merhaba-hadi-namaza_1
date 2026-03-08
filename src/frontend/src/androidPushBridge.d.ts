@@ -1,6 +1,6 @@
 /**
  * TypeScript declarations for window.AndroidPush interface
- * 
+ *
  * This interface is provided by the native Android WebView wrapper
  * to receive expanded prayer-times data for SharedPreferences storage,
  * alarm scheduling, and widget updates.
@@ -16,7 +16,7 @@ interface AndroidPushInterface {
   /**
    * Primary method: Sends expanded prayer-times data to Android for SharedPreferences storage,
    * PrayerAlarmReceiver alarm scheduling, and widget updates.
-   * 
+   *
    * The JSON string must parse to an object containing:
    * - nextPrayer: string (prayer name, e.g., "İmsak", "Öğle", "İkindi", "Akşam", "Yatsı")
    * - nextPrayerMillis: number (epoch timestamp in milliseconds)
@@ -24,7 +24,7 @@ interface AndroidPushInterface {
    * - timeRemaining: string (countdown string in mm:ss or HH:mm:ss format, e.g., "04:09" or "01:04:09")
    * - dailyPrayers: array of objects { name: string, time: string, timeMillis: number }
    * - weeklyPrayers: array of objects { name: string, time: string, timeMillis: number }
-   * 
+   *
    * Android will:
    * 1. Store the JSON in SharedPreferences
    * 2. Parse dailyPrayers and weeklyPrayers as JSONArray of JSONObject
@@ -32,7 +32,7 @@ interface AndroidPushInterface {
    * 4. Display notifications with prayer name and countdown
    * 5. Update widgets with daily and weekly prayer times
    * 6. Update persistent notification by finding next prayer from arrays
-   * 
+   *
    * Example payload:
    * ```json
    * {
@@ -60,7 +60,7 @@ interface AndroidPushInterface {
    *   ]
    * }
    * ```
-   * 
+   *
    * @param jsonData - JSON string containing the expanded prayer-times payload
    */
   sendPrayerTimes?(jsonData: string): void;
@@ -69,9 +69,9 @@ interface AndroidPushInterface {
    * Alternative fallback method: Some Android implementations may use this method name
    * instead of `sendPrayerTimes`. The web app will attempt `sendPrayerTimes` first,
    * then fall back to `send` if available.
-   * 
+   *
    * Accepts the same JSON payload format as `sendPrayerTimes`.
-   * 
+   *
    * @param jsonData - JSON string containing the expanded prayer-times payload
    */
   send?(jsonData: string): void;

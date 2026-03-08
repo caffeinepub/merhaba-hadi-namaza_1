@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { RotateCcw, BookOpen, Plus, Minus } from 'lucide-react';
-import { useAppSettings } from '../settings/useAppSettings';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { BookOpen, Minus, Plus, RotateCcw } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useAppSettings } from "../settings/useAppSettings";
 
 const TOTAL_PAGES = 604;
 
 export function HatimTakipTab() {
   const { settings, saveSettings, isSaving } = useAppSettings();
-  const [currentPage, setCurrentPage] = useState(settings.hatimLastReadPage || 1);
-  const [tempPage, setTempPage] = useState(String(settings.hatimLastReadPage || 1));
+  const [currentPage, setCurrentPage] = useState(
+    settings.hatimLastReadPage || 1,
+  );
+  const [tempPage, setTempPage] = useState(
+    String(settings.hatimLastReadPage || 1),
+  );
 
   // Sync local state with settings when they load
   useEffect(() => {
@@ -25,12 +30,12 @@ export function HatimTakipTab() {
   };
 
   const handlePageBlur = async () => {
-    const numValue = parseInt(tempPage, 10);
-    if (!isNaN(numValue) && numValue >= 1 && numValue <= TOTAL_PAGES) {
+    const numValue = Number.parseInt(tempPage, 10);
+    if (!Number.isNaN(numValue) && numValue >= 1 && numValue <= TOTAL_PAGES) {
       setCurrentPage(numValue);
       await saveSettings({
         ...settings,
-        hatimLastReadPage: numValue
+        hatimLastReadPage: numValue,
       });
     } else {
       setTempPage(String(currentPage));
@@ -38,7 +43,7 @@ export function HatimTakipTab() {
   };
 
   const handlePageKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.currentTarget.blur();
     }
   };
@@ -49,7 +54,7 @@ export function HatimTakipTab() {
     setTempPage(String(newPage));
     await saveSettings({
       ...settings,
-      hatimLastReadPage: newPage
+      hatimLastReadPage: newPage,
     });
   };
 
@@ -59,16 +64,16 @@ export function HatimTakipTab() {
     setTempPage(String(newPage));
     await saveSettings({
       ...settings,
-      hatimLastReadPage: newPage
+      hatimLastReadPage: newPage,
     });
   };
 
   const handleReset = async () => {
     setCurrentPage(1);
-    setTempPage('1');
+    setTempPage("1");
     await saveSettings({
       ...settings,
-      hatimLastReadPage: 1
+      hatimLastReadPage: 1,
     });
   };
 
@@ -97,7 +102,9 @@ export function HatimTakipTab() {
               / {TOTAL_PAGES} sayfa
             </div>
             <div className="mt-1 text-sm text-muted-foreground">
-              {remainingPages > 0 ? `${remainingPages} sayfa kaldı` : 'Hatmi tamamladınız! 🎉'}
+              {remainingPages > 0
+                ? `${remainingPages} sayfa kaldı`
+                : "Hatmi tamamladınız! 🎉"}
             </div>
           </div>
 
@@ -189,8 +196,8 @@ export function HatimTakipTab() {
       <Card className="bg-muted/50">
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground text-center leading-relaxed">
-            Kur'an-ı Kerim'i düzenli okumak, kalp huzuru ve manevi gelişim için önemlidir. 
-            Her gün birkaç sayfa okuyarak hatmi tamamlayabilirsiniz.
+            Kur'an-ı Kerim'i düzenli okumak, kalp huzuru ve manevi gelişim için
+            önemlidir. Her gün birkaç sayfa okuyarak hatmi tamamlayabilirsiniz.
           </p>
         </CardContent>
       </Card>

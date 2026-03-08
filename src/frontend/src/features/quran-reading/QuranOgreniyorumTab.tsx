@@ -1,20 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { BookOpen, Play, Pause, SkipBack, SkipForward, ChevronLeft, Languages, Volume2 } from 'lucide-react';
-import { getAllSurahs, getSurahContent, type SurahMetadata, type SurahContent } from './quranApi';
-import { useAyahAudioPlayer } from './useAyahAudioPlayer';
-import { useQuranReadingState } from './useQuranReadingState';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import {
+  BookOpen,
+  ChevronLeft,
+  Languages,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  Volume2,
+} from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  type SurahContent,
+  type SurahMetadata,
+  getAllSurahs,
+  getSurahContent,
+} from "./quranApi";
+import { useAyahAudioPlayer } from "./useAyahAudioPlayer";
+import { useQuranReadingState } from "./useQuranReadingState";
 
-type ViewMode = 'list' | 'reader';
+type ViewMode = "list" | "reader";
 
 export function QuranOgreniyorumTab() {
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [surahs, setSurahs] = useState<SurahMetadata[]>([]);
   const [selectedSurah, setSelectedSurah] = useState<SurahContent | null>(null);
   const [isLoadingSurahs, setIsLoadingSurahs] = useState(true);
@@ -26,11 +40,11 @@ export function QuranOgreniyorumTab() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Audio player
-  const audioUrls = selectedSurah?.ayahs.map((a) => a.audio || '') || [];
+  const audioUrls = selectedSurah?.ayahs.map((a) => a.audio || "") || [];
   const [audioState, audioControls] = useAyahAudioPlayer({
     audioUrls,
     initialIndex: 0,
-    autoPlayNext: true
+    autoPlayNext: true,
   });
 
   // Load all surahs on mount
@@ -41,14 +55,16 @@ export function QuranOgreniyorumTab() {
     });
   }, []);
 
-  // Restore last reading position
+  // Restore last reading position (intentionally only runs when surahs list loads)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional - only restore on initial surahs load
   useEffect(() => {
     if (surahs.length > 0 && readingState.lastSurahNumber > 0) {
       handleSelectSurah(readingState.lastSurahNumber);
     }
   }, [surahs.length]);
 
-  // Restore scroll position after content loads
+  // Restore scroll position after content loads (intentionally only runs when surah changes)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional - only restore scroll once when surah content loads
   useEffect(() => {
     if (selectedSurah && scrollRef.current && readingState.scrollPosition > 0) {
       setTimeout(() => {
@@ -62,7 +78,7 @@ export function QuranOgreniyorumTab() {
   const handleSelectSurah = async (surahNumber: number) => {
     // Stop any playing audio from previous surah
     audioControls.pause();
-    
+
     setIsLoadingContent(true);
     setError(null);
 
@@ -70,13 +86,13 @@ export function QuranOgreniyorumTab() {
 
     if (content) {
       setSelectedSurah(content);
-      setViewMode('reader');
+      setViewMode("reader");
       saveReadingState({ lastSurahNumber: surahNumber, lastAyahNumber: 1 });
-      
+
       // Reset audio to first ayah of new surah
       audioControls.setAyahIndex(0);
     } else {
-      setError('Sure yüklenemedi. Lütfen tekrar deneyin.');
+      setError("Sure yüklenemedi. Lütfen tekrar deneyin.");
     }
 
     setIsLoadingContent(false);
@@ -87,12 +103,12 @@ export function QuranOgreniyorumTab() {
     if (scrollRef.current) {
       saveReadingState({ scrollPosition: scrollRef.current.scrollTop });
     }
-    
+
     // Stop audio and reset
     audioControls.pause();
     audioControls.setAyahIndex(0);
-    
-    setViewMode('list');
+
+    setViewMode("list");
     setSelectedSurah(null);
   };
 
@@ -121,7 +137,7 @@ export function QuranOgreniyorumTab() {
     );
   }
 
-  if (viewMode === 'list') {
+  if (viewMode === "list") {
     return (
       <div className="space-y-4">
         <Card className="border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
@@ -143,6 +159,7 @@ export function QuranOgreniyorumTab() {
               <div className="space-y-2">
                 {surahs.map((surah) => (
                   <button
+                    type="button"
                     key={surah.number}
                     onClick={() => handleSelectSurah(surah.number)}
                     className="w-full text-left p-4 rounded-lg border-2 border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all group"
@@ -157,14 +174,19 @@ export function QuranOgreniyorumTab() {
                             {surah.englishName}
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            {surah.englishNameTranslation} • {surah.numberOfAyahs} Ayet
+                            {surah.englishNameTranslation} •{" "}
+                            {surah.numberOfAyahs} Ayet
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-arabic mb-1">{surah.name}</div>
+                        <div className="text-2xl font-arabic mb-1">
+                          {surah.name}
+                        </div>
                         <Badge variant="outline" className="text-xs">
-                          {surah.revelationType === 'Meccan' ? 'Mekki' : 'Medeni'}
+                          {surah.revelationType === "Meccan"
+                            ? "Mekki"
+                            : "Medeni"}
                         </Badge>
                       </div>
                     </div>
@@ -241,20 +263,28 @@ export function QuranOgreniyorumTab() {
                 checked={showTranslation}
                 onCheckedChange={setShowTranslation}
               />
-              <Label htmlFor="translation-toggle" className="text-sm cursor-pointer">
+              <Label
+                htmlFor="translation-toggle"
+                className="text-sm cursor-pointer"
+              >
                 Meal
               </Label>
             </div>
           </div>
 
           <div className="text-center mb-4">
-            <h2 className="text-3xl font-arabic mb-2">{selectedSurah.metadata.name}</h2>
+            <h2 className="text-3xl font-arabic mb-2">
+              {selectedSurah.metadata.name}
+            </h2>
             <h3 className="text-xl font-semibold mb-1">
               {selectedSurah.metadata.englishName}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {selectedSurah.metadata.englishNameTranslation} • {selectedSurah.metadata.numberOfAyahs} Ayet •{' '}
-              {selectedSurah.metadata.revelationType === 'Meccan' ? 'Mekki' : 'Medeni'}
+              {selectedSurah.metadata.englishNameTranslation} •{" "}
+              {selectedSurah.metadata.numberOfAyahs} Ayet •{" "}
+              {selectedSurah.metadata.revelationType === "Meccan"
+                ? "Mekki"
+                : "Medeni"}
             </p>
           </div>
 
@@ -262,7 +292,8 @@ export function QuranOgreniyorumTab() {
           <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium">
-                Ayet {audioState.currentAyahIndex + 1} / {selectedSurah.ayahs.length}
+                Ayet {audioState.currentAyahIndex + 1} /{" "}
+                {selectedSurah.ayahs.length}
               </span>
               {audioState.error && (
                 <span className="text-xs text-destructive font-medium px-2 py-1 bg-destructive/10 rounded">
@@ -275,7 +306,9 @@ export function QuranOgreniyorumTab() {
                 variant="outline"
                 size="icon"
                 onClick={audioControls.previousAyah}
-                disabled={audioState.currentAyahIndex === 0 || audioState.isLoading}
+                disabled={
+                  audioState.currentAyahIndex === 0 || audioState.isLoading
+                }
                 className="h-10 w-10"
               >
                 <SkipBack className="h-4 w-4" />
@@ -300,8 +333,8 @@ export function QuranOgreniyorumTab() {
                 size="icon"
                 onClick={audioControls.nextAyah}
                 disabled={
-                  audioState.currentAyahIndex === selectedSurah.ayahs.length - 1 ||
-                  audioState.isLoading
+                  audioState.currentAyahIndex ===
+                    selectedSurah.ayahs.length - 1 || audioState.isLoading
                 }
                 className="h-10 w-10"
               >
@@ -315,15 +348,19 @@ export function QuranOgreniyorumTab() {
       {/* Ayahs content */}
       <Card className="border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
         <CardContent className="pt-6">
-          <ScrollArea className="h-[500px] pr-4" ref={scrollRef} onScroll={handleScroll}>
+          <ScrollArea
+            className="h-[500px] pr-4"
+            ref={scrollRef}
+            onScroll={handleScroll}
+          >
             <div className="space-y-6">
               {selectedSurah.ayahs.map((ayah, index) => (
                 <div
                   key={ayah.number}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     audioState.currentAyahIndex === index
-                      ? 'border-primary/40 bg-primary/5 shadow-sm'
-                      : 'border-primary/10 hover:border-primary/20'
+                      ? "border-primary/40 bg-primary/5 shadow-sm"
+                      : "border-primary/10 hover:border-primary/20"
                   }`}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -343,7 +380,9 @@ export function QuranOgreniyorumTab() {
                   </div>
 
                   <div className="text-right mb-4">
-                    <p className="text-2xl leading-loose font-arabic">{ayah.text}</p>
+                    <p className="text-2xl leading-loose font-arabic">
+                      {ayah.text}
+                    </p>
                   </div>
 
                   {showTranslation && ayah.translation && (

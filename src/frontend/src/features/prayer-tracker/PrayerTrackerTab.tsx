@@ -1,29 +1,29 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useAppSettings } from '../settings/useAppSettings';
-import { Plus, Minus, CheckCircle2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CheckCircle2, Minus, Plus } from "lucide-react";
+import React from "react";
+import { useAppSettings } from "../settings/useAppSettings";
 
-type PrayerKey = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+type PrayerKey = "fajr" | "dhuhr" | "asr" | "maghrib" | "isha";
 
 const PRAYER_NAMES: Record<PrayerKey, string> = {
-  fajr: 'Sabah',
-  dhuhr: 'Öğle',
-  asr: 'İkindi',
-  maghrib: 'Akşam',
-  isha: 'Yatsı'
+  fajr: "Sabah",
+  dhuhr: "Öğle",
+  asr: "İkindi",
+  maghrib: "Akşam",
+  isha: "Yatsı",
 };
 
-const PRAYER_ORDER: PrayerKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+const PRAYER_ORDER: PrayerKey[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
 function getTodayDateKey(): string {
   const now = new Date();
   const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
@@ -41,22 +41,22 @@ export function PrayerTrackerTab() {
     dhuhr: 0,
     asr: 0,
     maghrib: 0,
-    isha: 0
+    isha: 0,
   };
 
   // Toggle daily prayer
   const toggleDailyPrayer = async (prayer: PrayerKey) => {
     const newChecklist = {
       ...todayChecklist,
-      [prayer]: !todayChecklist[prayer]
+      [prayer]: !todayChecklist[prayer],
     };
 
     await saveSettings({
       ...settings,
       prayerDailyChecklists: {
         ...dailyChecklists,
-        [todayKey]: newChecklist
-      }
+        [todayKey]: newChecklist,
+      },
     });
   };
 
@@ -69,8 +69,8 @@ export function PrayerTrackerTab() {
       ...settings,
       prayerKazaCounters: {
         ...kazaCounters,
-        [prayer]: newCount
-      }
+        [prayer]: newCount,
+      },
     });
   };
 
@@ -82,14 +82,17 @@ export function PrayerTrackerTab() {
       ...settings,
       prayerKazaCounters: {
         ...kazaCounters,
-        [prayer]: newCount
-      }
+        [prayer]: newCount,
+      },
     });
   };
 
   // Calculate stats
-  const todayCompleted = PRAYER_ORDER.filter(p => todayChecklist[p]).length;
-  const totalKaza = PRAYER_ORDER.reduce((sum, p) => sum + (kazaCounters[p] || 0), 0);
+  const todayCompleted = PRAYER_ORDER.filter((p) => todayChecklist[p]).length;
+  const totalKaza = PRAYER_ORDER.reduce(
+    (sum, p) => sum + (kazaCounters[p] || 0),
+    0,
+  );
 
   return (
     <div className="space-y-6 pb-8">
@@ -129,7 +132,7 @@ export function PrayerTrackerTab() {
                   <Label
                     htmlFor={`daily-${prayer}`}
                     className={`text-base cursor-pointer ${
-                      isCompleted ? 'line-through text-muted-foreground' : ''
+                      isCompleted ? "line-through text-muted-foreground" : ""
                     }`}
                   >
                     {PRAYER_NAMES[prayer]}
@@ -186,7 +189,7 @@ export function PrayerTrackerTab() {
                     min="0"
                     value={count}
                     onChange={(e) => {
-                      const val = parseInt(e.target.value) || 0;
+                      const val = Number.parseInt(e.target.value) || 0;
                       setKazaCounter(prayer, val);
                     }}
                     disabled={isSaving}
@@ -217,10 +220,12 @@ export function PrayerTrackerTab() {
       {/* Footer */}
       <footer className="text-center text-xs text-muted-foreground pt-4 border-t">
         <p>
-          © {new Date().getFullYear()} · Built with ❤️ using{' '}
+          © {new Date().getFullYear()} · Built with ❤️ using{" "}
           <a
             href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-              typeof window !== 'undefined' ? window.location.hostname : 'hadi-namaza'
+              typeof window !== "undefined"
+                ? window.location.hostname
+                : "hadi-namaza",
             )}`}
             target="_blank"
             rel="noopener noreferrer"

@@ -18,7 +18,7 @@ export interface GeocodingResult {
  * Used when all storage mechanisms fail and no location has been set
  */
 export const DEFAULT_LOCATION: Location = {
-  displayName: 'İstanbul, Türkiye (Varsayılan)',
+  displayName: "İstanbul, Türkiye (Varsayılan)",
   latitude: 41.0082,
-  longitude: 28.9784
+  longitude: 28.9784,
 };

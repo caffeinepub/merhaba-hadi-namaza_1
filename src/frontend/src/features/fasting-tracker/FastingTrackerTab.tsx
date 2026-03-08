@@ -1,33 +1,40 @@
-import React, { useState } from 'react';
-import { useAppSettings } from '../settings/useAppSettings';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, Plus, Trash2, Target } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { RamadanChecklistSection } from './RamadanChecklistSection';
-import type { RamadanDayStatus } from '../settings/appSettingsModel';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Calendar, Plus, Target, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import type { RamadanDayStatus } from "../settings/appSettingsModel";
+import { useAppSettings } from "../settings/useAppSettings";
+import { RamadanChecklistSection } from "./RamadanChecklistSection";
 
 export function FastingTrackerTab() {
   const { settings, saveSettings } = useAppSettings();
-  const [voluntaryDate, setVoluntaryDate] = useState('');
-  const [makeUpDate, setMakeUpDate] = useState('');
-  const [makeUpTarget, setMakeUpTarget] = useState(settings.fastingMakeUpTargetCount?.toString() || '0');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [voluntaryDate, setVoluntaryDate] = useState("");
+  const [makeUpDate, setMakeUpDate] = useState("");
+  const [makeUpTarget, setMakeUpTarget] = useState(
+    settings.fastingMakeUpTargetCount?.toString() || "0",
+  );
+  const [errorMessage, setErrorMessage] = useState("");
 
   const voluntaryDates = settings.fastingVoluntaryDates || [];
   const makeUpDates = settings.fastingMakeUpDates || [];
   const makeUpTargetCount = settings.fastingMakeUpTargetCount || 0;
-  const ramadanDayStatuses = settings.ramadanDayStatuses || Array(30).fill('Fasted' as RamadanDayStatus);
+  const ramadanDayStatuses =
+    settings.ramadanDayStatuses || Array(30).fill("Fasted" as RamadanDayStatus);
 
   // Calculate missed Ramadan days (automatic make-up total)
-  const missedRamadanTotal = ramadanDayStatuses.filter(status => status === 'Missed').length;
+  const missedRamadanTotal = ramadanDayStatuses.filter(
+    (status) => status === "Missed",
+  ).length;
 
   // Sort dates descending (newest first)
-  const sortedVoluntaryDates = [...voluntaryDates].sort((a, b) => b.localeCompare(a));
+  const sortedVoluntaryDates = [...voluntaryDates].sort((a, b) =>
+    b.localeCompare(a),
+  );
   const sortedMakeUpDates = [...makeUpDates].sort((a, b) => b.localeCompare(a));
 
   // Calculate remaining make-up fasts (from manual tracking)
@@ -37,23 +44,23 @@ export function FastingTrackerTab() {
     if (!voluntaryDate) return;
 
     if (voluntaryDates.includes(voluntaryDate)) {
-      setErrorMessage('Bu tarih zaten nafile oruç olarak kaydedilmiş.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      setErrorMessage("Bu tarih zaten nafile oruç olarak kaydedilmiş.");
+      setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
 
     await saveSettings({
       ...settings,
-      fastingVoluntaryDates: [...voluntaryDates, voluntaryDate]
+      fastingVoluntaryDates: [...voluntaryDates, voluntaryDate],
     });
-    setVoluntaryDate('');
-    setErrorMessage('');
+    setVoluntaryDate("");
+    setErrorMessage("");
   };
 
   const handleRemoveVoluntary = async (date: string) => {
     await saveSettings({
       ...settings,
-      fastingVoluntaryDates: voluntaryDates.filter(d => d !== date)
+      fastingVoluntaryDates: voluntaryDates.filter((d) => d !== date),
     });
   };
 
@@ -61,50 +68,53 @@ export function FastingTrackerTab() {
     if (!makeUpDate) return;
 
     if (makeUpDates.includes(makeUpDate)) {
-      setErrorMessage('Bu tarih zaten kaza orucu olarak kaydedilmiş.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      setErrorMessage("Bu tarih zaten kaza orucu olarak kaydedilmiş.");
+      setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
 
     await saveSettings({
       ...settings,
-      fastingMakeUpDates: [...makeUpDates, makeUpDate]
+      fastingMakeUpDates: [...makeUpDates, makeUpDate],
     });
-    setMakeUpDate('');
-    setErrorMessage('');
+    setMakeUpDate("");
+    setErrorMessage("");
   };
 
   const handleRemoveMakeUp = async (date: string) => {
     await saveSettings({
       ...settings,
-      fastingMakeUpDates: makeUpDates.filter(d => d !== date)
+      fastingMakeUpDates: makeUpDates.filter((d) => d !== date),
     });
   };
 
   const handleUpdateTarget = async () => {
-    const targetValue = parseInt(makeUpTarget, 10);
-    if (isNaN(targetValue) || targetValue < 0) return;
+    const targetValue = Number.parseInt(makeUpTarget, 10);
+    if (Number.isNaN(targetValue) || targetValue < 0) return;
 
     await saveSettings({
       ...settings,
-      fastingMakeUpTargetCount: targetValue
+      fastingMakeUpTargetCount: targetValue,
     });
   };
 
-  const handleSetRamadanDayStatus = async (dayIndex: number, status: RamadanDayStatus) => {
+  const handleSetRamadanDayStatus = async (
+    dayIndex: number,
+    status: RamadanDayStatus,
+  ) => {
     const newStatuses = [...ramadanDayStatuses];
     newStatuses[dayIndex] = status;
-    
+
     await saveSettings({
       ...settings,
-      ramadanDayStatuses: newStatuses
+      ramadanDayStatuses: newStatuses,
     });
   };
 
   const handleResetRamadan = async () => {
     await saveSettings({
       ...settings,
-      ramadanDayStatuses: Array(30).fill('Fasted' as RamadanDayStatus)
+      ramadanDayStatuses: Array(30).fill("Fasted" as RamadanDayStatus),
     });
   };
 
@@ -142,28 +152,36 @@ export function FastingTrackerTab() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Nafile Oruçlar:</span>
+            <span className="text-sm text-muted-foreground">
+              Nafile Oruçlar:
+            </span>
             <Badge variant="secondary" className="text-base font-semibold">
               {voluntaryDates.length}
             </Badge>
           </div>
           <Separator />
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Ramazan Kaza Orucu:</span>
+            <span className="text-sm text-muted-foreground">
+              Ramazan Kaza Orucu:
+            </span>
             <Badge variant="destructive" className="text-base font-semibold">
               {missedRamadanTotal}
             </Badge>
           </div>
           <Separator />
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Tamamlanan Kaza Oruçları:</span>
+            <span className="text-sm text-muted-foreground">
+              Tamamlanan Kaza Oruçları:
+            </span>
             <Badge variant="secondary" className="text-base font-semibold">
               {makeUpDates.length}
             </Badge>
           </div>
           <Separator />
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Kalan Kaza Oruçları:</span>
+            <span className="text-sm text-muted-foreground">
+              Kalan Kaza Oruçları:
+            </span>
             <Badge variant="default" className="text-base font-semibold">
               {remainingMakeUp}
             </Badge>
@@ -191,7 +209,11 @@ export function FastingTrackerTab() {
                 onChange={(e) => setVoluntaryDate(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={handleAddVoluntary} size="icon" disabled={!voluntaryDate}>
+              <Button
+                onClick={handleAddVoluntary}
+                size="icon"
+                disabled={!voluntaryDate}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -204,7 +226,8 @@ export function FastingTrackerTab() {
             <Label>Takip Edilen Tarihler ({voluntaryDates.length})</Label>
             {sortedVoluntaryDates.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">
-                Henüz nafile oruç kaydedilmedi. Yukarıdan ilk tarihinizi ekleyin.
+                Henüz nafile oruç kaydedilmedi. Yukarıdan ilk tarihinizi
+                ekleyin.
               </p>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -214,11 +237,14 @@ export function FastingTrackerTab() {
                     className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
                   >
                     <span className="text-sm font-medium">
-                      {new Date(date + 'T00:00:00').toLocaleDateString('tr-TR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {new Date(`${date}T00:00:00`).toLocaleDateString(
+                        "tr-TR",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )}
                     </span>
                     <Button
                       variant="ghost"
@@ -256,9 +282,7 @@ export function FastingTrackerTab() {
                 onChange={(e) => setMakeUpTarget(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={handleUpdateTarget}>
-                Güncelle
-              </Button>
+              <Button onClick={handleUpdateTarget}>Güncelle</Button>
             </div>
           </div>
 
@@ -275,7 +299,11 @@ export function FastingTrackerTab() {
                 onChange={(e) => setMakeUpDate(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={handleAddMakeUp} size="icon" disabled={!makeUpDate}>
+              <Button
+                onClick={handleAddMakeUp}
+                size="icon"
+                disabled={!makeUpDate}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -298,11 +326,14 @@ export function FastingTrackerTab() {
                     className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
                   >
                     <span className="text-sm font-medium">
-                      {new Date(date + 'T00:00:00').toLocaleDateString('tr-TR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {new Date(`${date}T00:00:00`).toLocaleDateString(
+                        "tr-TR",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )}
                     </span>
                     <Button
                       variant="ghost"

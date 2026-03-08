@@ -1,7 +1,25 @@
-import React, { useState } from 'react';
-import { Button } from './ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Menu, Sun, BookHeart, Sparkles, Book, BookMarked, Compass, CalendarDays, MapPin, Apple, CheckSquare, BookOpenText } from 'lucide-react';
+import {
+  Apple,
+  Book,
+  BookHeart,
+  BookMarked,
+  BookOpenText,
+  CalendarDays,
+  CheckSquare,
+  Compass,
+  MapPin,
+  Menu,
+  Sparkles,
+  Sun,
+} from "lucide-react";
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface TabsOverflowMenuProps {
   onSelectTab: (tabValue: string) => void;
@@ -11,18 +29,18 @@ export function TabsOverflowMenu({ onSelectTab }: TabsOverflowMenuProps) {
   const [open, setOpen] = useState(false);
 
   const overflowItems = [
-    { value: 'quranreading', label: 'Kuran Öğreniyorum', icon: BookOpenText },
-    { value: 'prayertracker', label: 'Namaz Takibi', icon: CheckSquare },
-    { value: 'fastingtracker', label: 'Oruç Takibi', icon: Apple },
-    { value: 'nearbymosque', label: 'Yakındaki Camiler', icon: MapPin },
-    { value: 'religiousdays', label: 'Dini Günler', icon: CalendarDays },
-    { value: 'qibla', label: 'Kıble Bulucu', icon: Compass },
-    { value: 'hatim', label: 'Hatim Takip', icon: BookMarked },
-    { value: 'namazogretici', label: 'Namaz Öğretici', icon: Book },
-    { value: 'adhkar', label: 'Sabah-Akşam Ezkarı', icon: Sparkles },
-    { value: 'duaguide', label: 'Dua Rehberi', icon: BookHeart },
-    { value: 'tasbihat', label: 'Tesbihler', icon: Sun },
-    { value: 'settings', label: 'Ayarlar', icon: Sun }
+    { value: "quranreading", label: "Kuran Öğreniyorum", icon: BookOpenText },
+    { value: "prayertracker", label: "Namaz Takibi", icon: CheckSquare },
+    { value: "fastingtracker", label: "Oruç Takibi", icon: Apple },
+    { value: "nearbymosque", label: "Yakındaki Camiler", icon: MapPin },
+    { value: "religiousdays", label: "Dini Günler", icon: CalendarDays },
+    { value: "qibla", label: "Kıble Bulucu", icon: Compass },
+    { value: "hatim", label: "Hatim Takip", icon: BookMarked },
+    { value: "namazogretici", label: "Namaz Öğretici", icon: Book },
+    { value: "adhkar", label: "Sabah-Akşam Ezkarı", icon: Sparkles },
+    { value: "duaguide", label: "Dua Rehberi", icon: BookHeart },
+    { value: "tasbihat", label: "Tesbihler", icon: Sun },
+    { value: "settings", label: "Ayarlar", icon: Sun },
   ];
 
   const handleSelect = (value: string) => {
@@ -45,13 +63,17 @@ export function TabsOverflowMenu({ onSelectTab }: TabsOverflowMenuProps) {
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Daha fazla seçenek"
             className="h-9 w-9 sm:h-10 sm:w-10 relative border border-primary/20 hover:bg-primary/10 min-w-[44px] min-h-[44px] sm:min-w-[48px] sm:min-h-[48px]"
           >
             <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48 sm:w-56 border-2 border-primary/20">
+      <DropdownMenuContent
+        align="end"
+        className="w-48 sm:w-56 border-2 border-primary/20"
+      >
         {overflowItems.map((item) => {
           const Icon = item.icon;
           return (

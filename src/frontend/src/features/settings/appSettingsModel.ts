@@ -1,9 +1,9 @@
-import type { Location } from '../location/types';
-import type { NotificationLeadTimes } from './localSettingsStorage';
+import type { Location } from "../location/types";
+import type { NotificationLeadTimes } from "./localSettingsStorage";
 
-export type RamadanDayStatus = 'Fasted' | 'Missed';
+export type RamadanDayStatus = "Fasted" | "Missed";
 
-export type PrayerKey = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+export type PrayerKey = "fajr" | "dhuhr" | "asr" | "maghrib" | "isha";
 
 export interface PrayerDailyChecklist {
   [prayer: string]: boolean;

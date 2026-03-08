@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Label } from '../../components/ui/label';
-import { Input } from '../../components/ui/input';
-import { Button } from '../../components/ui/button';
-import { Alert, AlertDescription } from '../../components/ui/alert';
-import { useIsCallerAdmin } from '../app-release/useIsCallerAdmin';
-import { useUpdateLatestAppRelease } from '../app-release/useUpdateLatestAppRelease';
-import { useLatestAppRelease } from '../app-release/useLatestAppRelease';
-import { Shield, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Shield } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { useIsCallerAdmin } from "../app-release/useIsCallerAdmin";
+import { useLatestAppRelease } from "../app-release/useLatestAppRelease";
+import { useUpdateLatestAppRelease } from "../app-release/useUpdateLatestAppRelease";
 
 /**
  * Admin-only advanced section for managing app release metadata.
- * 
+ *
  * Features:
  * - Input fields for version and Play Store URL
  * - Submit button with loading state
@@ -24,8 +31,8 @@ export function AdminAppReleaseAdvancedSection() {
   const { data: currentRelease } = useLatestAppRelease();
   const updateRelease = useUpdateLatestAppRelease();
 
-  const [version, setVersion] = useState('');
-  const [storeUrl, setStoreUrl] = useState('');
+  const [version, setVersion] = useState("");
+  const [storeUrl, setStoreUrl] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Don't render for non-admin users
@@ -50,13 +57,13 @@ export function AdminAppReleaseAdvancedSection() {
       });
 
       setShowSuccess(true);
-      setVersion('');
-      setStoreUrl('');
+      setVersion("");
+      setStoreUrl("");
 
       // Hide success message after 3 seconds
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Failed to update release:', error);
+      console.error("Failed to update release:", error);
     }
   };
 
@@ -68,7 +75,8 @@ export function AdminAppReleaseAdvancedSection() {
           App Release Management (Admin)
         </CardTitle>
         <CardDescription>
-          Configure the latest app version and Play Store URL for update notifications
+          Configure the latest app version and Play Store URL for update
+          notifications
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -115,7 +123,10 @@ export function AdminAppReleaseAdvancedSection() {
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Failed to update release. {updateRelease.error instanceof Error ? updateRelease.error.message : 'Please try again.'}
+                Failed to update release.{" "}
+                {updateRelease.error instanceof Error
+                  ? updateRelease.error.message
+                  : "Please try again."}
               </AlertDescription>
             </Alert>
           )}
@@ -131,10 +142,12 @@ export function AdminAppReleaseAdvancedSection() {
 
           <Button
             type="submit"
-            disabled={updateRelease.isPending || !version.trim() || !storeUrl.trim()}
+            disabled={
+              updateRelease.isPending || !version.trim() || !storeUrl.trim()
+            }
             className="w-full"
           >
-            {updateRelease.isPending ? 'Updating...' : 'Update Release'}
+            {updateRelease.isPending ? "Updating..." : "Update Release"}
           </Button>
         </form>
       </CardContent>

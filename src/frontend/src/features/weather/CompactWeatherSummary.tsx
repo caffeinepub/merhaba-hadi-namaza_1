@@ -1,8 +1,8 @@
-import React from 'react';
-import { Cloud } from 'lucide-react';
-import { useAppSettings } from '../settings/useAppSettings';
-import { useWeather } from './useWeather';
-import { getWeatherDescription } from './openMeteoWeatherApi';
+import { Cloud } from "lucide-react";
+import React from "react";
+import { useAppSettings } from "../settings/useAppSettings";
+import { getWeatherDescription } from "./openMeteoWeatherApi";
+import { useWeather } from "./useWeather";
 
 export function CompactWeatherSummary() {
   const { settings } = useAppSettings();
@@ -19,7 +19,8 @@ export function CompactWeatherSummary() {
       {isLoading && <span className="text-muted-foreground">Loading...</span>}
       {weather && (
         <span className="font-medium">
-          {Math.round(weather.temperature)}°C · {getWeatherDescription(weather.weatherCode)}
+          {Math.round(weather.temperature)}°C ·{" "}
+          {getWeatherDescription(weather.weatherCode)}
         </span>
       )}
     </div>

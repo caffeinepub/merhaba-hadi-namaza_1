@@ -1,12 +1,20 @@
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { MapPin } from 'lucide-react';
+import { MapPin } from "lucide-react";
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 interface SelectLocationPromptProps {
   onNavigateToLocation: () => void;
 }
 
-export function SelectLocationPrompt({ onNavigateToLocation }: SelectLocationPromptProps) {
+export function SelectLocationPrompt({
+  onNavigateToLocation,
+}: SelectLocationPromptProps) {
   return (
     <Card className="border-dashed">
       <CardHeader className="text-center">
@@ -15,11 +23,13 @@ export function SelectLocationPrompt({ onNavigateToLocation }: SelectLocationPro
         </div>
         <CardTitle>Konum Seçilmedi</CardTitle>
         <CardDescription>
-          Namaz vakitlerini ve hava durumunu görmek için önce bir konum seçmelisiniz.
+          Namaz vakitlerini ve hava durumunu görmek için önce bir konum
+          seçmelisiniz.
         </CardDescription>
       </CardHeader>
       <CardContent className="text-center">
         <button
+          type="button"
           onClick={onNavigateToLocation}
           className="text-primary hover:underline font-medium"
         >

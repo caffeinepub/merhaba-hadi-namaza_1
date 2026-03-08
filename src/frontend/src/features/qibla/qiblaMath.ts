@@ -30,12 +30,15 @@ export function normalizeAngle(angle: number): number {
 /**
  * Calculate the initial bearing (forward azimuth) from a given point to the Kaaba
  * using the great-circle formula
- * 
+ *
  * @param latitude - Starting latitude in degrees
  * @param longitude - Starting longitude in degrees
  * @returns Bearing in degrees (0-360, where 0 is North)
  */
-export function calculateQiblaBearing(latitude: number, longitude: number): number {
+export function calculateQiblaBearing(
+  latitude: number,
+  longitude: number,
+): number {
   const lat1 = toRadians(latitude);
   const lng1 = toRadians(longitude);
   const lat2 = toRadians(KAABA_LAT);
@@ -44,7 +47,9 @@ export function calculateQiblaBearing(latitude: number, longitude: number): numb
   const dLng = lng2 - lng1;
 
   const y = Math.sin(dLng) * Math.cos(lat2);
-  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  const x =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
 
   const bearing = toDegrees(Math.atan2(y, x));
 

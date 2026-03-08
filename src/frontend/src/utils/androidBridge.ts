@@ -1,6 +1,6 @@
 /**
  * Android Bridge Utility
- * 
+ *
  * Provides safe helpers for calling Android WebView bridge methods
  * when available, with graceful fallback for web browsers.
  */
@@ -8,14 +8,14 @@
 /**
  * Sends the next prayer information to the Android native layer
  * for persistent notification countdown display.
- * 
+ *
  * This function now delegates to the global updateNextPrayerWidget function
  * provided by the standalone android-widget-bridge.js script.
- * 
+ *
  * @param prayerName - Turkish name of the next prayer (e.g., "İmsak", "Öğle")
  * @param timeMillis - Unix timestamp in milliseconds for the next prayer occurrence
  * @returns true if the bridge call succeeded, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * const nextPrayerTime = new Date();
@@ -23,21 +23,27 @@
  * sendNextPrayerToAndroid("Öğle", nextPrayerTime.getTime());
  * ```
  */
-export function sendNextPrayerToAndroid(prayerName: string, timeMillis: number): boolean {
+export function sendNextPrayerToAndroid(
+  prayerName: string,
+  timeMillis: number,
+): boolean {
   // Validate inputs
-  if (!prayerName || typeof prayerName !== 'string') {
-    console.warn('[AndroidBridge] Invalid prayer name:', prayerName);
+  if (!prayerName || typeof prayerName !== "string") {
+    console.warn("[AndroidBridge] Invalid prayer name:", prayerName);
     return false;
   }
 
-  if (typeof timeMillis !== 'number' || timeMillis <= 0) {
-    console.warn('[AndroidBridge] Invalid timestamp:', timeMillis);
+  if (typeof timeMillis !== "number" || timeMillis <= 0) {
+    console.warn("[AndroidBridge] Invalid timestamp:", timeMillis);
     return false;
   }
 
   try {
     // Delegate to the global widget bridge function
-    if (typeof window !== 'undefined' && typeof window.updateNextPrayerWidget === 'function') {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.updateNextPrayerWidget === "function"
+    ) {
       return window.updateNextPrayerWidget(prayerName, timeMillis);
     }
 
@@ -45,7 +51,7 @@ export function sendNextPrayerToAndroid(prayerName: string, timeMillis: number):
     return false;
   } catch (error) {
     // Catch any errors to prevent app crashes
-    console.error('[AndroidBridge] Error sending next prayer update:', error);
+    console.error("[AndroidBridge] Error sending next prayer update:", error);
     return false;
   }
 }
@@ -53,34 +59,45 @@ export function sendNextPrayerToAndroid(prayerName: string, timeMillis: number):
 /**
  * Sends the next prayer information using the AndroidPrayer interface
  * with name and HH:MM time string format.
- * 
+ *
  * @param prayerName - Turkish name of the next prayer (e.g., "İmsak", "Öğle")
  * @param timeString - Prayer time in HH:MM format (e.g., "13:30")
  * @returns true if the bridge call succeeded, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * sendNextPrayerWithTimeString("Öğle", "13:30");
  * ```
  */
-export function sendNextPrayerWithTimeString(prayerName: string, timeString: string): boolean {
+export function sendNextPrayerWithTimeString(
+  prayerName: string,
+  timeString: string,
+): boolean {
   // Validate inputs
-  if (!prayerName || typeof prayerName !== 'string') {
-    console.warn('[AndroidBridge] Invalid prayer name:', prayerName);
+  if (!prayerName || typeof prayerName !== "string") {
+    console.warn("[AndroidBridge] Invalid prayer name:", prayerName);
     return false;
   }
 
-  if (!timeString || typeof timeString !== 'string' || !/^\d{2}:\d{2}$/.test(timeString)) {
-    console.warn('[AndroidBridge] Invalid time string:', timeString, '(expected HH:MM)');
+  if (
+    !timeString ||
+    typeof timeString !== "string" ||
+    !/^\d{2}:\d{2}$/.test(timeString)
+  ) {
+    console.warn(
+      "[AndroidBridge] Invalid time string:",
+      timeString,
+      "(expected HH:MM)",
+    );
     return false;
   }
 
   try {
     // Use AndroidPrayer interface if available
     if (
-      typeof window !== 'undefined' &&
+      typeof window !== "undefined" &&
       window.AndroidPrayer &&
-      typeof window.AndroidPrayer.updateNextPrayer === 'function'
+      typeof window.AndroidPrayer.updateNextPrayer === "function"
     ) {
       return window.AndroidPrayer.updateNextPrayer(prayerName, timeString);
     }
@@ -88,17 +105,20 @@ export function sendNextPrayerWithTimeString(prayerName: string, timeString: str
     // Bridge not available
     return false;
   } catch (error) {
-    console.error('[AndroidBridge] Error sending next prayer with time string:', error);
+    console.error(
+      "[AndroidBridge] Error sending next prayer with time string:",
+      error,
+    );
     return false;
   }
 }
 
 /**
  * Sends daily prayer times to the Android native layer using the AndroidPrayer interface.
- * 
+ *
  * @param dailyPrayers - Array of prayer times with name and HH:MM time
  * @returns true if the bridge call succeeded, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * sendDailyPrayersToAndroid([
@@ -111,19 +131,21 @@ export function sendNextPrayerWithTimeString(prayerName: string, timeString: str
  * ]);
  * ```
  */
-export function sendDailyPrayersToAndroid(dailyPrayers: Array<{ name: string; time: string }>): boolean {
+export function sendDailyPrayersToAndroid(
+  dailyPrayers: Array<{ name: string; time: string }>,
+): boolean {
   // Validate input
   if (!Array.isArray(dailyPrayers)) {
-    console.warn('[AndroidBridge] Daily prayers must be an array');
+    console.warn("[AndroidBridge] Daily prayers must be an array");
     return false;
   }
 
   try {
     // Use AndroidPrayer interface if available
     if (
-      typeof window !== 'undefined' &&
+      typeof window !== "undefined" &&
       window.AndroidPrayer &&
-      typeof window.AndroidPrayer.updateDailyPrayers === 'function'
+      typeof window.AndroidPrayer.updateDailyPrayers === "function"
     ) {
       const jsonPayload = JSON.stringify(dailyPrayers);
       return window.AndroidPrayer.updateDailyPrayers(jsonPayload);
@@ -132,17 +154,17 @@ export function sendDailyPrayersToAndroid(dailyPrayers: Array<{ name: string; ti
     // Bridge not available
     return false;
   } catch (error) {
-    console.error('[AndroidBridge] Error sending daily prayers:', error);
+    console.error("[AndroidBridge] Error sending daily prayers:", error);
     return false;
   }
 }
 
 /**
  * Sends city/location display name to the Android native layer using the AndroidPrayer interface.
- * 
+ *
  * @param cityName - Display name of the city/location
  * @returns true if the bridge call succeeded, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * sendCityToAndroid("Istanbul, Turkey");
@@ -150,17 +172,17 @@ export function sendDailyPrayersToAndroid(dailyPrayers: Array<{ name: string; ti
  */
 export function sendCityToAndroid(cityName: string): boolean {
   // Validate input
-  if (!cityName || typeof cityName !== 'string') {
-    console.warn('[AndroidBridge] Invalid city name:', cityName);
+  if (!cityName || typeof cityName !== "string") {
+    console.warn("[AndroidBridge] Invalid city name:", cityName);
     return false;
   }
 
   try {
     // Use AndroidPrayer interface if available
     if (
-      typeof window !== 'undefined' &&
+      typeof window !== "undefined" &&
       window.AndroidPrayer &&
-      typeof window.AndroidPrayer.updateCity === 'function'
+      typeof window.AndroidPrayer.updateCity === "function"
     ) {
       return window.AndroidPrayer.updateCity(cityName);
     }
@@ -168,7 +190,7 @@ export function sendCityToAndroid(cityName: string): boolean {
     // Bridge not available
     return false;
   } catch (error) {
-    console.error('[AndroidBridge] Error sending city:', error);
+    console.error("[AndroidBridge] Error sending city:", error);
     return false;
   }
 }
@@ -176,14 +198,14 @@ export function sendCityToAndroid(cityName: string): boolean {
 /**
  * Sends expanded prayer-times payload to AndroidPush interface for SharedPreferences
  * storage, alarm scheduling, and widget updates.
- * 
+ *
  * Attempts primary method `sendPrayerTimes` first, then falls back to alternative
  * method names (e.g., `send`) if available, ensuring maximum compatibility with
  * different Android bridge implementations.
- * 
+ *
  * @param payload - Object containing next prayer info, countdown, daily prayers, and weekly prayers
  * @returns true if the bridge call succeeded, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * sendPrayerTimesToAndroidPush({
@@ -216,79 +238,138 @@ export function sendPrayerTimesToAndroidPush(payload: {
   weeklyPrayers: Array<{ name: string; time: string; timeMillis: number }>;
 }): boolean {
   // Validate payload structure
-  if (!payload || typeof payload !== 'object') {
-    console.warn('[AndroidBridge] Invalid payload object');
+  if (!payload || typeof payload !== "object") {
+    console.warn("[AndroidBridge] Invalid payload object");
     return false;
   }
 
   // Validate required fields
-  if (!payload.nextPrayer || typeof payload.nextPrayer !== 'string') {
-    console.warn('[AndroidBridge] Invalid nextPrayer:', payload.nextPrayer);
+  if (!payload.nextPrayer || typeof payload.nextPrayer !== "string") {
+    console.warn("[AndroidBridge] Invalid nextPrayer:", payload.nextPrayer);
     return false;
   }
 
-  if (typeof payload.nextPrayerMillis !== 'number' || payload.nextPrayerMillis <= 0) {
-    console.warn('[AndroidBridge] Invalid nextPrayerMillis:', payload.nextPrayerMillis);
+  if (
+    typeof payload.nextPrayerMillis !== "number" ||
+    payload.nextPrayerMillis <= 0
+  ) {
+    console.warn(
+      "[AndroidBridge] Invalid nextPrayerMillis:",
+      payload.nextPrayerMillis,
+    );
     return false;
   }
 
   // Validate nextPrayerTime is non-empty and in HH:MM format
-  if (!payload.nextPrayerTime || typeof payload.nextPrayerTime !== 'string' || !/^\d{2}:\d{2}$/.test(payload.nextPrayerTime)) {
-    console.warn('[AndroidBridge] Invalid nextPrayerTime:', payload.nextPrayerTime, '(expected non-empty HH:MM)');
+  if (
+    !payload.nextPrayerTime ||
+    typeof payload.nextPrayerTime !== "string" ||
+    !/^\d{2}:\d{2}$/.test(payload.nextPrayerTime)
+  ) {
+    console.warn(
+      "[AndroidBridge] Invalid nextPrayerTime:",
+      payload.nextPrayerTime,
+      "(expected non-empty HH:MM)",
+    );
     return false;
   }
 
-  if (!payload.timeRemaining || typeof payload.timeRemaining !== 'string') {
-    console.warn('[AndroidBridge] Invalid timeRemaining:', payload.timeRemaining);
+  if (!payload.timeRemaining || typeof payload.timeRemaining !== "string") {
+    console.warn(
+      "[AndroidBridge] Invalid timeRemaining:",
+      payload.timeRemaining,
+    );
     return false;
   }
 
-  if (!Array.isArray(payload.dailyPrayers) || payload.dailyPrayers.length === 0) {
-    console.warn('[AndroidBridge] Invalid dailyPrayers: must be a non-empty array');
+  if (
+    !Array.isArray(payload.dailyPrayers) ||
+    payload.dailyPrayers.length === 0
+  ) {
+    console.warn(
+      "[AndroidBridge] Invalid dailyPrayers: must be a non-empty array",
+    );
     return false;
   }
 
-  if (!Array.isArray(payload.weeklyPrayers) || payload.weeklyPrayers.length === 0) {
-    console.warn('[AndroidBridge] Invalid weeklyPrayers: must be a non-empty array');
+  if (
+    !Array.isArray(payload.weeklyPrayers) ||
+    payload.weeklyPrayers.length === 0
+  ) {
+    console.warn(
+      "[AndroidBridge] Invalid weeklyPrayers: must be a non-empty array",
+    );
     return false;
   }
 
   // Validate each dailyPrayers entry
   for (const entry of payload.dailyPrayers) {
-    if (!entry || typeof entry !== 'object') {
-      console.warn('[AndroidBridge] Invalid dailyPrayers entry: not an object', entry);
+    if (!entry || typeof entry !== "object") {
+      console.warn(
+        "[AndroidBridge] Invalid dailyPrayers entry: not an object",
+        entry,
+      );
       return false;
     }
-    if (!entry.name || typeof entry.name !== 'string') {
-      console.warn('[AndroidBridge] Invalid dailyPrayers entry: missing or invalid name', entry);
+    if (!entry.name || typeof entry.name !== "string") {
+      console.warn(
+        "[AndroidBridge] Invalid dailyPrayers entry: missing or invalid name",
+        entry,
+      );
       return false;
     }
-    if (!entry.time || typeof entry.time !== 'string' || !/^\d{2}:\d{2}$/.test(entry.time)) {
-      console.warn('[AndroidBridge] Invalid dailyPrayers entry: time must be HH:MM', entry);
+    if (
+      !entry.time ||
+      typeof entry.time !== "string" ||
+      !/^\d{2}:\d{2}$/.test(entry.time)
+    ) {
+      console.warn(
+        "[AndroidBridge] Invalid dailyPrayers entry: time must be HH:MM",
+        entry,
+      );
       return false;
     }
-    if (typeof entry.timeMillis !== 'number' || entry.timeMillis <= 0) {
-      console.warn('[AndroidBridge] Invalid dailyPrayers entry: timeMillis must be positive number', entry);
+    if (typeof entry.timeMillis !== "number" || entry.timeMillis <= 0) {
+      console.warn(
+        "[AndroidBridge] Invalid dailyPrayers entry: timeMillis must be positive number",
+        entry,
+      );
       return false;
     }
   }
 
   // Validate each weeklyPrayers entry
   for (const entry of payload.weeklyPrayers) {
-    if (!entry || typeof entry !== 'object') {
-      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: not an object', entry);
+    if (!entry || typeof entry !== "object") {
+      console.warn(
+        "[AndroidBridge] Invalid weeklyPrayers entry: not an object",
+        entry,
+      );
       return false;
     }
-    if (!entry.name || typeof entry.name !== 'string') {
-      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: missing or invalid name', entry);
+    if (!entry.name || typeof entry.name !== "string") {
+      console.warn(
+        "[AndroidBridge] Invalid weeklyPrayers entry: missing or invalid name",
+        entry,
+      );
       return false;
     }
-    if (!entry.time || typeof entry.time !== 'string' || !/^\d{2}:\d{2}$/.test(entry.time)) {
-      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: time must be HH:MM', entry);
+    if (
+      !entry.time ||
+      typeof entry.time !== "string" ||
+      !/^\d{2}:\d{2}$/.test(entry.time)
+    ) {
+      console.warn(
+        "[AndroidBridge] Invalid weeklyPrayers entry: time must be HH:MM",
+        entry,
+      );
       return false;
     }
-    if (typeof entry.timeMillis !== 'number' || entry.timeMillis <= 0) {
-      console.warn('[AndroidBridge] Invalid weeklyPrayers entry: timeMillis must be positive number', entry);
+    if (typeof entry.timeMillis !== "number" || entry.timeMillis <= 0) {
+      console.warn(
+        "[AndroidBridge] Invalid weeklyPrayers entry: timeMillis must be positive number",
+        entry,
+      );
       return false;
     }
   }
@@ -298,15 +379,15 @@ export function sendPrayerTimesToAndroidPush(payload: {
     const jsonPayload = JSON.stringify(payload);
 
     // Check if AndroidPush interface is available
-    if (typeof window !== 'undefined' && window.AndroidPush) {
+    if (typeof window !== "undefined" && window.AndroidPush) {
       // Try primary method: sendPrayerTimes
-      if (typeof window.AndroidPush.sendPrayerTimes === 'function') {
+      if (typeof window.AndroidPush.sendPrayerTimes === "function") {
         window.AndroidPush.sendPrayerTimes(jsonPayload);
         return true;
       }
 
       // Fallback: try alternative method name 'send'
-      if (typeof window.AndroidPush.send === 'function') {
+      if (typeof window.AndroidPush.send === "function") {
         window.AndroidPush.send(jsonPayload);
         return true;
       }
@@ -315,21 +396,24 @@ export function sendPrayerTimesToAndroidPush(payload: {
     // Bridge not available - running in browser
     return false;
   } catch (error) {
-    console.error('[AndroidBridge] Error sending prayer times to AndroidPush:', error);
+    console.error(
+      "[AndroidBridge] Error sending prayer times to AndroidPush:",
+      error,
+    );
     return false;
   }
 }
 
 /**
  * Checks if the Android bridge for next prayer updates is supported.
- * 
+ *
  * @returns true if the updateNextPrayer bridge method is available, false otherwise
  */
 export function isNextPrayerBridgeSupported(): boolean {
   try {
     return (
-      typeof window !== 'undefined' &&
-      typeof window.updateNextPrayerWidget === 'function'
+      typeof window !== "undefined" &&
+      typeof window.updateNextPrayerWidget === "function"
     );
   } catch {
     return false;
@@ -338,15 +422,15 @@ export function isNextPrayerBridgeSupported(): boolean {
 
 /**
  * Checks if the AndroidPrayer interface is supported.
- * 
+ *
  * @returns true if the AndroidPrayer interface is available, false otherwise
  */
 export function isAndroidPrayerInterfaceSupported(): boolean {
   try {
     return (
-      typeof window !== 'undefined' &&
+      typeof window !== "undefined" &&
       window.AndroidPrayer !== undefined &&
-      typeof window.AndroidPrayer.updateNextPrayer === 'function'
+      typeof window.AndroidPrayer.updateNextPrayer === "function"
     );
   } catch {
     return false;
@@ -355,16 +439,16 @@ export function isAndroidPrayerInterfaceSupported(): boolean {
 
 /**
  * Checks if the AndroidPush interface is supported.
- * 
+ *
  * @returns true if the AndroidPush interface is available, false otherwise
  */
 export function isAndroidPushInterfaceSupported(): boolean {
   try {
     return (
-      typeof window !== 'undefined' &&
+      typeof window !== "undefined" &&
       window.AndroidPush !== undefined &&
-      (typeof window.AndroidPush.sendPrayerTimes === 'function' ||
-       typeof window.AndroidPush.send === 'function')
+      (typeof window.AndroidPush.sendPrayerTimes === "function" ||
+        typeof window.AndroidPush.send === "function")
     );
   } catch {
     return false;

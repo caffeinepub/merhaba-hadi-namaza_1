@@ -12,7 +12,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, zeytin",
       "Tam buğday ekmeği",
       "Taze meyve (elma, portakal)",
-      "Bol su"
+      "Bol su",
     ],
     iftar: [
       "Mercimek çorbası",
@@ -20,8 +20,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Bulgur pilavı",
       "Mevsim salatası",
       "Ayran",
-      "Tatlı: 1 dilim sütlü tatlı"
-    ]
+      "Tatlı: 1 dilim sütlü tatlı",
+    ],
   },
   {
     day: 2,
@@ -30,15 +30,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Lor peyniri, domates, salatalık",
       "Kepekli ekmek",
       "Hurma (3-4 adet)",
-      "Bitki çayı"
+      "Bitki çayı",
     ],
     iftar: [
       "Ezogelin çorbası",
       "Fırında balık",
       "Zeytinyağlı taze fasulye",
       "Yoğurt",
-      "Tatlı: Meyve salatası"
-    ]
+      "Tatlı: Meyve salatası",
+    ],
   },
   {
     day: 3,
@@ -47,7 +47,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Ceviz, kuru üzüm",
       "Tam tahıllı ekmek",
       "Muz",
-      "Süt veya ayran"
+      "Süt veya ayran",
     ],
     iftar: [
       "Tarhana çorbası",
@@ -55,8 +55,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Çoban salatası",
       "Ayran",
-      "Tatlı: Kabak tatlısı"
-    ]
+      "Tatlı: Kabak tatlısı",
+    ],
   },
   {
     day: 4,
@@ -65,7 +65,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, yeşil zeytin",
       "Çavdar ekmeği",
       "Kivi",
-      "Ihlamur çayı"
+      "Ihlamur çayı",
     ],
     iftar: [
       "Yayla çorbası",
@@ -73,8 +73,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Patates püresi",
       "Roka salatası",
       "Ayran",
-      "Tatlı: Sütlaç"
-    ]
+      "Tatlı: Sütlaç",
+    ],
   },
   {
     day: 5,
@@ -83,7 +83,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Domates, salatalık",
       "Ceviz, badem",
       "Portakal",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Sebze çorbası",
@@ -91,8 +91,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Bulgur pilavı",
       "Yeşil salata",
       "Yoğurt",
-      "Tatlı: Meyve kompostosu"
-    ]
+      "Tatlı: Meyve kompostosu",
+    ],
   },
   {
     day: 6,
@@ -101,7 +101,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Tahin-pekmez",
       "Tam buğday ekmeği",
       "Elma",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Mercimek çorbası",
@@ -109,8 +109,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Yoğurt",
       "Mevsim salatası",
       "Ayran",
-      "Tatlı: Keşkül"
-    ]
+      "Tatlı: Keşkül",
+    ],
   },
   {
     day: 7,
@@ -119,7 +119,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, zeytin",
       "Kepekli ekmek",
       "Hurma",
-      "Bitki çayı"
+      "Bitki çayı",
     ],
     iftar: [
       "Domates çorbası",
@@ -127,25 +127,20 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Çoban salatası",
       "Ayran",
-      "Tatlı: Muhallebi"
-    ]
+      "Tatlı: Muhallebi",
+    ],
   },
   {
     day: 8,
-    sahur: [
-      "Yumurtalı sandviç",
-      "Ceviz, kuru kayısı",
-      "Muz",
-      "Süt veya ayran"
-    ],
+    sahur: ["Yumurtalı sandviç", "Ceviz, kuru kayısı", "Muz", "Süt veya ayran"],
     iftar: [
       "Ezogelin çorbası",
       "Kuru fasulye",
       "Bulgur pilavı",
       "Turşu",
       "Yoğurt",
-      "Tatlı: Meyve salatası"
-    ]
+      "Tatlı: Meyve salatası",
+    ],
   },
   {
     day: 9,
@@ -154,7 +149,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Domates, salatalık",
       "Tam tahıllı ekmek",
       "Portakal",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Tarhana çorbası",
@@ -162,8 +157,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Patates kızartması",
       "Mevsim salatası",
       "Ayran",
-      "Tatlı: Kazandibi"
-    ]
+      "Tatlı: Kazandibi",
+    ],
   },
   {
     day: 10,
@@ -172,15 +167,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir",
       "Çavdar ekmeği",
       "Kivi",
-      "Ihlamur çayı"
+      "Ihlamur çayı",
     ],
     iftar: [
       "Mercimek çorbası",
       "Etli sebze yemeği",
       "Pirinç pilavı",
       "Cacık",
-      "Tatlı: Sütlaç"
-    ]
+      "Tatlı: Sütlaç",
+    ],
   },
   {
     day: 11,
@@ -189,7 +184,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Lor peyniri, domates",
       "Tam buğday ekmeği",
       "Elma",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Yayla çorbası",
@@ -197,8 +192,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Bulgur pilavı",
       "Yeşil salata",
       "Ayran",
-      "Tatlı: Kabak tatlısı"
-    ]
+      "Tatlı: Kabak tatlısı",
+    ],
   },
   {
     day: 12,
@@ -207,15 +202,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Ceviz, kuru üzüm",
       "Kepekli ekmek",
       "Muz",
-      "Bitki çayı"
+      "Bitki çayı",
     ],
     iftar: [
       "Sebze çorbası",
       "Fırında balık",
       "Zeytinyağlı enginar",
       "Yoğurt",
-      "Tatlı: Meyve kompostosu"
-    ]
+      "Tatlı: Meyve kompostosu",
+    ],
   },
   {
     day: 13,
@@ -224,7 +219,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Zeytin, domates",
       "Hurma",
       "Portakal",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Ezogelin çorbası",
@@ -232,8 +227,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Çoban salatası",
       "Ayran",
-      "Tatlı: Keşkül"
-    ]
+      "Tatlı: Keşkül",
+    ],
   },
   {
     day: 14,
@@ -242,15 +237,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Tahin-pekmez",
       "Tam tahıllı ekmek",
       "Kivi",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Tarhana çorbası",
       "Karnıyarık",
       "Bulgur pilavı",
       "Cacık",
-      "Tatlı: Muhallebi"
-    ]
+      "Tatlı: Muhallebi",
+    ],
   },
   {
     day: 15,
@@ -259,7 +254,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, ceviz",
       "Çavdar ekmeği",
       "Elma",
-      "Ihlamur çayı"
+      "Ihlamur çayı",
     ],
     iftar: [
       "Mercimek çorbası",
@@ -267,8 +262,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Patates püresi",
       "Mevsim salatası",
       "Ayran",
-      "Tatlı: Sütlaç"
-    ]
+      "Tatlı: Sütlaç",
+    ],
   },
   {
     day: 16,
@@ -277,7 +272,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Domates, salatalık",
       "Tam buğday ekmeği",
       "Muz",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Domates çorbası",
@@ -285,8 +280,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Turşu",
       "Yoğurt",
-      "Tatlı: Meyve salatası"
-    ]
+      "Tatlı: Meyve salatası",
+    ],
   },
   {
     day: 17,
@@ -295,15 +290,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Lor peyniri, zeytin",
       "Kepekli ekmek",
       "Hurma",
-      "Bitki çayı"
+      "Bitki çayı",
     ],
     iftar: [
       "Yayla çorbası",
       "Fırında balık",
       "Zeytinyağlı taze fasulye",
       "Ayran",
-      "Tatlı: Kazandibi"
-    ]
+      "Tatlı: Kazandibi",
+    ],
   },
   {
     day: 18,
@@ -312,15 +307,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir",
       "Tam tahıllı ekmek",
       "Portakal",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Ezogelin çorbası",
       "Izgara köfte",
       "Bulgur pilavı",
       "Çoban salatası",
-      "Tatlı: Kabak tatlısı"
-    ]
+      "Tatlı: Kabak tatlısı",
+    ],
   },
   {
     day: 19,
@@ -329,7 +324,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Tahin-pekmez",
       "Çavdar ekmeği",
       "Kivi",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Sebze çorbası",
@@ -337,24 +332,19 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Yeşil salata",
       "Ayran",
-      "Tatlı: Sütlaç"
-    ]
+      "Tatlı: Sütlaç",
+    ],
   },
   {
     day: 20,
-    sahur: [
-      "Peynirli gözleme",
-      "Ceviz, kuru kayısı",
-      "Elma",
-      "Ihlamur çayı"
-    ],
+    sahur: ["Peynirli gözleme", "Ceviz, kuru kayısı", "Elma", "Ihlamur çayı"],
     iftar: [
       "Mercimek çorbası",
       "Zeytinyağlı yaprak sarma",
       "Yoğurt",
       "Mevsim salatası",
-      "Tatlı: Keşkül"
-    ]
+      "Tatlı: Keşkül",
+    ],
   },
   {
     day: 21,
@@ -363,15 +353,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, zeytin",
       "Tam buğday ekmeği",
       "Muz",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Tarhana çorbası",
       "Fırında tavuk",
       "Bulgur pilavı",
       "Cacık",
-      "Tatlı: Muhallebi"
-    ]
+      "Tatlı: Muhallebi",
+    ],
   },
   {
     day: 22,
@@ -380,7 +370,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Domates, salatalık",
       "Kepekli ekmek",
       "Hurma",
-      "Bitki çayı"
+      "Bitki çayı",
     ],
     iftar: [
       "Yayla çorbası",
@@ -388,8 +378,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Roka salatası",
       "Ayran",
-      "Tatlı: Meyve kompostosu"
-    ]
+      "Tatlı: Meyve kompostosu",
+    ],
   },
   {
     day: 23,
@@ -398,7 +388,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Ceviz, kuru üzüm",
       "Tam tahıllı ekmek",
       "Portakal",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Ezogelin çorbası",
@@ -406,8 +396,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Bulgur pilavı",
       "Turşu",
       "Yoğurt",
-      "Tatlı: Meyve salatası"
-    ]
+      "Tatlı: Meyve salatası",
+    ],
   },
   {
     day: 24,
@@ -416,7 +406,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Lor peyniri, domates",
       "Çavdar ekmeği",
       "Kivi",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Mercimek çorbası",
@@ -424,8 +414,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Mevsim salatası",
       "Ayran",
-      "Tatlı: Sütlaç"
-    ]
+      "Tatlı: Sütlaç",
+    ],
   },
   {
     day: 25,
@@ -434,33 +424,27 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir",
       "Tam buğday ekmeği",
       "Elma",
-      "Ihlamur çayı"
+      "Ihlamur çayı",
     ],
     iftar: [
       "Domates çorbası",
       "Izgara köfte",
       "Patates kızartması",
       "Çoban salatası",
-      "Tatlı: Kazandibi"
-    ]
+      "Tatlı: Kazandibi",
+    ],
   },
   {
     day: 26,
-    sahur: [
-      "Menemen",
-      "Tahin-pekmez",
-      "Kepekli ekmek",
-      "Muz",
-      "Bitki çayı"
-    ],
+    sahur: ["Menemen", "Tahin-pekmez", "Kepekli ekmek", "Muz", "Bitki çayı"],
     iftar: [
       "Tarhana çorbası",
       "Fırında tavuk",
       "Bulgur pilavı",
       "Yeşil salata",
       "Ayran",
-      "Tatlı: Kabak tatlısı"
-    ]
+      "Tatlı: Kabak tatlısı",
+    ],
   },
   {
     day: 27,
@@ -469,15 +453,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Ceviz, badem",
       "Hurma",
       "Portakal",
-      "Yeşil çay"
+      "Yeşil çay",
     ],
     iftar: [
       "Yayla çorbası",
       "Fırında balık",
       "Zeytinyağlı enginar",
       "Yoğurt",
-      "Tatlı: Keşkül"
-    ]
+      "Tatlı: Keşkül",
+    ],
   },
   {
     day: 28,
@@ -486,15 +470,15 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, zeytin",
       "Tam tahıllı ekmek",
       "Kivi",
-      "Süt"
+      "Süt",
     ],
     iftar: [
       "Ezogelin çorbası",
       "Tavuk sote",
       "Pirinç pilavı",
       "Cacık",
-      "Tatlı: Muhallebi"
-    ]
+      "Tatlı: Muhallebi",
+    ],
   },
   {
     day: 29,
@@ -503,7 +487,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Lor peyniri, domates",
       "Çavdar ekmeği",
       "Elma",
-      "Ihlamur çayı"
+      "Ihlamur çayı",
     ],
     iftar: [
       "Mercimek çorbası",
@@ -511,8 +495,8 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Bulgur pilavı",
       "Mevsim salatası",
       "Ayran",
-      "Tatlı: Sütlaç"
-    ]
+      "Tatlı: Sütlaç",
+    ],
   },
   {
     day: 30,
@@ -521,7 +505,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Beyaz peynir, ceviz",
       "Tam buğday ekmeği",
       "Muz",
-      "Bitki çayı"
+      "Bitki çayı",
     ],
     iftar: [
       "Sebze çorbası",
@@ -529,7 +513,7 @@ export const ramadanMenusData: RamadanMenu[] = [
       "Pirinç pilavı",
       "Çoban salatası",
       "Yoğurt",
-      "Tatlı: Meyve salatası"
-    ]
-  }
+      "Tatlı: Meyve salatası",
+    ],
+  },
 ];

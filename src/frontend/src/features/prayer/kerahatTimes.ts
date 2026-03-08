@@ -1,4 +1,4 @@
-import { applyOffsetToTime } from './timeOffset';
+import { applyOffsetToTime } from "./timeOffset";
 
 export interface KerahatWindow {
   name: string;
@@ -11,8 +11,8 @@ export interface KerahatWindow {
  * Parse HH:mm time string to total minutes since midnight
  */
 function parseTimeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  if (isNaN(hours) || isNaN(minutes)) return 0;
+  const [hours, minutes] = time.split(":").map(Number);
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return 0;
   return hours * 60 + minutes;
 }
 
@@ -24,7 +24,7 @@ function addMinutesToTime(time: string, minutesToAdd: number): string {
   const newTotalMinutes = (totalMinutes + minutesToAdd + 1440) % 1440;
   const newHours = Math.floor(newTotalMinutes / 60);
   const newMinutes = newTotalMinutes % 60;
-  return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+  return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(2, "0")}`;
 }
 
 /**
@@ -44,10 +44,10 @@ export function computeKerahatWindows(adjustedTimes: {
       const startTime = adjustedTimes.sunrise;
       const endTime = addMinutesToTime(startTime, 40);
       windows.push({
-        name: 'Kerahat Vakti',
+        name: "Kerahat Vakti",
         startTime,
         endTime,
-        startMinutes: parseTimeToMinutes(startTime)
+        startMinutes: parseTimeToMinutes(startTime),
       });
     }
 
@@ -56,10 +56,10 @@ export function computeKerahatWindows(adjustedTimes: {
       const endTime = adjustedTimes.dhuhr;
       const startTime = addMinutesToTime(endTime, -45);
       windows.push({
-        name: 'Kerahat Vakti',
+        name: "Kerahat Vakti",
         startTime,
         endTime,
-        startMinutes: parseTimeToMinutes(startTime)
+        startMinutes: parseTimeToMinutes(startTime),
       });
     }
 
@@ -68,14 +68,14 @@ export function computeKerahatWindows(adjustedTimes: {
       const endTime = adjustedTimes.maghrib;
       const startTime = addMinutesToTime(endTime, -45);
       windows.push({
-        name: 'Kerahat Vakti',
+        name: "Kerahat Vakti",
         startTime,
         endTime,
-        startMinutes: parseTimeToMinutes(startTime)
+        startMinutes: parseTimeToMinutes(startTime),
       });
     }
   } catch (error) {
-    console.error('Error computing kerahat windows:', error);
+    console.error("Error computing kerahat windows:", error);
     return [];
   }
 
@@ -96,21 +96,21 @@ export interface TimeListItem {
 
 export function mergeTimesWithKerahat(
   prayerList: Array<{ name: string; time: string; icon: any }>,
-  kerahatWindows: KerahatWindow[]
+  kerahatWindows: KerahatWindow[],
 ): TimeListItem[] {
-  const prayerItems: TimeListItem[] = prayerList.map(prayer => ({
+  const prayerItems: TimeListItem[] = prayerList.map((prayer) => ({
     name: prayer.name,
     time: prayer.time,
     icon: prayer.icon,
     startMinutes: parseTimeToMinutes(prayer.time),
-    isKerahat: false
+    isKerahat: false,
   }));
 
-  const kerahatItems: TimeListItem[] = kerahatWindows.map(window => ({
+  const kerahatItems: TimeListItem[] = kerahatWindows.map((window) => ({
     name: window.name,
     timeRange: `${window.startTime} - ${window.endTime}`,
     startMinutes: window.startMinutes,
-    isKerahat: true
+    isKerahat: true,
   }));
 
   const allItems = [...prayerItems, ...kerahatItems];

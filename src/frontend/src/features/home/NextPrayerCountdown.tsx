@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent } from '../../components/ui/card';
-import { Clock } from 'lucide-react';
+import { Clock } from "lucide-react";
+import React from "react";
+import { Card, CardContent } from "../../components/ui/card";
 
 interface NextPrayerCountdownProps {
   nextPrayer: { name: string; time: string } | null;
@@ -11,16 +11,23 @@ interface NextPrayerCountdownProps {
 
 /**
  * Presentational component displaying next prayer countdown with seconds-inclusive time remaining.
- * 
+ *
  * Receives computed nextPrayer and timeRemaining (mm:ss or HH:mm:ss format) from parent (HomeTab)
  * to ensure single source of truth and prevent duplicate bridge sends.
  */
-export function NextPrayerCountdown({ nextPrayer, timeRemaining, isLoading, error }: NextPrayerCountdownProps) {
+export function NextPrayerCountdown({
+  nextPrayer,
+  timeRemaining,
+  isLoading,
+  error,
+}: NextPrayerCountdownProps) {
   if (isLoading) {
     return (
       <Card className="bg-gradient-to-br from-primary/20 to-accent/10 border-2 border-primary/30">
         <CardContent className="pt-4 sm:pt-6">
-          <p className="text-center text-sm sm:text-base text-muted-foreground">Yükleniyor...</p>
+          <p className="text-center text-sm sm:text-base text-muted-foreground">
+            Yükleniyor...
+          </p>
         </CardContent>
       </Card>
     );
@@ -39,13 +46,19 @@ export function NextPrayerCountdown({ nextPrayer, timeRemaining, isLoading, erro
               <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
             <div>
-              <p className="text-xs sm:text-sm text-muted-foreground font-medium">Sıradaki Vakit</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                Sıradaki Vakit
+              </p>
               <p className="text-lg sm:text-xl font-bold">{nextPrayer.name}</p>
             </div>
           </div>
           <div className="text-center sm:text-right">
-            <p className="text-xl sm:text-2xl font-bold tabular-nums">{nextPrayer.time}</p>
-            <p className="text-sm text-muted-foreground font-medium tabular-nums">{timeRemaining}</p>
+            <p className="text-2xl sm:text-3xl font-bold tabular-nums">
+              {nextPrayer.time}
+            </p>
+            <p className="text-base sm:text-lg text-muted-foreground font-medium tabular-nums">
+              {timeRemaining}
+            </p>
           </div>
         </div>
       </CardContent>

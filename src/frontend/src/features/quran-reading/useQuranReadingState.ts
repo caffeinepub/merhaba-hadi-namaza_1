@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useAppSettings } from '../settings/useAppSettings';
+import { useEffect } from "react";
+import { useAppSettings } from "../settings/useAppSettings";
 
 export interface QuranReadingState {
   lastSurahNumber: number;
@@ -13,19 +13,20 @@ export function useQuranReadingState() {
   const readingState: QuranReadingState = {
     lastSurahNumber: settings?.quranLastSurahNumber || 1,
     lastAyahNumber: settings?.quranLastAyahNumber || 1,
-    scrollPosition: settings?.quranScrollPosition || 0
+    scrollPosition: settings?.quranScrollPosition || 0,
   };
 
   const saveReadingState = (state: Partial<QuranReadingState>) => {
     updateSettings({
-      quranLastSurahNumber: state.lastSurahNumber ?? readingState.lastSurahNumber,
+      quranLastSurahNumber:
+        state.lastSurahNumber ?? readingState.lastSurahNumber,
       quranLastAyahNumber: state.lastAyahNumber ?? readingState.lastAyahNumber,
-      quranScrollPosition: state.scrollPosition ?? readingState.scrollPosition
+      quranScrollPosition: state.scrollPosition ?? readingState.scrollPosition,
     });
   };
 
   return {
     readingState,
-    saveReadingState
+    saveReadingState,
   };
 }

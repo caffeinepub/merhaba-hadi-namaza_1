@@ -1,12 +1,12 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { RotateCcw, Sun, Moon } from 'lucide-react';
-import { morningAdhkar, eveningAdhkar, type AdhkarItem } from './adhkarData';
-import { useAppSettings } from '../settings/useAppSettings';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Moon, RotateCcw, Sun } from "lucide-react";
+import React from "react";
+import { useAppSettings } from "../settings/useAppSettings";
+import { type AdhkarItem, eveningAdhkar, morningAdhkar } from "./adhkarData";
 
 export function MorningEveningAdhkarTab() {
   const { settings, saveSettings } = useAppSettings();
@@ -33,14 +33,25 @@ export function MorningEveningAdhkarTab() {
   };
 
   const handleResetAll = async () => {
-    await saveSettings({ ...settings, adhkarMorningCompleted: {}, adhkarEveningCompleted: {} });
+    await saveSettings({
+      ...settings,
+      adhkarMorningCompleted: {},
+      adhkarEveningCompleted: {},
+    });
   };
 
-  const renderAdhkarList = (items: AdhkarItem[], completed: Record<string, boolean>, isMorning: boolean) => {
+  const renderAdhkarList = (
+    items: AdhkarItem[],
+    completed: Record<string, boolean>,
+    isMorning: boolean,
+  ) => {
     return (
       <div className="space-y-3">
         {items.map((item) => (
-          <Card key={item.id} className={completed[item.id] ? 'bg-muted/50' : ''}>
+          <Card
+            key={item.id}
+            className={completed[item.id] ? "bg-muted/50" : ""}
+          >
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 <Checkbox
@@ -56,15 +67,22 @@ export function MorningEveningAdhkarTab() {
                     </span>
                   </div>
                   {item.arabic && (
-                    <p className="text-right text-lg leading-relaxed font-arabic" dir="rtl">
+                    <p
+                      className="text-right text-lg leading-relaxed font-arabic"
+                      dir="rtl"
+                    >
                       {item.arabic}
                     </p>
                   )}
                   {item.transliteration && (
-                    <p className="text-xs text-muted-foreground italic">{item.transliteration}</p>
+                    <p className="text-xs text-muted-foreground italic">
+                      {item.transliteration}
+                    </p>
                   )}
                   {item.translation && (
-                    <p className="text-sm text-foreground/80">{item.translation}</p>
+                    <p className="text-sm text-foreground/80">
+                      {item.translation}
+                    </p>
                   )}
                 </div>
               </div>
@@ -75,8 +93,10 @@ export function MorningEveningAdhkarTab() {
     );
   };
 
-  const morningCompletedCount = Object.values(morningCompleted).filter(Boolean).length;
-  const eveningCompletedCount = Object.values(eveningCompleted).filter(Boolean).length;
+  const morningCompletedCount =
+    Object.values(morningCompleted).filter(Boolean).length;
+  const eveningCompletedCount =
+    Object.values(eveningCompleted).filter(Boolean).length;
 
   return (
     <ScrollArea className="h-[calc(100vh-200px)]">

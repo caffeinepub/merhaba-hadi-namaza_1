@@ -1,4 +1,4 @@
-import type { GeocodingResult, Location } from './types';
+import type { GeocodingResult, Location } from "./types";
 
 interface OpenMeteoGeocodingResponse {
   results?: Array<{
@@ -12,7 +12,9 @@ interface OpenMeteoGeocodingResponse {
   }>;
 }
 
-export async function searchLocation(query: string): Promise<GeocodingResult[]> {
+export async function searchLocation(
+  query: string,
+): Promise<GeocodingResult[]> {
   if (!query || query.trim().length < 2) {
     return [];
   }
@@ -21,30 +23,31 @@ export async function searchLocation(query: string): Promise<GeocodingResult[]> 
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error('Konum araması başarısız oldu');
+    throw new Error("Konum araması başarısız oldu");
   }
 
   const data: OpenMeteoGeocodingResponse = await response.json();
-  
+
   // Map API response to GeocodingResult, ensuring country is always a string
-  return (data.results || []).map(result => ({
+  return (data.results || []).map((result) => ({
     id: result.id,
     name: result.name,
     latitude: result.latitude,
     longitude: result.longitude,
-    country: result.country || 'Unknown',
-    admin1: result.admin1
+    country: result.country || "Unknown",
+    admin1: result.admin1,
   }));
 }
 
 export function geocodingResultToLocation(result: GeocodingResult): Location {
   const parts = [result.name];
   if (result.admin1) parts.push(result.admin1);
-  if (result.country && result.country !== 'Unknown') parts.push(result.country);
+  if (result.country && result.country !== "Unknown")
+    parts.push(result.country);
 
   return {
-    displayName: parts.join(', '),
+    displayName: parts.join(", "),
     latitude: result.latitude,
-    longitude: result.longitude
+    longitude: result.longitude,
   };
 }

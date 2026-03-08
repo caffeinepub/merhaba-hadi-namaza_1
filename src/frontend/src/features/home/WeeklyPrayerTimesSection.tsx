@@ -1,7 +1,19 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
-import type { DailyPrayerTimes } from '../prayer/aladhanWeeklyApi';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
+import type { DailyPrayerTimes } from "../prayer/aladhanWeeklyApi";
 
 interface WeeklyPrayerTimesSectionProps {
   weeklyData: DailyPrayerTimes[];
@@ -9,7 +21,11 @@ interface WeeklyPrayerTimesSectionProps {
   error: Error | null;
 }
 
-export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: WeeklyPrayerTimesSectionProps) {
+export function WeeklyPrayerTimesSection({
+  weeklyData,
+  isLoading,
+  error,
+}: WeeklyPrayerTimesSectionProps) {
   if (isLoading) {
     return (
       <Card className="border-2 shadow-soft">
@@ -17,7 +33,9 @@ export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: Weekl
           <CardTitle className="text-lg">Haftalık Namaz Vakitleri</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-4">Yükleniyor...</p>
+          <p className="text-sm text-muted-foreground text-center py-4">
+            Yükleniyor...
+          </p>
         </CardContent>
       </Card>
     );
@@ -30,7 +48,9 @@ export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: Weekl
           <CardTitle className="text-lg">Haftalık Namaz Vakitleri</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-destructive text-center py-4">Haftalık namaz vakitleri alınamadı</p>
+          <p className="text-sm text-destructive text-center py-4">
+            Haftalık namaz vakitleri alınamadı
+          </p>
         </CardContent>
       </Card>
     );
@@ -46,29 +66,49 @@ export function WeeklyPrayerTimesSection({ weeklyData, isLoading, error }: Weekl
           <Table className="weekly-prayer-table">
             <TableHeader>
               <TableRow className="border-b-2 hover:bg-transparent">
-                <TableHead className="font-semibold weekly-sticky-col weekly-sticky-header">Gün</TableHead>
-                <TableHead className="text-center font-semibold prayer-imsak-col border-l">İmsak</TableHead>
-                <TableHead className="text-center font-semibold prayer-gunes-col border-l">Güneş</TableHead>
-                <TableHead className="text-center font-semibold prayer-ogle-col border-l">Öğle</TableHead>
-                <TableHead className="text-center font-semibold prayer-ikindi-col border-l">İkindi</TableHead>
-                <TableHead className="text-center font-semibold prayer-aksam-col border-l">Akşam</TableHead>
-                <TableHead className="text-center font-semibold prayer-yatsi-col border-l">Yatsı</TableHead>
+                <TableHead className="font-semibold weekly-sticky-col weekly-sticky-header">
+                  Gün
+                </TableHead>
+                <TableHead className="text-center font-semibold prayer-imsak-col border-l">
+                  İmsak
+                </TableHead>
+                <TableHead className="text-center font-semibold prayer-gunes-col border-l">
+                  Güneş
+                </TableHead>
+                <TableHead className="text-center font-semibold prayer-ogle-col border-l">
+                  Öğle
+                </TableHead>
+                <TableHead className="text-center font-semibold prayer-ikindi-col border-l">
+                  İkindi
+                </TableHead>
+                <TableHead className="text-center font-semibold prayer-aksam-col border-l">
+                  Akşam
+                </TableHead>
+                <TableHead className="text-center font-semibold prayer-yatsi-col border-l">
+                  Yatsı
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {weeklyData.map((day, index) => {
                 const isToday = index === 0;
                 return (
-                  <TableRow 
-                    key={index} 
+                  <TableRow
+                    key={day.dayLabel || index}
                     className={`
                       border-b transition-colors
-                      ${isToday ? 'bg-primary/10 hover:bg-primary/15 font-medium' : 'hover:bg-muted/20'}
+                      ${isToday ? "bg-primary/10 hover:bg-primary/15 font-medium" : "hover:bg-muted/20"}
                     `}
                   >
-                    <TableCell className={`font-medium whitespace-nowrap weekly-sticky-col ${isToday ? 'weekly-sticky-today' : 'weekly-sticky-body'}`}>
+                    <TableCell
+                      className={`font-medium whitespace-nowrap weekly-sticky-col ${isToday ? "weekly-sticky-today" : "weekly-sticky-body"}`}
+                    >
                       {day.dayLabel}
-                      {isToday && <span className="ml-2 text-xs text-primary">(Bugün)</span>}
+                      {isToday && (
+                        <span className="ml-2 text-xs text-primary">
+                          (Bugün)
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-center tabular-nums prayer-imsak-col border-l">
                       {day.fajr}

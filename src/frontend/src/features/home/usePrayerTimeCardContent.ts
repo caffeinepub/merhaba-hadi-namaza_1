@@ -1,9 +1,12 @@
-import { useMemo } from 'react';
-import { versesData, type VerseItem } from './time-content/versesData';
-import { hadithsData, type HadithItem } from './time-content/hadithsData';
-import { duasData, type DuaItem } from './time-content/duasData';
-import { esmaulHusnaData, type EsmaulHusnaItem } from '../esmaulhusna/esmaulHusnaData';
-import type { PrayerSlot } from './currentPrayerSlot';
+import { useMemo } from "react";
+import {
+  type EsmaulHusnaItem,
+  esmaulHusnaData,
+} from "../esmaulhusna/esmaulHusnaData";
+import type { PrayerSlot } from "./currentPrayerSlot";
+import { type DuaItem, duasData } from "./time-content/duasData";
+import { type HadithItem, hadithsData } from "./time-content/hadithsData";
+import { type VerseItem, versesData } from "./time-content/versesData";
 
 export interface PrayerTimeCardContent {
   verse: VerseItem;
@@ -16,7 +19,9 @@ export interface PrayerTimeCardContent {
  * Hook that selects random content for each card category.
  * Content remains stable for the same prayer slot.
  */
-export function usePrayerTimeCardContent(currentSlot: PrayerSlot | null): PrayerTimeCardContent | null {
+export function usePrayerTimeCardContent(
+  currentSlot: PrayerSlot | null,
+): PrayerTimeCardContent | null {
   return useMemo(() => {
     if (!currentSlot) return null;
 
@@ -27,15 +32,24 @@ export function usePrayerTimeCardContent(currentSlot: PrayerSlot | null): Prayer
       verse: getRandomItem(versesData, slotSeed, 0),
       hadith: getRandomItem(hadithsData, slotSeed, 1),
       dua: getRandomItem(duasData, slotSeed, 2),
-      esma: getRandomItem(esmaulHusnaData, slotSeed, 3)
+      esma: getRandomItem(esmaulHusnaData, slotSeed, 3),
     };
   }, [currentSlot]);
 }
 
 function getSlotSeed(slot: PrayerSlot): number {
   const now = new Date();
-  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
-  const slotIndex = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].indexOf(slot);
+  const dayOfYear = Math.floor(
+    (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000,
+  );
+  const slotIndex = [
+    "fajr",
+    "sunrise",
+    "dhuhr",
+    "asr",
+    "maghrib",
+    "isha",
+  ].indexOf(slot);
   return dayOfYear * 10 + slotIndex;
 }
 

@@ -1,6 +1,6 @@
 /**
  * Production Notification Copy
- * 
+ *
  * Single source of truth for all notification titles and bodies.
  * All strings are production-ready English with placeholder support.
  */
@@ -14,8 +14,8 @@ export interface NotificationTemplate {
  * Generic web-triggered notification template
  */
 export const GENERIC_NOTIFICATION: NotificationTemplate = {
-  title: 'Hadi Namaza',
-  body: 'You have a new notification from Hadi Namaza',
+  title: "Hadi Namaza",
+  body: "You have a new notification from Hadi Namaza",
 };
 
 /**
@@ -23,28 +23,28 @@ export const GENERIC_NOTIFICATION: NotificationTemplate = {
  */
 export const PRAYER_NOTIFICATIONS = {
   fajr: {
-    title: 'Fajr Prayer Time',
-    body: 'It is time for Fajr prayer. May Allah accept your worship.',
+    title: "Fajr Prayer Time",
+    body: "It is time for Fajr prayer. May Allah accept your worship.",
   },
   sunrise: {
-    title: 'Sunrise',
-    body: 'The sun has risen. The time for Fajr prayer has ended.',
+    title: "Sunrise",
+    body: "The sun has risen. The time for Fajr prayer has ended.",
   },
   dhuhr: {
-    title: 'Dhuhr Prayer Time',
-    body: 'It is time for Dhuhr prayer. May Allah accept your worship.',
+    title: "Dhuhr Prayer Time",
+    body: "It is time for Dhuhr prayer. May Allah accept your worship.",
   },
   asr: {
-    title: 'Asr Prayer Time',
-    body: 'It is time for Asr prayer. May Allah accept your worship.',
+    title: "Asr Prayer Time",
+    body: "It is time for Asr prayer. May Allah accept your worship.",
   },
   maghrib: {
-    title: 'Maghrib Prayer Time',
-    body: 'It is time for Maghrib prayer. May Allah accept your worship.',
+    title: "Maghrib Prayer Time",
+    body: "It is time for Maghrib prayer. May Allah accept your worship.",
   },
   isha: {
-    title: 'Isha Prayer Time',
-    body: 'It is time for Isha prayer. May Allah accept your worship.',
+    title: "Isha Prayer Time",
+    body: "It is time for Isha prayer. May Allah accept your worship.",
   },
 } as const;
 
@@ -53,7 +53,9 @@ export type PrayerName = keyof typeof PRAYER_NOTIFICATIONS;
 /**
  * Get notification template for a specific prayer
  */
-export function getPrayerNotification(prayerName: PrayerName): NotificationTemplate {
+export function getPrayerNotification(
+  prayerName: PrayerName,
+): NotificationTemplate {
   return PRAYER_NOTIFICATIONS[prayerName];
 }
 
@@ -65,10 +67,10 @@ export function formatPrayerNotification(
   options?: {
     time?: string;
     leadMinutes?: number;
-  }
+  },
 ): NotificationTemplate {
   const template = getPrayerNotification(prayerName);
-  
+
   if (!options) {
     return template;
   }
@@ -82,7 +84,7 @@ export function formatPrayerNotification(
 
   // Add lead time if provided
   if (options.leadMinutes && options.leadMinutes > 0) {
-    body = `Reminder: ${body.replace('It is time', `${options.leadMinutes} minutes until`)}`;
+    body = `Reminder: ${body.replace("It is time", `${options.leadMinutes} minutes until`)}`;
   }
 
   return {

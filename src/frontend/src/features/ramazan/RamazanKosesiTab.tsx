@@ -1,26 +1,55 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
-import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert';
-import { useAppSettings } from '../settings/useAppSettings';
-import { LocationSetupSection } from '../location/LocationSetupSection';
-import { usePrayerTimes } from '../prayer/usePrayerTimes';
-import { applyOffsetToPrayerTimes } from '../prayer/timeOffset';
-import { MapPin, Moon, Sunrise, Sunset, Clock, BookOpen, Loader2, Sparkles, UtensilsCrossed } from 'lucide-react';
-import { fastingBasicsContent } from './fastingBasicsContent';
-import { tarawihContent } from './tarawihContent';
-import { useDailyRotatingRamadanMenu } from './useDailyRotatingRamadanMenu';
+import {
+  BookOpen,
+  Clock,
+  Loader2,
+  MapPin,
+  Moon,
+  Sparkles,
+  Sunrise,
+  Sunset,
+  UtensilsCrossed,
+} from "lucide-react";
+import React, { useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
+import { LocationSetupSection } from "../location/LocationSetupSection";
+import { applyOffsetToPrayerTimes } from "../prayer/timeOffset";
+import { usePrayerTimes } from "../prayer/usePrayerTimes";
+import { useAppSettings } from "../settings/useAppSettings";
+import { fastingBasicsContent } from "./fastingBasicsContent";
+import { tarawihContent } from "./tarawihContent";
+import { useDailyRotatingRamadanMenu } from "./useDailyRotatingRamadanMenu";
 
 export function RamazanKosesiTab() {
   const { settings } = useAppSettings();
   const [isLocationDialogOpen, setIsLocationDialogOpen] = useState(false);
-  
-  const { data: prayerTimes, isLoading, isError, error } = usePrayerTimes(settings.location);
-  
-  const adjustedTimes = prayerTimes && settings.offsetMinutes !== undefined
-    ? applyOffsetToPrayerTimes(prayerTimes, settings.offsetMinutes)
-    : prayerTimes;
+
+  const {
+    data: prayerTimes,
+    isLoading,
+    isError,
+    error,
+  } = usePrayerTimes(settings.location);
+
+  const adjustedTimes =
+    prayerTimes && settings.offsetMinutes !== undefined
+      ? applyOffsetToPrayerTimes(prayerTimes, settings.offsetMinutes)
+      : prayerTimes;
 
   const todaysMenu = useDailyRotatingRamadanMenu();
 
@@ -50,7 +79,10 @@ export function RamazanKosesiTab() {
                 İmsakiye bilgilerini görmek için lütfen konumunuzu seçin.
               </AlertDescription>
             </Alert>
-            <Dialog open={isLocationDialogOpen} onOpenChange={setIsLocationDialogOpen}>
+            <Dialog
+              open={isLocationDialogOpen}
+              onOpenChange={setIsLocationDialogOpen}
+            >
               <DialogTrigger asChild>
                 <Button className="w-full mt-4">
                   <MapPin className="h-4 w-4 mr-2" />
@@ -64,7 +96,9 @@ export function RamazanKosesiTab() {
                     Konumunuzu ayarlamak için şehir veya ilçe arayın
                   </DialogDescription>
                 </DialogHeader>
-                <LocationSetupSection onLocationSelected={handleLocationSelected} />
+                <LocationSetupSection
+                  onLocationSelected={handleLocationSelected}
+                />
               </DialogContent>
             </Dialog>
           </CardContent>
@@ -81,10 +115,15 @@ export function RamazanKosesiTab() {
           <CardContent className="space-y-6">
             {tarawihContent.sections.map((section, index) => (
               <div key={index} className="space-y-3">
-                <h3 className="font-semibold text-base text-primary">{section.heading}</h3>
+                <h3 className="font-semibold text-base text-primary">
+                  {section.heading}
+                </h3>
                 <div className="space-y-2">
                   {section.content.map((paragraph, pIndex) => (
-                    <p key={pIndex} className="text-sm leading-relaxed text-muted-foreground">
+                    <p
+                      key={pIndex}
+                      className="text-sm leading-relaxed text-muted-foreground"
+                    >
                       {paragraph}
                     </p>
                   ))}
@@ -101,17 +140,20 @@ export function RamazanKosesiTab() {
               <UtensilsCrossed className="h-5 w-5" />
               Günün Ramazan Menüsü
             </CardTitle>
-            <CardDescription>
-              Sağlıklı sahur ve iftar önerileri
-            </CardDescription>
+            <CardDescription>Sağlıklı sahur ve iftar önerileri</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Sahur */}
             <div className="space-y-3">
-              <h3 className="font-semibold text-base text-primary">Sahur Önerileri</h3>
+              <h3 className="font-semibold text-base text-primary">
+                Sahur Önerileri
+              </h3>
               <ul className="space-y-2">
                 {todaysMenu.sahur.map((item, index) => (
-                  <li key={index} className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2">
+                  <li
+                    key={index}
+                    className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2"
+                  >
                     <span className="text-accent mt-1">•</span>
                     <span>{item}</span>
                   </li>
@@ -121,10 +163,15 @@ export function RamazanKosesiTab() {
 
             {/* Iftar */}
             <div className="space-y-3">
-              <h3 className="font-semibold text-base text-primary">İftar Önerileri</h3>
+              <h3 className="font-semibold text-base text-primary">
+                İftar Önerileri
+              </h3>
               <ul className="space-y-2">
                 {todaysMenu.iftar.map((item, index) => (
-                  <li key={index} className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2">
+                  <li
+                    key={index}
+                    className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2"
+                  >
                     <span className="text-accent mt-1">•</span>
                     <span>{item}</span>
                   </li>
@@ -151,10 +198,15 @@ export function RamazanKosesiTab() {
           <CardContent className="space-y-6">
             {fastingBasicsContent.map((section, index) => (
               <div key={index} className="space-y-3">
-                <h3 className="font-semibold text-base text-primary">{section.heading}</h3>
+                <h3 className="font-semibold text-base text-primary">
+                  {section.heading}
+                </h3>
                 <div className="space-y-2">
                   {section.content.map((paragraph, pIndex) => (
-                    <p key={pIndex} className="text-sm leading-relaxed text-muted-foreground">
+                    <p
+                      key={pIndex}
+                      className="text-sm leading-relaxed text-muted-foreground"
+                    >
                       {paragraph}
                     </p>
                   ))}
@@ -179,12 +231,18 @@ export function RamazanKosesiTab() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div>
-            <p className="text-sm font-medium">{settings.location.displayName}</p>
+            <p className="text-sm font-medium">
+              {settings.location.displayName}
+            </p>
             <p className="text-xs text-muted-foreground">
-              {settings.location.latitude.toFixed(4)}°, {settings.location.longitude.toFixed(4)}°
+              {settings.location.latitude.toFixed(4)}°,{" "}
+              {settings.location.longitude.toFixed(4)}°
             </p>
           </div>
-          <Dialog open={isLocationDialogOpen} onOpenChange={setIsLocationDialogOpen}>
+          <Dialog
+            open={isLocationDialogOpen}
+            onOpenChange={setIsLocationDialogOpen}
+          >
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="w-full">
                 Konumu Değiştir
@@ -197,7 +255,9 @@ export function RamazanKosesiTab() {
                   Yeni bir şehir veya ilçe arayın
                 </DialogDescription>
               </DialogHeader>
-              <LocationSetupSection onLocationSelected={handleLocationSelected} />
+              <LocationSetupSection
+                onLocationSelected={handleLocationSelected}
+              />
             </DialogContent>
           </Dialog>
         </CardContent>
@@ -210,15 +270,15 @@ export function RamazanKosesiTab() {
             <Moon className="h-5 w-5" />
             İmsakiye
           </CardTitle>
-          <CardDescription>
-            Bugünün oruç vakitleri
-          </CardDescription>
+          <CardDescription>Bugünün oruç vakitleri</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading && (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              <span className="ml-2 text-sm text-muted-foreground">Yükleniyor...</span>
+              <span className="ml-2 text-sm text-muted-foreground">
+                Yükleniyor...
+              </span>
             </div>
           )}
 
@@ -226,7 +286,9 @@ export function RamazanKosesiTab() {
             <Alert variant="destructive">
               <AlertTitle>Hata</AlertTitle>
               <AlertDescription>
-                {error instanceof Error ? error.message : 'Vakitler yüklenirken bir hata oluştu'}
+                {error instanceof Error
+                  ? error.message
+                  : "Vakitler yüklenirken bir hata oluştu"}
               </AlertDescription>
             </Alert>
           )}
@@ -241,7 +303,9 @@ export function RamazanKosesiTab() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-muted-foreground">İmsak</p>
-                    <p className="text-lg font-bold text-foreground">{adjustedTimes.fajr}</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {adjustedTimes.fajr}
+                    </p>
                   </div>
                 </div>
 
@@ -252,7 +316,9 @@ export function RamazanKosesiTab() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-muted-foreground">Güneş</p>
-                    <p className="text-lg font-bold text-foreground">{adjustedTimes.sunrise}</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {adjustedTimes.sunrise}
+                    </p>
                   </div>
                 </div>
 
@@ -263,7 +329,9 @@ export function RamazanKosesiTab() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-muted-foreground">İftar</p>
-                    <p className="text-lg font-bold text-foreground">{adjustedTimes.maghrib}</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {adjustedTimes.maghrib}
+                    </p>
                   </div>
                 </div>
 
@@ -274,7 +342,9 @@ export function RamazanKosesiTab() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-muted-foreground">Yatsı</p>
-                    <p className="text-lg font-bold text-foreground">{adjustedTimes.isha}</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {adjustedTimes.isha}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -300,10 +370,15 @@ export function RamazanKosesiTab() {
         <CardContent className="space-y-6">
           {tarawihContent.sections.map((section, index) => (
             <div key={index} className="space-y-3">
-              <h3 className="font-semibold text-base text-primary">{section.heading}</h3>
+              <h3 className="font-semibold text-base text-primary">
+                {section.heading}
+              </h3>
               <div className="space-y-2">
                 {section.content.map((paragraph, pIndex) => (
-                  <p key={pIndex} className="text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    key={pIndex}
+                    className="text-sm leading-relaxed text-muted-foreground"
+                  >
                     {paragraph}
                   </p>
                 ))}
@@ -320,17 +395,20 @@ export function RamazanKosesiTab() {
             <UtensilsCrossed className="h-5 w-5" />
             Günün Ramazan Menüsü
           </CardTitle>
-          <CardDescription>
-            Sağlıklı sahur ve iftar önerileri
-          </CardDescription>
+          <CardDescription>Sağlıklı sahur ve iftar önerileri</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Sahur */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-base text-primary">Sahur Önerileri</h3>
+            <h3 className="font-semibold text-base text-primary">
+              Sahur Önerileri
+            </h3>
             <ul className="space-y-2">
               {todaysMenu.sahur.map((item, index) => (
-                <li key={index} className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2">
+                <li
+                  key={index}
+                  className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2"
+                >
                   <span className="text-accent mt-1">•</span>
                   <span>{item}</span>
                 </li>
@@ -340,10 +418,15 @@ export function RamazanKosesiTab() {
 
           {/* Iftar */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-base text-primary">İftar Önerileri</h3>
+            <h3 className="font-semibold text-base text-primary">
+              İftar Önerileri
+            </h3>
             <ul className="space-y-2">
               {todaysMenu.iftar.map((item, index) => (
-                <li key={index} className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2">
+                <li
+                  key={index}
+                  className="text-sm leading-relaxed text-muted-foreground flex items-start gap-2"
+                >
                   <span className="text-accent mt-1">•</span>
                   <span>{item}</span>
                 </li>
@@ -370,10 +453,15 @@ export function RamazanKosesiTab() {
         <CardContent className="space-y-6">
           {fastingBasicsContent.map((section, index) => (
             <div key={index} className="space-y-3">
-              <h3 className="font-semibold text-base text-primary">{section.heading}</h3>
+              <h3 className="font-semibold text-base text-primary">
+                {section.heading}
+              </h3>
               <div className="space-y-2">
                 {section.content.map((paragraph, pIndex) => (
-                  <p key={pIndex} className="text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    key={pIndex}
+                    className="text-sm leading-relaxed text-muted-foreground"
+                  >
                     {paragraph}
                   </p>
                 ))}

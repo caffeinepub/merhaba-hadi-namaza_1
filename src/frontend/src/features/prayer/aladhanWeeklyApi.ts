@@ -1,4 +1,4 @@
-import { ALADHAN_METHOD } from './aladhanApi';
+import { ALADHAN_METHOD } from "./aladhanApi";
 
 export interface DailyPrayerTimes {
   fajr: string;
@@ -34,7 +34,7 @@ interface AladhanResponse {
 
 export async function fetchWeeklyPrayerTimes(
   latitude: number,
-  longitude: number
+  longitude: number,
 ): Promise<DailyPrayerTimes[]> {
   const weeklyData: DailyPrayerTimes[] = [];
   const today = new Date();
@@ -49,16 +49,16 @@ export async function fetchWeeklyPrayerTimes(
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error('Failed to fetch prayer times for the week');
+        throw new Error("Failed to fetch prayer times for the week");
       }
 
       const data: AladhanResponse = await response.json();
 
       // Format day label (e.g., "Pazartesi, 13 Şubat")
-      const dayLabel = targetDate.toLocaleDateString('tr-TR', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
+      const dayLabel = targetDate.toLocaleDateString("tr-TR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
       });
 
       weeklyData.push({
@@ -69,10 +69,10 @@ export async function fetchWeeklyPrayerTimes(
         maghrib: data.data.timings.Maghrib,
         isha: data.data.timings.Isha,
         date: data.data.date.readable,
-        dayLabel
+        dayLabel,
       });
-    } catch (error) {
-      throw new Error('Failed to fetch prayer times for the week');
+    } catch (_error) {
+      throw new Error("Failed to fetch prayer times for the week");
     }
   }
 

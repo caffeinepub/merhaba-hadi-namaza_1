@@ -1,16 +1,24 @@
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { useWeather } from './useWeather';
-import { useAppSettings } from '../settings/useAppSettings';
-import { getWeatherDescription } from './openMeteoWeatherApi';
-import { Cloud, Droplets, Wind } from 'lucide-react';
-import { DEFAULT_LOCATION } from '../location/types';
+import { Cloud, Droplets, Wind } from "lucide-react";
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { DEFAULT_LOCATION } from "../location/types";
+import { useAppSettings } from "../settings/useAppSettings";
+import { getWeatherDescription } from "./openMeteoWeatherApi";
+import { useWeather } from "./useWeather";
 
 interface WeatherSectionProps {
   onNavigateToLocation: () => void;
 }
 
-export function WeatherSection({ onNavigateToLocation }: WeatherSectionProps) {
+export function WeatherSection({
+  onNavigateToLocation: _onNavigateToLocation,
+}: WeatherSectionProps) {
   const { settings } = useAppSettings();
   const effectiveLocation = settings.location || DEFAULT_LOCATION;
   const { data: weather, isLoading, error } = useWeather(effectiveLocation);
@@ -26,7 +34,9 @@ export function WeatherSection({ onNavigateToLocation }: WeatherSectionProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading && (
-          <p className="text-sm text-muted-foreground">Hava durumu yükleniyor...</p>
+          <p className="text-sm text-muted-foreground">
+            Hava durumu yükleniyor...
+          </p>
         )}
 
         {error && (
@@ -36,7 +46,9 @@ export function WeatherSection({ onNavigateToLocation }: WeatherSectionProps) {
         {weather && (
           <div className="space-y-4">
             <div className="text-center py-4">
-              <p className="text-5xl font-bold">{Math.round(weather.temperature)}°C</p>
+              <p className="text-5xl font-bold">
+                {Math.round(weather.temperature)}°C
+              </p>
               <p className="text-lg text-muted-foreground mt-2">
                 {getWeatherDescription(weather.weatherCode)}
               </p>
@@ -47,7 +59,9 @@ export function WeatherSection({ onNavigateToLocation }: WeatherSectionProps) {
                 <Wind className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">Rüzgar</p>
-                  <p className="font-semibold">{Math.round(weather.windSpeed)} km/s</p>
+                  <p className="font-semibold">
+                    {Math.round(weather.windSpeed)} km/s
+                  </p>
                 </div>
               </div>
 

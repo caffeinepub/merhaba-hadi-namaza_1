@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 interface DeviceOrientationState {
   heading: number | null;
@@ -20,7 +20,7 @@ export function useDeviceOrientation(): DeviceOrientationState {
 
   const requestPermission = async () => {
     // Check if DeviceOrientationEvent exists
-    if (typeof DeviceOrientationEvent === 'undefined') {
+    if (typeof DeviceOrientationEvent === "undefined") {
       setIsSupported(false);
       setIsLoading(false);
       return;
@@ -28,11 +28,13 @@ export function useDeviceOrientation(): DeviceOrientationState {
 
     // iOS 13+ requires explicit permission
     if (
-      typeof (DeviceOrientationEvent as any).requestPermission === 'function'
+      typeof (DeviceOrientationEvent as any).requestPermission === "function"
     ) {
       try {
-        const permission = await (DeviceOrientationEvent as any).requestPermission();
-        if (permission === 'granted') {
+        const permission = await (
+          DeviceOrientationEvent as any
+        ).requestPermission();
+        if (permission === "granted") {
           setIsPermissionDenied(false);
           setIsSupported(true);
         } else {
@@ -40,7 +42,7 @@ export function useDeviceOrientation(): DeviceOrientationState {
           setIsSupported(false);
         }
       } catch (error) {
-        console.error('Error requesting device orientation permission:', error);
+        console.error("Error requesting device orientation permission:", error);
         setIsPermissionDenied(true);
         setIsSupported(false);
       }
@@ -54,14 +56,16 @@ export function useDeviceOrientation(): DeviceOrientationState {
 
   useEffect(() => {
     // Initial check
-    if (typeof DeviceOrientationEvent === 'undefined') {
+    if (typeof DeviceOrientationEvent === "undefined") {
       setIsSupported(false);
       setIsLoading(false);
       return;
     }
 
     // For non-iOS devices, automatically set as supported
-    if (typeof (DeviceOrientationEvent as any).requestPermission !== 'function') {
+    if (
+      typeof (DeviceOrientationEvent as any).requestPermission !== "function"
+    ) {
       setIsSupported(true);
       setIsLoading(false);
     } else {
@@ -74,21 +78,21 @@ export function useDeviceOrientation(): DeviceOrientationState {
       if (event.alpha !== null) {
         // Normalize to 0-360
         let compassHeading = event.alpha;
-        
+
         // On some devices, we need to account for webkitCompassHeading
         if ((event as any).webkitCompassHeading !== undefined) {
           compassHeading = (event as any).webkitCompassHeading;
         }
-        
+
         setHeading(compassHeading);
       }
     };
 
     if (isSupported && !isPermissionDenied) {
-      window.addEventListener('deviceorientation', handleOrientation);
-      
+      window.addEventListener("deviceorientation", handleOrientation);
+
       return () => {
-        window.removeEventListener('deviceorientation', handleOrientation);
+        window.removeEventListener("deviceorientation", handleOrientation);
       };
     }
   }, [isSupported, isPermissionDenied]);
@@ -98,6 +102,6 @@ export function useDeviceOrientation(): DeviceOrientationState {
     isSupported,
     isPermissionDenied,
     isLoading,
-    requestPermission
+    requestPermission,
   };
 }

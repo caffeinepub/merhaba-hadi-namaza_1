@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import { Card, CardContent } from '../../components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
-import { ScrollArea } from '../../components/ui/scroll-area';
-import { useCurrentPrayerSlot } from './useCurrentPrayerSlot';
-import { usePrayerTimeCardContent } from './usePrayerTimeCardContent';
-import type { AdjustedPrayerTimes } from './currentPrayerSlot';
-import { BookOpen, MessageSquare, Heart, Sparkles } from 'lucide-react';
+import { BookOpen, Heart, MessageSquare, Sparkles } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
+import { Card, CardContent } from "../../components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { ScrollArea } from "../../components/ui/scroll-area";
+import type { AdjustedPrayerTimes } from "./currentPrayerSlot";
+import { useCurrentPrayerSlot } from "./useCurrentPrayerSlot";
+import { usePrayerTimeCardContent } from "./usePrayerTimeCardContent";
 
 interface PrayerTimeCardsSectionProps {
   adjustedTimes: AdjustedPrayerTimes | null;
@@ -13,7 +19,7 @@ interface PrayerTimeCardsSectionProps {
   error: any;
 }
 
-type CardType = 'verse' | 'hadith' | 'dua' | 'esma';
+type CardType = "verse" | "hadith" | "dua" | "esma";
 
 interface CardConfig {
   type: CardType;
@@ -26,40 +32,44 @@ interface CardConfig {
 
 const cardConfigs: CardConfig[] = [
   {
-    type: 'verse',
-    title: 'Vaktin Ayeti',
+    type: "verse",
+    title: "Vaktin Ayeti",
     icon: BookOpen,
-    bgGradient: 'bg-gradient-to-br from-primary/20 to-primary/5',
-    iconColor: 'text-primary',
-    borderColor: 'border-primary/30'
+    bgGradient: "bg-gradient-to-br from-primary/20 to-primary/5",
+    iconColor: "text-primary",
+    borderColor: "border-primary/30",
   },
   {
-    type: 'hadith',
-    title: 'Vaktin Hadisi',
+    type: "hadith",
+    title: "Vaktin Hadisi",
     icon: MessageSquare,
-    bgGradient: 'bg-gradient-to-br from-secondary/20 to-secondary/5',
-    iconColor: 'text-secondary-foreground',
-    borderColor: 'border-secondary/30'
+    bgGradient: "bg-gradient-to-br from-secondary/20 to-secondary/5",
+    iconColor: "text-secondary-foreground",
+    borderColor: "border-secondary/30",
   },
   {
-    type: 'dua',
-    title: 'Vaktin Duası',
+    type: "dua",
+    title: "Vaktin Duası",
     icon: Heart,
-    bgGradient: 'bg-gradient-to-br from-accent/20 to-accent/5',
-    iconColor: 'text-accent-foreground',
-    borderColor: 'border-accent/30'
+    bgGradient: "bg-gradient-to-br from-accent/20 to-accent/5",
+    iconColor: "text-accent-foreground",
+    borderColor: "border-accent/30",
   },
   {
-    type: 'esma',
-    title: 'Vaktin Esmaül Hüsnası',
+    type: "esma",
+    title: "Vaktin Esmaül Hüsnası",
     icon: Sparkles,
-    bgGradient: 'bg-gradient-to-br from-chart-2/20 to-chart-2/5',
-    iconColor: 'text-chart-2',
-    borderColor: 'border-chart-2/30'
-  }
+    bgGradient: "bg-gradient-to-br from-chart-2/20 to-chart-2/5",
+    iconColor: "text-chart-2",
+    borderColor: "border-chart-2/30",
+  },
 ];
 
-export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: PrayerTimeCardsSectionProps) {
+export function PrayerTimeCardsSection({
+  adjustedTimes,
+  isLoading,
+  error,
+}: PrayerTimeCardsSectionProps) {
   const currentSlot = useCurrentPrayerSlot(adjustedTimes);
   const content = usePrayerTimeCardContent(currentSlot);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -77,35 +87,35 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
 
   const getCardContent = (type: CardType) => {
     switch (type) {
-      case 'verse':
+      case "verse":
         return {
           arabic: content.verse.arabic,
           turkish: content.verse.turkish,
-          reference: content.verse.reference
+          reference: content.verse.reference,
         };
-      case 'hadith':
+      case "hadith":
         return {
           arabic: content.hadith.arabic,
           turkish: content.hadith.turkish,
-          reference: content.hadith.source
+          reference: content.hadith.source,
         };
-      case 'dua':
+      case "dua":
         return {
           arabic: content.dua.arabic,
           turkish: content.dua.turkish,
-          reference: content.dua.occasion
+          reference: content.dua.occasion,
         };
-      case 'esma':
+      case "esma":
         return {
           arabic: content.esma.arabic,
           turkish: content.esma.turkish,
-          reference: content.esma.transliteration
+          reference: content.esma.transliteration,
         };
     }
   };
 
   const selectedContent = selectedCard ? getCardContent(selectedCard) : null;
-  const selectedConfig = cardConfigs.find(c => c.type === selectedCard);
+  const selectedConfig = cardConfigs.find((c) => c.type === selectedCard);
 
   return (
     <>
@@ -113,7 +123,7 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
         {cardConfigs.map((config) => {
           const Icon = config.icon;
           const cardContent = getCardContent(config.type);
-          
+
           return (
             <div key={config.type} className="relative">
               {/* Subtle corner ornaments on cards */}
@@ -131,9 +141,13 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
                 <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-3 space-y-2">
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <div className="p-1 sm:p-1.5 rounded-md bg-background/50">
-                      <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${config.iconColor}`} />
+                      <Icon
+                        className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${config.iconColor}`}
+                      />
                     </div>
-                    <h3 className="font-semibold text-xs sm:text-sm leading-tight">{config.title}</h3>
+                    <h3 className="font-semibold text-xs sm:text-sm leading-tight">
+                      {config.title}
+                    </h3>
                   </div>
                   <p className="text-xs leading-relaxed text-muted-foreground line-clamp-3">
                     {cardContent.turkish}
@@ -151,7 +165,9 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
             <DialogTitle className="flex items-center gap-2 text-base sm:text-lg md:text-xl">
               {selectedConfig && (
                 <>
-                  <selectedConfig.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selectedConfig.iconColor}`} />
+                  <selectedConfig.icon
+                    className={`h-4 w-4 sm:h-5 sm:w-5 ${selectedConfig.iconColor}`}
+                  />
                   {selectedConfig.title}
                 </>
               )}
@@ -161,7 +177,10 @@ export function PrayerTimeCardsSection({ adjustedTimes, isLoading, error }: Pray
             {selectedContent && (
               <div className="space-y-3 sm:space-y-4">
                 <div className="text-center py-3 sm:py-4">
-                  <p className="text-xl sm:text-2xl md:text-3xl font-arabic leading-loose" dir="rtl">
+                  <p
+                    className="text-xl sm:text-2xl md:text-3xl font-arabic leading-loose"
+                    dir="rtl"
+                  >
                     {selectedContent.arabic}
                   </p>
                 </div>

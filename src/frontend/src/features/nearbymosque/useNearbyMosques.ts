@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchNearbyMosques } from './nearbyMosquesApi';
-import type { NearbyMosque } from './types';
+import { useQuery } from "@tanstack/react-query";
+import { fetchNearbyMosques } from "./nearbyMosquesApi";
+import type { NearbyMosque } from "./types";
 
 interface UseNearbyMosquesParams {
   latitude: number | null;
@@ -8,9 +8,13 @@ interface UseNearbyMosquesParams {
   radiusKm: number;
 }
 
-export function useNearbyMosques({ latitude, longitude, radiusKm }: UseNearbyMosquesParams) {
+export function useNearbyMosques({
+  latitude,
+  longitude,
+  radiusKm,
+}: UseNearbyMosquesParams) {
   return useQuery<NearbyMosque[]>({
-    queryKey: ['nearbyMosques', latitude, longitude, radiusKm],
+    queryKey: ["nearbyMosques", latitude, longitude, radiusKm],
     queryFn: async () => {
       if (latitude === null || longitude === null) {
         return [];

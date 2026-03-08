@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
-import { ramadanMenusData, RamadanMenu } from './ramadanMenusData';
+import { useEffect, useState } from "react";
+import { type RamadanMenu, ramadanMenusData } from "./ramadanMenusData";
 
 /**
  * Hook that returns the menu for the current day based on local date.
  * The menu rotates daily at midnight and updates automatically.
  */
 export function useDailyRotatingRamadanMenu(): RamadanMenu {
-  const [currentMenu, setCurrentMenu] = useState<RamadanMenu>(() => getMenuForToday());
+  const [currentMenu, setCurrentMenu] = useState<RamadanMenu>(() =>
+    getMenuForToday(),
+  );
 
   useEffect(() => {
     // Calculate milliseconds until next midnight
@@ -19,11 +21,14 @@ export function useDailyRotatingRamadanMenu(): RamadanMenu {
     // Set timeout to update at midnight
     const timeoutId = setTimeout(() => {
       setCurrentMenu(getMenuForToday());
-      
+
       // Set up daily interval after first midnight update
-      const intervalId = setInterval(() => {
-        setCurrentMenu(getMenuForToday());
-      }, 24 * 60 * 60 * 1000); // 24 hours
+      const intervalId = setInterval(
+        () => {
+          setCurrentMenu(getMenuForToday());
+        },
+        24 * 60 * 60 * 1000,
+      ); // 24 hours
 
       // Cleanup interval on unmount
       return () => clearInterval(intervalId);
@@ -43,10 +48,10 @@ export function useDailyRotatingRamadanMenu(): RamadanMenu {
 function getMenuForToday(): RamadanMenu {
   const now = new Date();
   const dayOfYear = getDayOfYear(now);
-  
+
   // Use modulo to cycle through the 30 menus
   const menuIndex = dayOfYear % ramadanMenusData.length;
-  
+
   return ramadanMenusData[menuIndex];
 }
 

@@ -1,11 +1,3 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Progress } from '@/components/ui/progress';
-import { Moon, RotateCcw } from 'lucide-react';
-import type { RamadanDayStatus } from '../settings/appSettingsModel';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +8,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Moon, RotateCcw } from "lucide-react";
+import React from "react";
+import type { RamadanDayStatus } from "../settings/appSettingsModel";
 
 interface RamadanChecklistSectionProps {
   dayStatuses: RamadanDayStatus[];
@@ -29,8 +29,12 @@ export function RamadanChecklistSection({
   onSetDayStatus,
   onReset,
 }: RamadanChecklistSectionProps) {
-  const fastedCount = dayStatuses.filter(status => status === 'Fasted').length;
-  const missedCount = dayStatuses.filter(status => status === 'Missed').length;
+  const fastedCount = dayStatuses.filter(
+    (status) => status === "Fasted",
+  ).length;
+  const missedCount = dayStatuses.filter(
+    (status) => status === "Missed",
+  ).length;
   const progressPercentage = (fastedCount / 30) * 100;
 
   return (
@@ -52,7 +56,8 @@ export function RamadanChecklistSection({
               <AlertDialogHeader>
                 <AlertDialogTitle>Ramazan takibini sıfırla?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Tüm günler "Tuttu" olarak işaretlenecek. Bu işlem geri alınamaz.
+                  Tüm günler "Tuttu" olarak işaretlenecek. Bu işlem geri
+                  alınamaz.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -82,9 +87,9 @@ export function RamadanChecklistSection({
           <span className="text-sm font-medium">Günler</span>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
             {Array.from({ length: 30 }, (_, i) => i).map((dayIndex) => {
-              const status = dayStatuses[dayIndex] || 'Fasted';
-              const isFasted = status === 'Fasted';
-              
+              const status = dayStatuses[dayIndex] || "Fasted";
+              const isFasted = status === "Fasted";
+
               return (
                 <div
                   key={dayIndex}
@@ -96,17 +101,17 @@ export function RamadanChecklistSection({
                   <div className="flex flex-col gap-1 w-full min-w-0">
                     <Button
                       size="sm"
-                      variant={isFasted ? 'default' : 'outline'}
+                      variant={isFasted ? "default" : "outline"}
                       className="w-full h-7 text-[10px] px-1 min-w-0"
-                      onClick={() => onSetDayStatus(dayIndex, 'Fasted')}
+                      onClick={() => onSetDayStatus(dayIndex, "Fasted")}
                     >
                       Tuttu
                     </Button>
                     <Button
                       size="sm"
-                      variant={!isFasted ? 'destructive' : 'outline'}
+                      variant={!isFasted ? "destructive" : "outline"}
                       className="w-full h-7 text-[10px] px-1 min-w-0"
-                      onClick={() => onSetDayStatus(dayIndex, 'Missed')}
+                      onClick={() => onSetDayStatus(dayIndex, "Missed")}
                     >
                       Tutmadı
                     </Button>
@@ -128,7 +133,8 @@ export function RamadanChecklistSection({
 
         {/* Helper Text */}
         <p className="text-xs text-muted-foreground text-center pt-2">
-          Her gün için "Tuttu" veya "Tutmadı" seçeneğini işaretleyin. Tutulmayan günler otomatik olarak kaza orucu sayısına eklenir.
+          Her gün için "Tuttu" veya "Tutmadı" seçeneğini işaretleyin. Tutulmayan
+          günler otomatik olarak kaza orucu sayısına eklenir.
         </p>
       </CardContent>
     </Card>

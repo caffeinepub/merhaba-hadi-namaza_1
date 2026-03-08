@@ -1,10 +1,10 @@
 // Dini Günler tab component displaying full 2026 yearly list with next-up highlight in Turkish
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock } from 'lucide-react';
-import { useReligiousDaysForYear } from './useReligiousDaysForYear';
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Clock } from "lucide-react";
+import React from "react";
+import { useReligiousDaysForYear } from "./useReligiousDaysForYear";
 
 export function ReligiousDaysTab() {
   const { allDays, nextUpcoming, daysRemaining } = useReligiousDaysForYear();
@@ -38,7 +38,7 @@ export function ReligiousDaysTab() {
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="default" className="text-base px-3 py-1">
-                {daysRemaining === 0 ? 'Bugün' : `${daysRemaining} gün kaldı`}
+                {daysRemaining === 0 ? "Bugün" : `${daysRemaining} gün kaldı`}
               </Badge>
             </div>
           </CardContent>
@@ -64,11 +64,11 @@ export function ReligiousDaysTab() {
             dayDate.setHours(0, 0, 0, 0);
             const isPast = dayDate < today;
             const isNext = nextUpcoming?.id === day.id;
-            
+
             return (
-              <Card 
-                key={day.id} 
-                className={`${isNext ? 'border-primary/50 bg-primary/5' : ''} ${isPast ? 'opacity-60' : ''}`}
+              <Card
+                key={day.id}
+                className={`${isNext ? "border-primary/50 bg-primary/5" : ""} ${isPast ? "opacity-60" : ""}`}
               >
                 <CardContent className="py-4">
                   <div className="flex items-start justify-between gap-4">

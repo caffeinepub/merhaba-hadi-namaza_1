@@ -1,47 +1,60 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Label } from '../../components/ui/label';
-import { Input } from '../../components/ui/input';
-import { Button } from '../../components/ui/button';
-import { useAppSettings } from './useAppSettings';
-import { Settings, Bell, Clock } from 'lucide-react';
+import { Bell, Clock, Settings } from "lucide-react";
+import React, { useState } from "react";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { useAppSettings } from "./useAppSettings";
 
 export function SettingsTab() {
   const { settings, saveSettings, isSaving } = useAppSettings();
-  const [offsetMinutes, setOffsetMinutes] = useState(settings.offsetMinutes.toString());
-  const [notificationLeadTimes, setNotificationLeadTimes] = useState(settings.notificationLeadTimes);
+  const [offsetMinutes, setOffsetMinutes] = useState(
+    settings.offsetMinutes.toString(),
+  );
+  const [notificationLeadTimes, setNotificationLeadTimes] = useState(
+    settings.notificationLeadTimes,
+  );
 
   const handleSaveOffset = async () => {
-    const minutes = parseInt(offsetMinutes, 10);
-    if (isNaN(minutes)) {
-      alert('Lütfen geçerli bir sayı girin');
+    const minutes = Number.parseInt(offsetMinutes, 10);
+    if (Number.isNaN(minutes)) {
+      alert("Lütfen geçerli bir sayı girin");
       return;
     }
     try {
       await saveSettings({ offsetMinutes: minutes });
-      alert('Ayarlar kaydedildi');
+      alert("Ayarlar kaydedildi");
     } catch (error) {
-      console.error('Failed to save offset:', error);
-      alert('Ayarlar kaydedilemedi');
+      console.error("Failed to save offset:", error);
+      alert("Ayarlar kaydedilemedi");
     }
   };
 
   const handleSaveNotifications = async () => {
     try {
       await saveSettings({ notificationLeadTimes });
-      alert('Bildirim ayarları kaydedildi');
+      alert("Bildirim ayarları kaydedildi");
     } catch (error) {
-      console.error('Failed to save notification settings:', error);
-      alert('Bildirim ayarları kaydedilemedi');
+      console.error("Failed to save notification settings:", error);
+      alert("Bildirim ayarları kaydedilemedi");
     }
   };
 
-  const handleNotificationTimeChange = (prayer: keyof typeof notificationLeadTimes, value: string) => {
-    const minutes = parseInt(value, 10);
-    if (!isNaN(minutes) && minutes >= 0) {
-      setNotificationLeadTimes(prev => ({
+  const handleNotificationTimeChange = (
+    prayer: keyof typeof notificationLeadTimes,
+    value: string,
+  ) => {
+    const minutes = Number.parseInt(value, 10);
+    if (!Number.isNaN(minutes) && minutes >= 0) {
+      setNotificationLeadTimes((prev) => ({
         ...prev,
-        [prayer]: minutes
+        [prayer]: minutes,
       }));
     }
   };
@@ -79,12 +92,12 @@ export function SettingsTab() {
                   placeholder="0"
                   className="max-w-xs h-11 sm:h-12 text-sm sm:text-base"
                 />
-                <Button 
-                  onClick={handleSaveOffset} 
+                <Button
+                  onClick={handleSaveOffset}
                   disabled={isSaving}
                   className="min-h-[44px] sm:min-h-[48px] px-3 sm:px-4 text-sm sm:text-base"
                 >
-                  {isSaving ? 'Kaydediliyor...' : 'Kaydet'}
+                  {isSaving ? "Kaydediliyor..." : "Kaydet"}
                 </Button>
               </div>
             </div>
@@ -105,14 +118,20 @@ export function SettingsTab() {
         <CardContent className="space-y-3 sm:space-y-4">
           <div className="space-y-3 sm:space-y-4">
             {Object.entries(notificationLeadTimes).map(([prayer, minutes]) => (
-              <div key={prayer} className="flex items-center justify-between gap-3 sm:gap-4">
-                <Label htmlFor={`notification-${prayer}`} className="capitalize min-w-[80px] sm:min-w-[100px] text-sm sm:text-base">
-                  {prayer === 'fajr' && 'İmsak'}
-                  {prayer === 'sunrise' && 'Güneş'}
-                  {prayer === 'dhuhr' && 'Öğle'}
-                  {prayer === 'asr' && 'İkindi'}
-                  {prayer === 'maghrib' && 'Akşam'}
-                  {prayer === 'isha' && 'Yatsı'}
+              <div
+                key={prayer}
+                className="flex items-center justify-between gap-3 sm:gap-4"
+              >
+                <Label
+                  htmlFor={`notification-${prayer}`}
+                  className="capitalize min-w-[80px] sm:min-w-[100px] text-sm sm:text-base"
+                >
+                  {prayer === "fajr" && "İmsak"}
+                  {prayer === "sunrise" && "Güneş"}
+                  {prayer === "dhuhr" && "Öğle"}
+                  {prayer === "asr" && "İkindi"}
+                  {prayer === "maghrib" && "Akşam"}
+                  {prayer === "isha" && "Yatsı"}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Input
@@ -120,20 +139,27 @@ export function SettingsTab() {
                     type="number"
                     min="0"
                     value={minutes}
-                    onChange={(e) => handleNotificationTimeChange(prayer as keyof typeof notificationLeadTimes, e.target.value)}
+                    onChange={(e) =>
+                      handleNotificationTimeChange(
+                        prayer as keyof typeof notificationLeadTimes,
+                        e.target.value,
+                      )
+                    }
                     className="w-16 sm:w-20 h-11 sm:h-12 text-sm sm:text-base"
                   />
-                  <span className="text-xs sm:text-sm text-muted-foreground">dk önce</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">
+                    dk önce
+                  </span>
                 </div>
               </div>
             ))}
           </div>
-          <Button 
-            onClick={handleSaveNotifications} 
-            disabled={isSaving} 
+          <Button
+            onClick={handleSaveNotifications}
+            disabled={isSaving}
             className="w-full min-h-[44px] sm:min-h-[48px] text-sm sm:text-base"
           >
-            {isSaving ? 'Kaydediliyor...' : 'Bildirim Ayarlarını Kaydet'}
+            {isSaving ? "Kaydediliyor..." : "Bildirim Ayarlarını Kaydet"}
           </Button>
         </CardContent>
       </Card>
